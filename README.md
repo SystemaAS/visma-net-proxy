@@ -1,2 +1,2 @@
 # visma-net-proxy
-The Visma Net proxy
+The Visma.net proxy
