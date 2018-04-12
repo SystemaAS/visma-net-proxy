@@ -5,6 +5,6 @@
   "groupId" : "no.systema.visma.v1",
   "artifactId"  : "visma-net-v1client",
   "fullJavaUtil" : false,
-  "dateLibrary" : "java8",
+  "dateLibrary" : "java8-localdatetime",
   "library" :  "resttemplate"
 }
