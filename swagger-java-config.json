@@ -1,0 +1,10 @@
+{
+  "modelPackage" : "no.systema.visma.v1client.model",
+  "apiPackage"   : "no.systema.visma.v1client.api",
+  "invokerPackage" : "no.systema.visma.v1client",
+  "groupId" : "no.systema.visma.v1",
+  "artifactId"  : "visma-net-v1client",
+  "fullJavaUtil" : false,
+  "dateLibrary" : "java8",
+  "library" :  "resttemplate"
+}

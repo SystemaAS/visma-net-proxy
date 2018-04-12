@@ -16,7 +16,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 	 
 	<!-- This will allow Wiring with annotations. [It is not the default]  -->
 	<context:annotation-config/>
-	
+
 	<!-- Enable the annotation configuration to simplify the use of transactions as shown next -->
 <!--  
 	<tx:annotation-driven transaction-manager="dataTransactionManager" />
@@ -64,6 +64,9 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
     	</property>
 	</bean>
 
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	</bean>	
+
 	<bean id="dataTransactionManager"
   		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
   		scope="singleton">
@@ -79,4 +82,6 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 		<property name="isolationLevelName" value="ISOLATION_READ_UNCOMMITTED" />
 		<property name="timeout" value="30" />
 	</bean>
+	
+	
 </beans>

@@ -5,12 +5,13 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <display-name>Visma.net proxy</display-name>
    <!--  resources --> 
+
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-    	/WEB-INF/visma-net-proxy-servlet.xml,
         /WEB-INF/visma-net-proxy-data-service.xml,
-        /WEB-INF/visma-net-proxy-datasource.xml
+        /WEB-INF/visma-net-proxy-datasource.xml,
+        /WEB-INF/visma-net-proxy-servlet.xml
     </param-value> 
   </context-param>
   
