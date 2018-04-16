@@ -62,7 +62,7 @@ public class HelperController {
 			apiClient.setAccessToken("81d21509-a23e-40a3-82d4-b101bb681d0f");
 //			apiClient.setDebugging(true);
 			
-	        CustomerDto response = api.customerGetBycustomerCd(customerCd);
+	        CustomerDto response = customerApi.customerGetBycustomerCd(customerCd);
 			
 			logger.debug("response="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
 	        
@@ -131,7 +131,7 @@ public class HelperController {
 	
 	@Autowired
 	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
-	public CustomerApi api = new CustomerApi(apiClient);
+	public CustomerApi customerApi = new CustomerApi(apiClient);
 	
 	
 }
