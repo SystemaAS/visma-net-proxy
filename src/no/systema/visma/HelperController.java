@@ -66,7 +66,7 @@ public class HelperController {
 			
 			logger.debug("response="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
 	        
-			sb.append("::Response on customerCd="+customerCd+ " \n \n ::");
+			sb.append("::Response on customerCd="+customerCd+ " :: \n \n ");
 			sb.append(ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
 			
 			
