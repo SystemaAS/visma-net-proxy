@@ -12,8 +12,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import no.systema.jservices.common.dao.services.BridfDaoService;
-import no.systema.visma.v1client.ApiClient;
-import no.systema.visma.v1client.api.CustomerApi;
+import no.systema.visma.integration.Customer;
 import no.systema.visma.v1client.model.CustomerDto;
 /**
  * 
@@ -56,15 +53,15 @@ public class HelperController {
 			String customerCd = request.getParameter("customerCd");
 			Assert.notNull(customerCd, "customerCd nust be delivered."); 
 
-			apiClient.setBasePath("https://integration.visma.net/API");
-			apiClient.addDefaultHeader("ipp-application-type", "Visma.net Financials");
-			apiClient.addDefaultHeader("ipp-company-id", "1684147");
-			apiClient.setAccessToken("81d21509-a23e-40a3-82d4-b101bb681d0f");
-//			apiClient.setDebugging(true);
-			
-	        CustomerDto response = customerApi.customerGetBycustomerCd(customerCd);
-			
-			logger.debug("response="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
+	        CustomerDto response = customer.getByCustomerCd(customerCd);
+	        logger.info("excute 1");
+			logger.debug("response 1="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
+	        
+	        
+//	        response = customer.getByCustomerCd(customerCd);
+//	        
+//	        logger.info("excute 2");	        
+//			logger.debug("response 2="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
 	        
 			sb.append("::Response on customerCd="+customerCd+ " :: \n \n ");
 			sb.append(ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
@@ -72,7 +69,7 @@ public class HelperController {
 			
 		} catch (Exception e) {
 			// write std.output error output
-			e.printStackTrace();
+			logger.error("ERROR:", e);
 			Writer writer = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(writer);
 			e.printStackTrace(printWriter);
@@ -124,14 +121,9 @@ public class HelperController {
 	@Autowired
 	@Qualifier("tsManager")
 	private TransactionManager transactionManager;
-	
+
 	@Autowired
-	@Qualifier("no.systema.visma.v1client.ApiClient")
-	private ApiClient apiClient;
-	
-	@Autowired
-	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
-	public CustomerApi customerApi = new CustomerApi(apiClient);
+	private Customer customer;	
 	
 	
 }
