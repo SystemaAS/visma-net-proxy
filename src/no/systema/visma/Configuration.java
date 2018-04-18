@@ -12,10 +12,9 @@ import no.systema.visma.v1client.ApiClient;
  * This class is managing the ApiClient settings, e.g. accessToken.
  * 
  * @author fredrikmoller
- * @date 2018-04
  */
 public abstract class Configuration {
-	private static Logger logger = Logger.getLogger(Configuration.class);
+	protected static Logger logger = Logger.getLogger(Configuration.class);
 	
 	@Autowired
 	@Qualifier("no.systema.visma.v1client.ApiClient")
@@ -23,14 +22,13 @@ public abstract class Configuration {
 	
 	@PostConstruct
 	private void postconstruct() {
-		logger.info("THis is the Kilroy!");
 	
 		apiClient.setBasePath("https://integration.visma.net/API");
 		apiClient.addDefaultHeader("ipp-application-type", "Visma.net Financials");
 		apiClient.addDefaultHeader("ipp-company-id", "1684147");
 		apiClient.setAccessToken("81d21509-a23e-40a3-82d4-b101bb681d0f");		
 		
-//		apiClient.setDebugging(true);  warning...
+		//apiClient.setDebugging(true); // warning...
 		
 	}
 	

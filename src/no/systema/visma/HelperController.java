@@ -33,10 +33,7 @@ public class HelperController {
 	private static Logger logger = Logger.getLogger(HelperController.class);
 
 	/**
-	 * @Example: http://gw.systema.no:8080/visma-net-proxy/getCustomer.do?user=FREDRIK&customerCd=10000
-	 * @param session
-	 * @param request
-	 * @return
+	 * Example: http://gw.systema.no:8080/visma-net-proxy/getCustomer.do?user=FREDRIK&customerCd=10000
 	 */
 	@RequestMapping(value="getCustomer.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
@@ -55,7 +52,7 @@ public class HelperController {
 
 	        CustomerDto response = customer.getByCustomerCd(customerCd);
 	        logger.info("excute 1");
-			logger.debug("response 1="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
+			logger.debug("response 1="+ReflectionToStringBuilder.toString(response));
 	        
 	        
 //	        response = customer.getByCustomerCd(customerCd);
@@ -64,7 +61,7 @@ public class HelperController {
 //			logger.debug("response 2="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
 	        
 			sb.append("::Response on customerCd="+customerCd+ " :: \n \n ");
-			sb.append(ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
+			sb.append(ReflectionToStringBuilder.toString(response));
 			
 			
 		} catch (Exception e) {
