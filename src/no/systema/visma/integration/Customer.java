@@ -2,6 +2,7 @@ package no.systema.visma.integration;
 
 import java.util.List;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -69,8 +70,18 @@ public class Customer extends Configuration{
     public Object customerPutBycustomerCd(ViskundeDao viskundeDao) throws RestClientException {
     	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
  
+    	//Find for update
+    	List<CustomerDto> dtoList = find(viskundeDao.getSyrg());
+    	if (dtoList == null || dtoList.size() > 1) {
+    		logger.fatal("Could not find 1 record on syrg="+viskundeDao.getSyrg());
+    	}
+    	
+    	String number = dtoList.get(0).getNumber();
+    	
+    	logger.debug("dto=="+ReflectionToStringBuilder.toString(dtoList.get(0)));
     	logger.debug("Returning updated Customer Object.");
-    	return customerApi.customerPutBycustomerCd(String.valueOf(viskundeDao.getKundnr()), updateDto);
+
+    	return customerApi.customerPutBycustomerCd(number, updateDto);
     }
     
 
@@ -111,40 +122,28 @@ public class Customer extends Configuration{
 
 	}
     
-    
+ 
+	/**
+	 * Find Customer on corporateId
+	 * 
+	 * @param corporateId correspnd to SYRG
+	 * @return List<CustomerDto should contain only one.
+	 */
+	private List<CustomerDto> find(String corporateId) {
+		List<CustomerDto> responseList = customerApi.customerGetAll(null, null, null, null, null,
+				corporateId, null, null, null, null, null,
+				null, null, null, null, null);			
+		
+		return responseList;
+	}
+
+	
+	
 	/**
 	 * 
 	 * Convert VISKUNDE data into Customer. </br></br>
 	 * 
-	 * <b>::Mapping::</b>
-	 * <table border="1">
-	 * 	<tbody>
-	 * 	<tr>
-	 * 		<th>VISKUNDE</th>
-	 * 		<th>Customer API</th>
-	 * 		<th>Visma.net Financials</th>
-	 * </tr>
-	 * 	<tr>
-	 * 		<td>KUNDNR</td>
-	 * 		<td>accountReference</td>
-	 * 		<td>Vårt lev.- / kundenr:</td>
-	 * </tr>
-	 * 	<tr>
-	 * 		<td>KNAVN</td>
-	 * 		<td>name</td>
-	 * 		<td>Kundenavn:</td>
-	 * </tr>
-	 * 	<tr>
-	 * 		<td>SYRG</td>
-	 * 		<td>corporateId</td>
-	 * 		<td>Organisasjonsnr.:</td>
-	 * </tr>
-	 * </tbody>
-	 * 
-	 * </table>
-	 * 
-	 * </br></br>
-	 * 
+	 * For mapping specification see Systema Google Drive /Losning1/Visma migration
 	 * Structure also found here: https://github.com/SystemaAS/visma-net-v1client/blob/master/docs/CustomerUpdateDto.md
 	 * 
 	 * 
@@ -171,12 +170,6 @@ public class Customer extends Configuration{
 		
 		dto.setMainAddress(getMainAddress(viskunde));
 
-		
-		
-		
-		
-		
-		
 		
 		//TODO the rest.....
     	

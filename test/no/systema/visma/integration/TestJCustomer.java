@@ -1,7 +1,6 @@
 package no.systema.visma.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -21,6 +20,12 @@ import no.systema.visma.v1client.model.CustomerDto;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes={Customer.class, ApiClient.class, RestTemplate.class, CustomerApi.class}, loader=AnnotationConfigContextLoader.class)
+/**
+ * Nopte: dont run all at once, since it creates all new kunde in visma.net
+ * 
+ * @author fredrikmoller
+ *
+ */
 public class TestJCustomer {
 
 	@Autowired 
@@ -108,11 +113,25 @@ public class TestJCustomer {
 		ViskundeDao dao =getMediumDao(cd,syrg ,name);
 		
 		Object postObject = customer.customerPost(dao);
-		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
 		assertNotNull(postObject);
+		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
 
 		
 	}
+
+	@Test
+	public void testCustomerUpdate() {
+		String name = "Kalles chokladfabrik (medium)";
+		ViskundeDao dao =getMediumDao(cd,syrg ,name);
+		
+		dao.setKnavn("Kalles chokladfabrik (UPDATE!)");
+		
+		Object postObject = customer.customerPutBycustomerCd(dao);
+		assertNull(postObject);  //PUT not delivering response
+		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
+
+		
+	}	
 	
 	@Test
 	public void testCustomerGetByOrgnnr() {
