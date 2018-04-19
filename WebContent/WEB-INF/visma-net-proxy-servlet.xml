@@ -51,9 +51,8 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
  		 There are dependencies that demand this Validation Hibernate JAR is in you lib-path. Otherwise mvc:resources will cast an
  		 Exception at bootstrap (WAR)-->
 	<mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> 
-	
 	<mvc:annotation-driven />
-	
+
 	<!-- application properties -->
 	<bean id="placeholderConfigMM" class="no.systema.jservices.common.util.ApplicationPropertiesUtil">
     	<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>

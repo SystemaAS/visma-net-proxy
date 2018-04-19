@@ -4,8 +4,7 @@
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <display-name>Visma.net proxy</display-name>
-   <!--  resources --> 
-
+ 
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
@@ -14,7 +13,7 @@
         /WEB-INF/visma-net-proxy-servlet.xml
     </param-value> 
   </context-param>
-  
+ 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
@@ -29,10 +28,11 @@
     <servlet-name>visma-net-proxy</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+
   <session-config>
     <session-timeout>60</session-timeout>
   </session-config>
-  
+
   <filter>  
     <filter-name>encodingFilter</filter-name>  
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  
