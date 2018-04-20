@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.visma.Configuration;
 import no.systema.visma.v1client.api.CustomerApi;
@@ -15,7 +18,9 @@ import no.systema.visma.v1client.model.AddressUpdateDto;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
+import no.systema.visma.v1client.model.DtoValueCustomerStatus;
 import no.systema.visma.v1client.model.DtoValueString;
+import no.systema.visma.v1client.model.AccountDto.TypeEnum;
 
 /**
  * A Wrapper on CustomerApi
@@ -29,9 +34,6 @@ public class Customer extends Configuration{
 	@Autowired
 	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
 	public CustomerApi customerApi = new CustomerApi(apiClient);
-	
-//	private static final int NEW = -1;
-//	private static final int  UPDATE = -2;
 	
 	/**
 	 * Get a specific customer
@@ -61,6 +63,9 @@ public class Customer extends Configuration{
 
     /**
      * Updates a specific customer
+     * 
+     * NOTE: There is no delete in the api. Work with Status.
+     * 
      * Response Message has StatusCode NoContent if PUT operation succeed
      * <p><b>204</b> - NoContent
      * @param viskundeDao The data to update for the customer
@@ -72,8 +77,13 @@ public class Customer extends Configuration{
  
     	//Find for update
     	List<CustomerDto> dtoList = find(viskundeDao.getSyrg());
+    	
+    	logger.debug("dtoList on syrg="+viskundeDao.getSyrg()+", size= "+dtoList.size());
+    	
     	if (dtoList == null || dtoList.size() > 1) {
-    		logger.fatal("Could not find 1 record on syrg="+viskundeDao.getSyrg());
+    		String errMsg = "Could not find 1 record on syrg="+viskundeDao.getSyrg();
+    		logger.fatal(errMsg);
+    		throw new RuntimeException(errMsg);
     	}
     	
     	String number = dtoList.get(0).getNumber();
@@ -81,7 +91,15 @@ public class Customer extends Configuration{
     	logger.debug("dto=="+ReflectionToStringBuilder.toString(dtoList.get(0)));
     	logger.debug("Returning updated Customer Object.");
 
-    	return customerApi.customerPutBycustomerCd(number, updateDto);
+    	Object putBody;
+    	try {
+    		putBody = customerApi.customerPutBycustomerCd(number, updateDto);
+		} catch (RestClientException e) {
+			logger.error("ERROR: On customerApi.customerPutBycustomerCd call", e);
+			throw e;
+		}
+    	
+    	return putBody;
     }
     
 
@@ -153,22 +171,22 @@ public class Customer extends Configuration{
     private CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde) {
     	//Sanity checks
 		if (viskunde.getKundnr() == 0) {
-			String errMsg = "Kundnr can not be 0";
+			String errMsg = "KUNDNR can not be 0";
 			logger.fatal("FATAL:"+errMsg);
 			throw new RuntimeException(errMsg);
 		} else if (viskunde.getSyrg() == null) {
-			String errMsg = "Syrg (orgnnr) can not be null.";
+			String errMsg = "SYRG (orgnnr) can not be null.";
 			logger.fatal("FATAL:"+errMsg);
 			throw new RuntimeException(errMsg);
 		}
 	
-//		CustomerUpdateDto dto = new CustomerUpdateDto().number(toDtoString(viskunde.getKundnr()));
 		CustomerUpdateDto dto = new CustomerUpdateDto();
 		dto.setAccountReference(toDtoString(viskunde.getKundnr()));
 		dto.setName(toDtoString(viskunde.getKnavn()));
 		dto.setCorporateId(toDtoString(viskunde.getSyrg()));  //used in query in API
 		
 		dto.setMainAddress(getMainAddress(viskunde));
+		dto.setStatus(getStatus(viskunde));
 
 		
 		//TODO the rest.....
@@ -178,6 +196,29 @@ public class Customer extends Configuration{
 
 
 		
+	private DtoValueCustomerStatus getStatus(ViskundeDao viskunde) {
+		//sanity check
+		if (viskunde.getAktkod() == null) {
+			String errMsg = "AKTKOD can not be null";
+			logger.fatal("FATAL:"+errMsg);
+			throw new RuntimeException(errMsg);			
+		}
+		DtoValueCustomerStatus dtoValue = new DtoValueCustomerStatus();
+		
+		if (viskunde.getAktkod().equals("A")) { 
+			dtoValue.setValue(DtoValueCustomerStatus.ValueEnum.ACTIVE);
+		} else if (viskunde.getAktkod().equals("I")) {
+			dtoValue.setValue(DtoValueCustomerStatus.ValueEnum.INACTIVE);
+		} else {
+			String errMsg = "AKTKOD must be A or I. Fallback, setting status to ONHOLD";
+			logger.error("FATAL:"+errMsg);
+			dtoValue.setValue(DtoValueCustomerStatus.ValueEnum.ONHOLD);
+		}
+		
+		return dtoValue;
+	}
+
+
 	private DtoValueAddressUpdateDto getMainAddress(ViskundeDao viskunde) {
 		DtoValueAddressUpdateDto dtoValueDto = new DtoValueAddressUpdateDto();
 

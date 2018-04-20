@@ -31,8 +31,8 @@ public class TestJCustomer {
 	@Autowired 
 	Customer customer;
 	
-	int cd = 9999;
-	String syrg = "syrg";
+//	int cd = 9999;
+//	String syrg = "syrg";
 
 	@Test
 	public void testCustomerStress1() {
@@ -98,7 +98,7 @@ public class TestJCustomer {
 	@Test
 	public void testCustomerCreateSmall() {
 		String name = "Kalles chokladfabrik (small)";
-		ViskundeDao dao =getSmallDao(cd, name);
+		ViskundeDao dao =getSmallDao(10, name);
 		
 		Object postObject = customer.customerPost(dao);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
@@ -110,21 +110,20 @@ public class TestJCustomer {
 	@Test
 	public void testCustomerCreateMedium() {
 		String name = "Kalles chokladfabrik (medium)";
-		ViskundeDao dao =getMediumDao(cd,syrg ,name);
+		ViskundeDao dao =getMediumDao(10, "123999" ,name);
 		
 		Object postObject = customer.customerPost(dao);
 		assertNotNull(postObject);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
-
 		
 	}
 
 	@Test
 	public void testCustomerUpdate() {
 		String name = "Kalles chokladfabrik (medium)";
-		ViskundeDao dao =getMediumDao(cd,syrg ,name);
+		ViskundeDao dao =getMediumDao(1,"123456" ,name);
 		
-		dao.setKnavn("Kalles chokladfabrik (UPDATE!)");
+		dao.setKnavn("Kalles chokladfabrik (UPDATE 11:41)");
 		
 		Object postObject = customer.customerPutBycustomerCd(dao);
 		assertNull(postObject);  //PUT not delivering response
@@ -132,6 +131,7 @@ public class TestJCustomer {
 
 		
 	}	
+
 	
 	@Test
 	public void testCustomerGetByOrgnnr() {
@@ -165,16 +165,16 @@ public class TestJCustomer {
 	}	
 	
 
-	private ViskundeDao getSmallDao(int cd, String name) {
+	private ViskundeDao getSmallDao(int kundnr, String name) {
 		ViskundeDao dao = new ViskundeDao();
-		dao.setKundnr(cd);
+		dao.setKundnr(kundnr);
 		dao.setKnavn(name);
 		return dao;
 	}		
 	
-	private ViskundeDao getMediumDao(int cd, String syrg, String name) {
+	private ViskundeDao getMediumDao(int kundnr, String syrg, String name) {
 		ViskundeDao dao = new ViskundeDao();
-		dao.setKundnr(cd);
+		dao.setKundnr(kundnr);
 		dao.setKnavn(name);
 		dao.setAdr1("adr1");
 		dao.setAdr2("adr2");
@@ -182,6 +182,7 @@ public class TestJCustomer {
 		dao.setSyland("NO");
 		dao.setPostnr(6001);
 		dao.setSyrg(syrg);
+		dao.setAktkod("A"); //I
 
 		
 		return dao;

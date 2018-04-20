@@ -26,7 +26,7 @@ public abstract class Configuration {
 		apiClient.setBasePath("https://integration.visma.net/API");
 		apiClient.addDefaultHeader("ipp-application-type", "Visma.net Financials");
 		apiClient.addDefaultHeader("ipp-company-id", "1684147");
-		apiClient.setAccessToken("81d21509-a23e-40a3-82d4-b101bb681d0f");		
+//		apiClient.setAccessToken("81d21509-a23e-40a3-82d4-b101bb681d0f");		
 		
 		//apiClient.setDebugging(true); // warning...
 		
