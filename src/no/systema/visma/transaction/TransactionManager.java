@@ -2,24 +2,20 @@ package no.systema.visma.transaction;
 
 import java.util.List;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.visma.integration.Customer;
-import no.systema.visma.v1client.model.CustomerDto;
 
 @Service("tsManager")
 public class TransactionManager {
 	/**
-	 * Separete log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
+	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
 	private static Logger logger = Logger.getLogger(TransactionManager.class);
-	
 	
 	@Autowired
 	private Customer customer;
@@ -27,14 +23,13 @@ public class TransactionManager {
 	@Autowired
 	private ViskundeDaoService viskundeDaoService;
 	
-	
 	/**
-	 * Syncronice all VISKUNDE with Customer in Visma.net <br>
+	 * Syncronize all VISKUNDE with Customer in Visma.net <br>
 	 * 
 	 * 
 	 */
 	public void syncronizeCustomers() {
-		logger.info("syncronizing all VISKUNDE -> Customer");
+		logger.info("Syncronizing all records in VISKUNDE -> Customer.");
 		List<ViskundeDao> viskundeList = viskundeDaoService.findAll(null);
 		
 		viskundeList.forEach((dao) -> {
@@ -42,7 +37,7 @@ public class TransactionManager {
 
 		});
 		
-		logger.info("syncronizing all ("+viskundeList.size()+") VISKUNDE -> Customer ready!");
+		logger.info("Syncronizing all ("+viskundeList.size()+") in VISKUNDE -> Customer ready!");
 		
 	}
 	
@@ -52,14 +47,14 @@ public class TransactionManager {
 	 * @param dao
 	 */
 	public void syncronizeCustomer(ViskundeDao dao) {
-		logger.info("Viskunde about to be syncronized.");
-		logger.info("record="+dao.toString());
+		logger.info("Kundnr:"+dao.getKundnr()+" about to be syncronized.");
 		customer.syncronizeCustomer(dao);
+		logger.info("Record="+dao.toString()+" syncronized.");
 			
 		viskundeDaoService.delete(dao); 
-		logger.info("Record deleted from VISKUNDE");
+		logger.info("Kundnr:"+dao.getKundnr()+" deleted from VISKUNDE.");
 		
-		//TODO bra loggning
+		//TODO bra loggning, FlipTable
 		
 	}
 
