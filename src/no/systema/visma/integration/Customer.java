@@ -3,16 +3,17 @@ package no.systema.visma.integration;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.Configuration;
+import no.systema.visma.v1client.ApiClient;
 import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
 import no.systema.visma.v1client.model.CustomerDto;
@@ -20,7 +21,6 @@ import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
 import no.systema.visma.v1client.model.DtoValueCustomerStatus;
 import no.systema.visma.v1client.model.DtoValueString;
-import no.systema.visma.v1client.model.AccountDto.TypeEnum;
 
 /**
  * A Wrapper on CustomerApi
@@ -31,35 +31,45 @@ import no.systema.visma.v1client.model.AccountDto.TypeEnum;
  */
 @Service
 public class Customer extends Configuration{
+	protected static Logger logger = Logger.getLogger(Customer.class);
+
 	@Autowired
 	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
-	public CustomerApi customerApi = new CustomerApi(apiClient);
+	public CustomerApi customerApi = new CustomerApi(apiClient());
 	
+	@Bean 
+	public ApiClient apiClient(){
+		return getApiClient();
+	}
+
 	/**
-	 * Get a specific customer
+	 * Syncronize VISKUNDE with Customer.
 	 * 
-	 * @param customerCd - Visma-net generated number in api
-	 * @return CustomerDto - the customer
+	 * If exist in Visma.net do update, else create new.
+	 * 
+	 * Uses VISKUNDE.SYRG as search-criteria in Visma.net.
+	 * 
+	 * If VISKUNDE.SYRG=corporateId=Organisjonr exists in Visma.net do an PUT=Update
+	 * If VISKUNDE.SYRG=corporateId=Organisjonr NOT exists in Visma.net do an POST=Create
+	 * 
+	 * 
+	 * @param viskundeDao
+	 * @return Object
 	 */
-	public CustomerDto getByCustomerCd(String customerCd) {
-		return customerApi.customerGetBycustomerCd(customerCd);
+	public Object syncronizeCustomer(ViskundeDao viskundeDao) {
+    	List<CustomerDto> dtoList = find(viskundeDao.getSyrg());
+ 
+    	if (dtoList != null && dtoList.size() == 1) {  //PUT / Update
+    		logger.debug("Do update in Visma.net on found CustomerDto="+dtoList.get(0).toString());
+    		return customerPutBycustomerCd(viskundeDao);
+    		
+    	} else { //POST / New
+    		logger.debug("Do new in Visma.net on dao="+viskundeDao.toString());
+    		return customerPost(viskundeDao);
+    	}
+    	
 	}
 	
-
-    /**
-     * Creates a customer
-     * Response Message has StatusCode Created if POST operation succeed
-     * <p><b>201</b> - Created
-     * @param viskundeDao Defines the data for the customer to create
-     * @return Object
-     * @throws RestClientException if an error occurs while attempting to invoke the API
-     */
-    public Object customerPost(ViskundeDao viskundeDao) throws RestClientException {
-    	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
- 
-    	logger.debug("Returning new Customer Object.");
-    	return customerApi.customerPost(updateDto);
-    }
 
     /**
      * Updates a specific customer
@@ -72,12 +82,11 @@ public class Customer extends Configuration{
      * @return Object
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public Object customerPutBycustomerCd(ViskundeDao viskundeDao) throws RestClientException {
+    private Object customerPutBycustomerCd(ViskundeDao viskundeDao) throws RestClientException {
     	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
  
     	//Find for update
     	List<CustomerDto> dtoList = find(viskundeDao.getSyrg());
-    	
     	logger.debug("dtoList on syrg="+viskundeDao.getSyrg()+", size= "+dtoList.size());
     	
     	if (dtoList == null || dtoList.size() > 1) {
@@ -87,26 +96,45 @@ public class Customer extends Configuration{
     	}
     	
     	String number = dtoList.get(0).getNumber();
-    	
-    	logger.debug("dto=="+ReflectionToStringBuilder.toString(dtoList.get(0)));
-    	logger.debug("Returning updated Customer Object.");
+    	logger.debug("Found CustomerDto=="+ReflectionToStringBuilder.toString(dtoList.get(0)));
 
-    	Object putBody;
+    	Object putBodyResponse;
     	try {
-    		putBody = customerApi.customerPutBycustomerCd(number, updateDto);
+    		putBodyResponse = customerApi.customerPutBycustomerCd(number, updateDto);
 		} catch (RestClientException e) {
-			logger.error("ERROR: On customerApi.customerPutBycustomerCd call", e);
+			logger.error("ERROR: On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString(), e);
 			throw e;
 		}
     	
-    	return putBody;
+    	return putBodyResponse;
     }
     
+	/**
+     * Creates a customer
+     * Response Message has StatusCode Created if POST operation succeed
+     * <p><b>201</b> - Created
+     * @param viskundeDao Defines the data for the customer to create
+     * @return Object
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    private Object customerPost(ViskundeDao viskundeDao) throws RestClientException {
+    	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
+    	Object postBody;
+    	try {
+			postBody =  customerApi.customerPost(updateDto);
+			logger.info("Customer created. postBody="+postBody);
+		} catch (RestClientException e) {
+			logger.error("ERROR: On customerApi.customerPost call. viskundeDao="+viskundeDao.toString(), e);
+			throw e;
+		}
+    	
+    	return postBody;
+    }
 
     /**
      * Get a range of customers
      * 
-     * Used for query in Visma-net API. e.g add VISKUNDE.SYRG to corporateId
+     * Used for query in Visma-net API. e.g. add VISKUNDE.SYRG to corporateId
      * 
      * <p><b>200</b> - OK
      * @param greaterThanValue The greaterThanValue parameter
@@ -144,10 +172,10 @@ public class Customer extends Configuration{
 	/**
 	 * Find Customer on corporateId
 	 * 
-	 * @param corporateId correspnd to SYRG
+	 * @param corporateId correspond to SYRG
 	 * @return List<CustomerDto should contain only one.
 	 */
-	private List<CustomerDto> find(String corporateId) {
+	public List<CustomerDto> find(String corporateId) {
 		List<CustomerDto> responseList = customerApi.customerGetAll(null, null, null, null, null,
 				corporateId, null, null, null, null, null,
 				null, null, null, null, null);			
@@ -161,7 +189,8 @@ public class Customer extends Configuration{
 	 * 
 	 * Convert VISKUNDE data into Customer. </br></br>
 	 * 
-	 * For mapping specification see Systema Google Drive /Losning1/Visma migration
+	 * For mapping specification see Systema Google Drive /Losning1/Visma migration </br></br>
+	 * 
 	 * Structure also found here: https://github.com/SystemaAS/visma-net-v1client/blob/master/docs/CustomerUpdateDto.md
 	 * 
 	 * 
@@ -174,7 +203,7 @@ public class Customer extends Configuration{
 			String errMsg = "KUNDNR can not be 0";
 			logger.fatal("FATAL:"+errMsg);
 			throw new RuntimeException(errMsg);
-		} else if (viskunde.getSyrg() == null) {
+		} else if (!StringUtils.hasValue(viskunde.getSyrg())) {
 			String errMsg = "SYRG (orgnnr) can not be null.";
 			logger.fatal("FATAL:"+errMsg);
 			throw new RuntimeException(errMsg);
@@ -190,7 +219,10 @@ public class Customer extends Configuration{
 
 		
 		//TODO the rest.....
-    	
+		
+		//TESTING
+		//dto.setCreditTermsId(new DtoValueString().value("asdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdf"));
+    	//REMOVE
 		return dto;
 	}
 
@@ -281,6 +313,17 @@ public class Customer extends Configuration{
 		return new DtoValueString().value(o.toString());
 
 	}
+	
+	/**
+	 * Get a specific customer. For testing purpose
+	 * 
+	 * @param customerCd - Visma-net generated number in api
+	 * @return CustomerDto - the customer
+	 */
+	public CustomerDto getByCustomerCd(String customerCd) {
+		return customerApi.customerGetBycustomerCd(customerCd);
+	}
+
 	
 	
 }

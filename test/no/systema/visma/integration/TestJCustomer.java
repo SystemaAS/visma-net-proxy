@@ -21,7 +21,8 @@ import no.systema.visma.v1client.model.CustomerDto;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes={Customer.class, ApiClient.class, RestTemplate.class, CustomerApi.class}, loader=AnnotationConfigContextLoader.class)
 /**
- * Nopte: dont run all at once, since it creates all new kunde in visma.net
+ * Note: Remember to start checking existing Customer in Visma.net before running below tests
+ * Dont run all at once, since it creates new kunde in Visma.net.
  * 
  * @author fredrikmoller
  *
@@ -31,14 +32,10 @@ public class TestJCustomer {
 	@Autowired 
 	Customer customer;
 	
-//	int cd = 9999;
-//	String syrg = "syrg";
-
 	@Test
 	public void testCustomerStress1() {
 		String cd = "10007";
 		CustomerDto dto =customer.getByCustomerCd(cd);
-		
 		assertNotNull(dto);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
 		
@@ -51,68 +48,51 @@ public class TestJCustomer {
 	public void testCustomerStress2() {
 		String cd = "10000";
 		CustomerDto dto =customer.getByCustomerCd(cd);
-		
 		assertNotNull(dto);
-//		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
 		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-
-		
 	}	
 	
 	@Test
 	public void testCustomerStress3() {
 		String cd = "10000";
 		CustomerDto dto =customer.getByCustomerCd(cd);
-		
 		assertNotNull(dto);
-//		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
 		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-
-		
 	}	
 	
 	@Test
 	public void testCustomerStress4() {
 		String cd = "10000";
 		CustomerDto dto =customer.getByCustomerCd(cd);
-		
 		assertNotNull(dto);
-//		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
 		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-
-		
 	}	
 	
 	@Test
 	public void testCustomerStress5() {
 		String cd = "10000";
 		CustomerDto dto =customer.getByCustomerCd(cd);
-		
 		assertNotNull(dto);
-//		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
 		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-
-		
 	}	
 	
+
 	@Test
 	public void testCustomerCreateSmall() {
 		String name = "Kalles chokladfabrik (small)";
 		ViskundeDao dao =getSmallDao(10, name);
 		
-		Object postObject = customer.customerPost(dao);
+		Object postObject = customer.syncronizeCustomer(dao);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
 		assertNotNull(postObject);
 
-		
 	}
 	
 	@Test
 	public void testCustomerCreateMedium() {
 		String name = "Kalles chokladfabrik (medium)";
 		ViskundeDao dao =getMediumDao(10, "123999" ,name);
-		
-		Object postObject = customer.customerPost(dao);
+		Object postObject = customer.syncronizeCustomer(dao);
 		assertNotNull(postObject);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
 		
@@ -122,17 +102,15 @@ public class TestJCustomer {
 	public void testCustomerUpdate() {
 		String name = "Kalles chokladfabrik (medium)";
 		ViskundeDao dao =getMediumDao(1,"123456" ,name);
-		
 		dao.setKnavn("Kalles chokladfabrik (UPDATE 11:41)");
 		
-		Object postObject = customer.customerPutBycustomerCd(dao);
+		Object postObject = customer.syncronizeCustomer(dao);
 		assertNull(postObject);  //PUT not delivering response
 		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
 
 		
 	}	
 
-	
 	@Test
 	public void testCustomerGetByOrgnnr() {
 		String greaterThanValue = null;

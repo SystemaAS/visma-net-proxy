@@ -41,11 +41,8 @@ public class TestJTransactionManager {
 	@Test
 	public void testSyncCustomer() {
 		
-		transactionManager.syncronizeCustomer("10");
+		transactionManager.syncronizeCustomers();
 
-		
-		fail("Not yet implemented");
-		
 		
 	}
 
