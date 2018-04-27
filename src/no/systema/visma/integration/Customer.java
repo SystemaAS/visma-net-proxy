@@ -2,17 +2,20 @@ package no.systema.visma.integration;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 
+import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.dao.services.FirmvisDaoService;
 //import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.Configuration;
 import no.systema.visma.v1client.ApiClient;
@@ -32,18 +35,37 @@ import no.systema.visma.v1client.model.DtoValueString;
  * @author fredrikmoller
  */
 @Service
-public class Customer extends Configuration{
-	protected static Logger logger = Logger.getLogger(Customer.class);
+public class Customer extends Configuration {
+	private static Logger logger = Logger.getLogger(Customer.class);
+	
+	@Autowired
+	public Configuration configuration;	
 
 	@Autowired
-	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
+	public FirmvisDaoService firmvisDaoService;	
+	
+	@Autowired
+//	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
 	public CustomerApi customerApi = new CustomerApi(apiClient());
 	
-	@Bean 
+	@Bean
 	public ApiClient apiClient(){
-		return getApiClient();
+		return new ApiClient();
 	}
+	
+	@PostConstruct
+	public void post_construct() {
+		FirmvisDao firmvis = firmvisDaoService.get();
 
+		customerApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
+		customerApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
+		customerApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
+		customerApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
+		
+		customerApi.getApiClient().setDebugging(true);		
+		
+	}
+	
 	/**
 	 * Syncronize VISKUNDE with Customer.
 	 * 
@@ -223,9 +245,10 @@ public class Customer extends Configuration{
 	 * 
 	 * @param corporateId correspond to SYRG
 	 * @return List<CustomerDto should contain only one.
+	 * @deprecated
 	 */
 	public List<CustomerDto> find(String corporateId) {
-		//TODO inte SYRG inte säkert att söka efter, prova att lägg till namn
+		//TODO inte SYRG inte säkert att söka efter, använd number ifrån VISSYSKUN
 
 		List<CustomerDto> responseList = customerApi.customerGetAll(null, null, null, null, null,
 				corporateId, null, null, null, null, null,

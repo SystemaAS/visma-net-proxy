@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="customer" class="no.systema.visma.integration.Customer"/>
+	<bean id="configuration" class="no.systema.visma.Configuration"/>
+	<bean id="customerApi" class="no.systema.visma.v1client.api.CustomerApi"/>
+	<bean id="tsManager" class="no.systema.visma.transaction.TransactionManager"/>
+	
+	
+    <import resource="classpath:syjservicescommon-data-service-test.xml"/>
+    
+    
+</beans>

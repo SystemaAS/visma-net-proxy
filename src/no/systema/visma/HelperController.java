@@ -7,7 +7,6 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
-import no.systema.visma.integration.Customer;
 import no.systema.visma.transaction.TransactionManager;
-import no.systema.visma.v1client.model.CustomerDto;
 /**
  * 
  * 
@@ -70,56 +67,6 @@ public class HelperController {
 		return sb.toString();
 
 	}
-	
-	
-	/**
-	 * This method is used for debugging and testing
-	 * 
-	 * Example: http://gw.systema.no:8080/visma-net-proxy/getCustomer.do?user=FREDRIK&customerCd=10000
-	 */
-	@RequestMapping(value="getCustomer.do", method={RequestMethod.GET, RequestMethod.POST})
-	@ResponseBody
-	public String getCustomer(HttpSession session, HttpServletRequest request) {
-		StringBuilder sb = new StringBuilder();
-
-		logger.info("getCustomer.do...");
-		
-		try {
-			String user = request.getParameter("user");
-			String userName = bridfDaoService.getUserName(user);
-			Assert.notNull(userName, "userName not found in Bridf."); 
-			
-			String customerCd = request.getParameter("customerCd");
-			Assert.notNull(customerCd, "customerCd nust be delivered."); 
-
-	        CustomerDto response = customer.getByCustomerCd(customerCd);
-	        logger.info("excute 1");
-			logger.debug("response 1="+ReflectionToStringBuilder.toString(response));
-	        
-	        
-//	        response = customer.getByCustomerCd(customerCd);
-//	        
-//	        logger.info("excute 2");	        
-//			logger.debug("response 2="+ReflectionToStringBuilder.toString(response, ToStringStyle.SIMPLE_STYLE));
-	        
-			sb.append("::Response on customerCd="+customerCd+ " :: \n \n ");
-			sb.append(ReflectionToStringBuilder.toString(response));
-			
-			
-		} catch (Exception e) {
-			// write std.output error output
-			logger.error("ERROR:", e);
-			Writer writer = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(writer);
-			e.printStackTrace(printWriter);
-			return "ERROR [JsonResponseOutputterController]" + writer.toString();
-		}
-
-		session.invalidate();
-		return sb.toString();
-
-	}	
-	
 	
 	/**
 	 * This method is used for debugging and testing.
@@ -212,7 +159,6 @@ public class HelperController {
 
 	}	
 	
-
 	@Autowired
 	@Qualifier("bridfDaoService")
 	private BridfDaoService bridfDaoService;
@@ -221,8 +167,5 @@ public class HelperController {
 	@Qualifier("tsManager")
 	private TransactionManager transactionManager;
 
-	@Autowired
-	private Customer customer;	
-	
 	
 }

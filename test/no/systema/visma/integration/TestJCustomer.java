@@ -1,32 +1,34 @@
 package no.systema.visma.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.web.client.RestTemplate;
 
 import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.dao.services.FirmvisDaoServiceImpl;
+import no.systema.visma.Configuration;
 import no.systema.visma.v1client.ApiClient;
 import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.CustomerDto;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={Customer.class, ApiClient.class, RestTemplate.class, CustomerApi.class}, loader=AnnotationConfigContextLoader.class)
-/**
- * Note: Remember to start checking existing Customer in Visma.net before running below tests
- * Dont run all at once, since it creates new kunde in Visma.net.
- * 
- * @author fredrikmoller
- *
- */
+//@ContextConfiguration(classes={Configuration.class, FirmvisDaoServiceImpl.class, Customer.class, ApiClient.class, RestTemplate.class, JdbcTemplate.class, DataSource.class ,CustomerApi.class}, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration("classpath:test-configuration.xml")
 public class TestJCustomer {
 
 	@Autowired 
@@ -34,7 +36,7 @@ public class TestJCustomer {
 	
 	@Test
 	public void testCustomerStress1() {
-		String cd = "10007";
+		String cd = "10000";
 		CustomerDto dto =customer.getByCustomerCd(cd);
 		assertNotNull(dto);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
