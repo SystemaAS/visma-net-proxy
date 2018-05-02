@@ -8,7 +8,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,6 @@ import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.CustomerDto;
 
 @RunWith(SpringRunner.class)
-//@ContextConfiguration(classes={Configuration.class, FirmvisDaoServiceImpl.class, Customer.class, ApiClient.class, RestTemplate.class, JdbcTemplate.class, DataSource.class ,CustomerApi.class}, loader=AnnotationConfigContextLoader.class)
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJCustomer {
 
@@ -37,7 +38,7 @@ public class TestJCustomer {
 	@Test
 	public void testCustomerStress1() {
 		String cd = "10000";
-		CustomerDto dto =customer.getByCustomerCd(cd);
+		CustomerDto dto =customer.getByCustomerCd(cd, 111);
 		assertNotNull(dto);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(dto));
 		
@@ -46,45 +47,13 @@ public class TestJCustomer {
 		
 	}
 	
-	@Test
-	public void testCustomerStress2() {
-		String cd = "10000";
-		CustomerDto dto =customer.getByCustomerCd(cd);
-		assertNotNull(dto);
-		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-	}	
-	
-	@Test
-	public void testCustomerStress3() {
-		String cd = "10000";
-		CustomerDto dto =customer.getByCustomerCd(cd);
-		assertNotNull(dto);
-		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-	}	
-	
-	@Test
-	public void testCustomerStress4() {
-		String cd = "10000";
-		CustomerDto dto =customer.getByCustomerCd(cd);
-		assertNotNull(dto);
-		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-	}	
-	
-	@Test
-	public void testCustomerStress5() {
-		String cd = "10000";
-		CustomerDto dto =customer.getByCustomerCd(cd);
-		assertNotNull(dto);
-		assertEquals(dto.getName(),"QVILLER, THEODOR AS");
-	}	
-	
 
 	@Test
 	public void testCustomerCreateSmall() {
 		String name = "Kalles chokladfabrik (small)";
 		ViskundeDao dao =getSmallDao(10, name);
 		
-		Object postObject = customer.syncronizeCustomer(dao);
+		Object postObject = customer.customerPost(dao);
 		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
 		assertNotNull(postObject);
 
@@ -94,9 +63,8 @@ public class TestJCustomer {
 	public void testCustomerCreateMedium() {
 		String name = "Kalles chokladfabrik (medium)";
 		ViskundeDao dao =getMediumDao(10, "123999" ,name);
-		Object postObject = customer.syncronizeCustomer(dao);
-		assertNotNull(postObject);
-		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
+		int number = customer.customerPost(dao);
+		assertNotNull(number);
 		
 	}
 
@@ -106,10 +74,7 @@ public class TestJCustomer {
 		ViskundeDao dao =getMediumDao(1,"123456" ,name);
 		dao.setKnavn("Kalles chokladfabrik (UPDATE 11:41)");
 		
-		Object postObject = customer.syncronizeCustomer(dao);
-		assertNull(postObject);  //PUT not delivering response
-		System.out.println("dto="+ReflectionToStringBuilder.toString(postObject));
-
+		customer.customerPutBycustomerCd("1", dao);
 		
 	}	
 
@@ -169,7 +134,26 @@ public class TestJCustomer {
 	}	
 	
 	
+	@Test
+	public void testLocationParsing() {
+		String number = "10016";
+		String location = "https://integration.visma.net/API/controller/api/v1/customer/10016";
+		
+		String diff = doTheThing(location);
+		
+		System.out.println("diff="+diff);
+		
+		Assert.assertEquals(number, diff);
+	}
+
 	
+	private static String doTheThing(String location) {
+		String callUrl = "https://integration.visma.net/API/controller/api/v1/customer";
+		
+		int lastSlash = StringUtils.indexOfDifference(location, callUrl);
+		String diff = StringUtils.substring(location, lastSlash +1 );
+		return diff;
+	}	
 	
 	
 }

@@ -45,7 +45,6 @@ public class Customer extends Configuration {
 	public FirmvisDaoService firmvisDaoService;	
 	
 	@Autowired
-//	@Qualifier("no.systema.visma.v1client.api.CustomerApi")
 	public CustomerApi customerApi = new CustomerApi(apiClient());
 	
 	@Bean
@@ -66,35 +65,6 @@ public class Customer extends Configuration {
 		
 	}
 	
-	/**
-	 * Syncronize VISKUNDE with Customer.
-	 * 
-	 * If exist in Visma.net do update, else create new.
-	 * 
-	 * Uses VISKUNDE.SYRG as search-criteria in Visma.net.
-	 * 
-	 * If VISKUNDE.SYRG=corporateId=Organisjonr exists in Visma.net do an PUT=Update
-	 * If VISKUNDE.SYRG=corporateId=Organisjonr NOT exists in Visma.net do an POST=Create
-	 * 
-	 * 
-	 * @param viskundeDao
-	 * @return Object
-	 */
-	public Object syncronizeCustomer(ViskundeDao viskundeDao) {
-    	List<CustomerDto> dtoList = find(viskundeDao.getSyrg());
- 
-    	if (dtoList != null && dtoList.size() == 1) {  //PUT / Update
-    		logger.debug("Do update in Visma.net on found CustomerDto="+dtoList.get(0).toString());
-    		return customerPutBycustomerCd(viskundeDao);
-    		
-    	} else { //POST / New
-    		logger.debug("Do new in Visma.net on dao="+viskundeDao.toString());
-    		return customerPost(viskundeDao);
-    	}
-    	
-	}
-	
-
     /**
      * Updates a specific customer
      * 
@@ -102,41 +72,26 @@ public class Customer extends Configuration {
      * 
      * Response Message has StatusCode NoContent if PUT operation succeed
      * <p><b>204</b> - NoContent
+     * @param number Visma.net number (kundnr.:)
      * @param viskundeDao The data to update for the customer
-     * @return Object
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    private Object customerPutBycustomerCd(ViskundeDao viskundeDao) throws RestClientException {
-    	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
- 
-    	//Find for update
-    	
-    	//TODO No syrg går inte att lita på , ur söka, jo genom nya tabellen, VISSYSKUN
-    	//TODO vissyskunDao
-    	
-    	List<CustomerDto> dtoList = find(viskundeDao.getSyrg());
-    	logger.debug("dtoList on syrg="+viskundeDao.getSyrg()+", size= "+dtoList.size());
-    	
-    	if (dtoList == null || dtoList.size() > 1) {
-    		String errMsg = "Could not find 1 record on syrg="+viskundeDao.getSyrg();
-    		logger.fatal(errMsg);
-    		throw new RuntimeException(errMsg);
-    	}
-    	
-    	String number = dtoList.get(0).getNumber();
-    	logger.debug("Found CustomerDto=="+ReflectionToStringBuilder.toString(dtoList.get(0)));
+    public void customerPutBycustomerCd(String number, ViskundeDao viskundeDao) throws RestClientException {
+    	CustomerDto existingDto = getByCustomerCd(number, viskundeDao.getKundnr());
+    	logger.debug("Found CustomerDto="+ReflectionToStringBuilder.toString(existingDto));
 
-    	Object putBodyResponse;
+    	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
+
     	try {
-    		putBodyResponse = customerApi.customerPutBycustomerCd(number, updateDto);
+    		customerApi.customerPutBycustomerCd(number, updateDto);
     		logger.info("Customer updated.");
-    		logger.info("::customerPutBycustomerCd::Response headers="+customerApi.getApiClient().getResponseHeaders());
+    		logger.debug("::customerPutBycustomerCd::Response headers="+customerApi.getApiClient().getResponseHeaders());
 		} catch (RestClientException e) {
+			logger.error(logPrefix(viskundeDao.getKundnr(), number));
 			logger.error("ERROR: On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString(), e);
 			throw e;
 		}
     	
-    	return putBodyResponse;
     }
     
 	/**
@@ -144,16 +99,18 @@ public class Customer extends Configuration {
      * Response Message has StatusCode Created if POST operation succeed
      * <p><b>201</b> - Created
      * @param viskundeDao Defines the data for the customer to create
-     * @return Object generated number from Visma.net
+     * @return int generated number from Visma.net
      * @throws RestClientException if an error occurs while attempting to invoke the API
+     * @throws IllegalArgumentException if Location cannot be found in Response Headers
+     * @throws IndexOutOfBoundsException if, still,  Location cannot be found in Response Headers
      */
-    private Object customerPost(ViskundeDao viskundeDao) throws RestClientException {
+    public int customerPost(ViskundeDao viskundeDao) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
     	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
-    	String number;
+    	int number;
     	try {
 			customerApi.customerPost(updateDto);
 			logger.info("Customer created.");
-    		logger.info("::customerPost::Response headers="+customerApi.getApiClient().getResponseHeaders());
+    		logger.debug("::customerPost::Response headers="+customerApi.getApiClient().getResponseHeaders());
     		number = getGenereratedNumberFromVisma();
     		logger.info("Generated Visma.net number="+number+" for kundr="+viskundeDao.getKundnr());
 		} catch (RestClientException  | IllegalArgumentException | IndexOutOfBoundsException e) {
@@ -165,40 +122,40 @@ public class Customer extends Configuration {
     }
 
     /**
-     * Since Create Customer is done by POST, there is no respons body
-     * 
+     * Since Create Customer is done by POST, there is no response body returned
      * Instead Response Header is used.
-     * The key - Location hold a url with trailing generated number (Kundnr:)
+     * The key - Location hold a re-direct url with trailing generated number (Kundnr:)
      * 
-     * @return number
-     * @throws IllegalArgumentException i Location is not found in Response Headers
+     * @return number the generated Kundnr.:
+     * @throws RuntimeException if Location is not found in Response Headers
+     * @throws IndexOutOfBoundsException if , still, Location is not found in Response Headers
      */
-    private String getGenereratedNumberFromVisma() throws IllegalArgumentException, IndexOutOfBoundsException{
+    private int getGenereratedNumberFromVisma() throws IndexOutOfBoundsException{
     	String HEADERKEY_LOCATION = "Location";
     	MultiValueMap<String, String> responseHeaders = customerApi.getApiClient().getResponseHeaders();
     	if (responseHeaders.containsKey(HEADERKEY_LOCATION)) {
     		List<String> locationList = responseHeaders.get(HEADERKEY_LOCATION);
     		String location = locationList.get(0);
-    		logger.debug("Location="+location);
-    		String number = parseLocationForNumber(location);
-    		logger.debug("number="+number);
-    		return number;
+    		return parseLocationForNumber(location);
     	} else {
     		String errMsg = "Could not find key Location in Response Headers";
     		logger.error(errMsg);
-    		throw new IllegalArgumentException(errMsg);
+    		throw new RuntimeException(errMsg);
     	}
     	
 	}
 	
-    private String parseLocationForNumber(String location) {
+    private int parseLocationForNumber(String location) {
+		logger.debug("Location="+location);
     	String basePath = customerApi.getApiClient().getBasePath();
     	String subPath = "/controller/api/v1/customer";	//TODO find a way to remove hardcode.
     	
     	String callUrl = basePath + subPath;
 		int lastSlash = StringUtils.indexOfDifference(location, callUrl);
-		String number = StringUtils.substring(location, lastSlash + 1);
-    	
+		String numberAsString = StringUtils.substring(location, lastSlash + 1);
+		int number = Integer.valueOf(numberAsString);
+		logger.debug("number="+number);
+
     	return number;
 	}
 
@@ -239,26 +196,6 @@ public class Customer extends Configuration {
 
 	}
     
- 
-	/**
-	 * Find Customer on corporateId
-	 * 
-	 * @param corporateId correspond to SYRG
-	 * @return List<CustomerDto should contain only one.
-	 * @deprecated
-	 */
-	public List<CustomerDto> find(String corporateId) {
-		//TODO inte SYRG inte säkert att söka efter, använd number ifrån VISSYSKUN
-
-		List<CustomerDto> responseList = customerApi.customerGetAll(null, null, null, null, null,
-				corporateId, null, null, null, null, null,
-				null, null, null, null, null);			
-		
-		return responseList;
-	}
-
-	
-	
 	/**
 	 * 
 	 * Convert VISKUNDE data into Customer. </br></br>
@@ -270,12 +207,13 @@ public class Customer extends Configuration {
 	 * 
 	 * @param viskunde VISKUNDE
 	 * @return CustomerUpdateDto
+	 * @throws RuntimeException if Kundnr is 0.
 	 */
-    private CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde) {
+    public CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde) {
     	//Sanity checks
 		if (viskunde.getKundnr() == 0) {
 			String errMsg = "KUNDNR can not be 0";
-			logger.fatal("FATAL:"+errMsg);
+			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		} 
 	
@@ -302,7 +240,7 @@ public class Customer extends Configuration {
 		//sanity check
 		if (viskunde.getAktkod() == null) {
 			String errMsg = "AKTKOD can not be null";
-			logger.fatal("FATAL:"+errMsg);
+			logger.error(errMsg);
 			throw new RuntimeException(errMsg);			
 		}
 		DtoValueCustomerStatus dtoValue = new DtoValueCustomerStatus();
@@ -313,7 +251,7 @@ public class Customer extends Configuration {
 			dtoValue.setValue(DtoValueCustomerStatus.ValueEnum.INACTIVE);
 		} else {
 			String errMsg = "AKTKOD must be A or I. Fallback, setting status to ONHOLD";
-			logger.error("FATAL:"+errMsg);
+			logger.error(errMsg);
 			dtoValue.setValue(DtoValueCustomerStatus.ValueEnum.ONHOLD);
 		}
 		
@@ -385,15 +323,31 @@ public class Customer extends Configuration {
 	}
 	
 	/**
-	 * Get a specific customer. For testing purpose
+	 * Get a specific customer.
+	 * @param kundnre 
 	 * 
 	 * @param customerCd - Visma-net generated number in api
 	 * @return CustomerDto - the customer
+	 * @throws RestClientException if Customer is not found
 	 */
-	public CustomerDto getByCustomerCd(String customerCd) {
-		return customerApi.customerGetBycustomerCd(customerCd);
+	public CustomerDto getByCustomerCd(String number, int kundnr) throws RestClientException{
+		CustomerDto dto;
+		try {
+			dto = customerApi.customerGetBycustomerCd(number);
+		} catch (RestClientException e) {
+			logger.error(logPrefix(kundnr, number));
+			logger.error("Could not find Customer on Visma.net number="+number+" and SYSPED kundnr="+kundnr);
+			throw e;
+		}
+		return dto;
 	}
 
-	
+	public static String logPrefix(int kundnr, String number) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("::KUNDNR:").append(kundnr).append(", number:"+number);
+		
+		return sb.toString();
+		
+	}
 	
 }
