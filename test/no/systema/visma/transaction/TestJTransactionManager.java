@@ -1,13 +1,15 @@
 package no.systema.visma.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.jakewharton.fliptables.FlipTableConverters;
+
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VissyskunDaoService;
+import no.systema.visma.PrettyPrintViskundeError;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
@@ -37,74 +42,77 @@ public class TestJTransactionManager {
 	@Test
 	public void testSyncCustomer() {
 
-		setup();
-		
-		transactionManager.syncronizeCustomers(); 
-		
-		assertResult();
+		setupValid();
+		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
+		System.out.println("Empty:" + FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		assertResultValid();
 
+		setupInValid();
+		errorList = transactionManager.syncronizeCustomers();
+		assertEquals(1, errorList.size());
+		System.out.println("NOT Empty:" + FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		assertResultInValid();		
 		
-		
-//		cleanup();
-
+		//cleanup
+		viskundeDaoService.deleteAll(null);
 		
 	}
 
-	
-	@Test
-	public void cleanupManually(){
-		
-		cleanup();
-		
-	}
-	
-	
-	private void setup() {
+	private void setupValid() {
 		//1. Add records in viskunde, if empty, to be able to re-run
 		if (viskundeDaoService.findAll(null).isEmpty()) {
-			getViskundeDaos().forEach((vk) ->{
+			getValidViskundeDaos().forEach((vk) ->{
 				viskundeDaoService.create(vk);
 			});
 			
 		}
-		//2. records 1 = happy path
-		//TODO 3. record 2 = exist in vissyskund but not in Visma.net -> exception
-		//TODO 4. record 3 = error in viskunde data in some way
-		
 	}
 	
-	private void assertResult() {
+	private void setupInValid() {
+		//1. Add records in viskunde, if empty, to be able to re-run
+		if (viskundeDaoService.findAll(null).isEmpty()) {
+			getInValidViskundeDaos().forEach((vk) ->{
+				viskundeDaoService.create(vk);
+			});
+			
+		}
+
+		//TODO 3. record 2 = exist in vissyskund but not in Visma.net -> exception
+		
+	}	
+
+	private void assertResultValid() {
 		//1. check that viskunde is empty
-		getViskundeDaos().forEach((vk) ->{
+		getValidViskundeDaos().forEach((vk) ->{
 			assertNull(viskundeDaoService.find(vk));
 		});
 		//2. check that vissyskund exist
-		getViskundeDaos().forEach((vk) ->{
+		getValidViskundeDaos().forEach((vk) ->{
 			assertNotNull(vissyskunDaoService.find(vk));
 		});
 		//TODO 3. Assert rollback
-	}
-
-
-	private void cleanup() {
-		// TODO 
-		//1. MANUALLY - delete from Visma.net
-		System.out.println("DELETE from Visma.net:");
-		getViskundeDaos().forEach((vk) ->{
-			System.out.println("vk="+ReflectionToStringBuilder.toString(vk));
-			
+	}	
+	
+	
+	private void assertResultInValid() {
+		//1. check that viskunde is not empty
+		assertTrue(!getInValidViskundeDaos().isEmpty());
+		//2. check that vissyskund exist
+		getInValidViskundeDaos().forEach((vk) ->{
+			assertNotNull(vissyskunDaoService.find(vk));
 		});
+		//TODO 3. Assert rollback
+	}	
+	
+	private List<ViskundeDao> getInValidViskundeDaos() {
+		List<ViskundeDao> list = getValidViskundeDaos();
+		//Invalidate one
+		list.get(0).setBetbet("33");
 		
-		//2. Remove from vissyskund
-		getViskundeDaos().forEach((vk) ->{
-			vissyskunDaoService.delete(vk);
-		});
-		
+		return list;
 	}
 	
-	
-	
-	private List<ViskundeDao> getViskundeDaos() {
+	private List<ViskundeDao> getValidViskundeDaos() {
 		List<ViskundeDao> list = new ArrayList<ViskundeDao>();
 		
 		ViskundeDao dao = new ViskundeDao();
@@ -112,7 +120,6 @@ public class TestJTransactionManager {
 		dao.setKundnr(10); //private int kundnr; //key
 		dao.setAktkod("A");  // private String aktkod;
 		dao.setDkund("d"); //private String dkund;
-		
 		dao.setKnavn("knavn ,"+LocalTime.now()); //;private String knavn;
 		dao.setAdr1("adr1"); //;private String adr1;
 		dao.setAdr2("adr2"); //private String adr2;
@@ -126,7 +133,7 @@ public class TestJTransactionManager {
 		dao.setBankg("bankg");//private String bankg;
 		dao.setPostg("postg"); //private String postg;
 		dao.setFmot(100); //private int fmot;
-		dao.setBetbet("bt"); //private String betbet;
+		dao.setBetbet("30"); //private String betbet;
 		dao.setBetmat("b"); //private String betmat;
 		dao.setSfakt("s"); //private String sfakt;
 		dao.setKgrens(999);  //private int kgrens;
@@ -186,7 +193,7 @@ public class TestJTransactionManager {
 		dao2.setBankg("bankg");//private String bankg;
 		dao2.setPostg("postg"); //private String postg;
 		dao2.setFmot(100); //private int fmot;
-		dao2.setBetbet("bt"); //private String betbet;
+		dao2.setBetbet("10"); //private String betbet;
 		dao2.setBetmat("b"); //private String betmat;
 		dao2.setSfakt("s"); //private String sfakt;
 		dao2.setKgrens(999);  //private int kgrens;

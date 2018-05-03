@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.ViskundeDao;
@@ -21,9 +23,12 @@ import no.systema.visma.Configuration;
 import no.systema.visma.v1client.ApiClient;
 import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
+import no.systema.visma.v1client.model.ContactInfoUpdateDto;
+import no.systema.visma.v1client.model.CustomerClassDto;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
+import no.systema.visma.v1client.model.DtoValueContactInfoUpdateDto;
 import no.systema.visma.v1client.model.DtoValueCustomerStatus;
 import no.systema.visma.v1client.model.DtoValueString;
 
@@ -44,14 +49,22 @@ public class Customer extends Configuration {
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;	
 	
+	@Bean
+	public ApiClient apiClient(){
+		return new ApiClient(restTemplate());
+	}
+	
+	@Bean
+	public RestTemplate restTemplate(){
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new VismaNetResponseErrorHandler());
+		return restTemplate;  
+	}	
+
 	@Autowired
 	public CustomerApi customerApi = new CustomerApi(apiClient());
 	
-	@Bean
-	public ApiClient apiClient(){
-		return new ApiClient();
-	}
-	
+
 	@PostConstruct
 	public void post_construct() {
 		FirmvisDao firmvis = firmvisDaoService.get();
@@ -61,7 +74,7 @@ public class Customer extends Configuration {
 		customerApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		customerApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
 		
-		customerApi.getApiClient().setDebugging(true);		
+		// customerApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaNetResponseErrorHandler	
 		
 	}
 	
@@ -75,8 +88,9 @@ public class Customer extends Configuration {
      * @param number Visma.net number (kundnr.:)
      * @param viskundeDao The data to update for the customer
      * @throws RestClientException if an error occurs while attempting to invoke the API
+     * @throws HttpClientErrorException when an HTTP 4xx is received. Typically when indata is wrong
      */
-    public void customerPutBycustomerCd(String number, ViskundeDao viskundeDao) throws RestClientException {
+    public void customerPutBycustomerCd(String number, ViskundeDao viskundeDao) throws RestClientException, HttpClientErrorException {
     	CustomerDto existingDto = getByCustomerCd(number, viskundeDao.getKundnr());
     	logger.debug("Found CustomerDto="+ReflectionToStringBuilder.toString(existingDto));
 
@@ -84,11 +98,17 @@ public class Customer extends Configuration {
 
     	try {
     		customerApi.customerPutBycustomerCd(number, updateDto);
-    		logger.info("Customer updated.");
-    		logger.debug("::customerPutBycustomerCd::Response headers="+customerApi.getApiClient().getResponseHeaders());
-		} catch (RestClientException e) {
+    		logger.debug("Customer updated.");
+		} catch (HttpClientErrorException e) {
 			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error("ERROR: On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString(), e);
+			logger.error(e.getClass()+" On  scustomerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error("message:"+e.getMessage());
+			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
+			throw e;
+		}
+    	catch (RestClientException e) {
+			logger.error(logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
 			throw e;
 		}
     	
@@ -106,14 +126,22 @@ public class Customer extends Configuration {
      */
     public int customerPost(ViskundeDao viskundeDao) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
     	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
-    	int number;
+    	int number = 0;
     	try {
 			customerApi.customerPost(updateDto);
-			logger.info("Customer created.");
+			logger.debug("Customer created.");
     		logger.debug("::customerPost::Response headers="+customerApi.getApiClient().getResponseHeaders());
     		number = getGenereratedNumberFromVisma();
     		logger.info("Generated Visma.net number="+number+" for kundr="+viskundeDao.getKundnr());
-		} catch (RestClientException  | IllegalArgumentException | IndexOutOfBoundsException e) {
+		} catch (HttpClientErrorException e) {
+			logger.error(logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(e.getClass()+" On  scustomerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error("message:"+e.getMessage());
+			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
+			throw e;
+		}
+    	
+    	catch (RestClientException  | IllegalArgumentException | IndexOutOfBoundsException e) {
 			logger.error("ERROR: On customerApi.customerPost call. viskundeDao="+viskundeDao.toString(), e);
 			throw e;
 		} 
@@ -220,11 +248,15 @@ public class Customer extends Configuration {
 		CustomerUpdateDto dto = new CustomerUpdateDto();
 		dto.setAccountReference(toDtoString(viskunde.getKundnr()));
 		dto.setName(toDtoString(viskunde.getKnavn()));
-		dto.setCorporateId(toDtoString(viskunde.getSyrg()));  //used in query in API
-		
+		dto.setCorporateId(toDtoString(viskunde.getSyrg())); 
 		dto.setMainAddress(getMainAddress(viskunde));
 		dto.setStatus(getStatus(viskunde));
+		dto.setMainContact(getMainContact(viskunde));
+		
+		dto.setCreditTermsId(toDtoString(viskunde.getBetbet())); 
 
+		
+		//TODO kolla customerClass
 		
 		//TODO the rest.....
 		
@@ -236,6 +268,21 @@ public class Customer extends Configuration {
 
 
 		
+	private DtoValueContactInfoUpdateDto getMainContact(ViskundeDao viskunde) {
+		DtoValueContactInfoUpdateDto dtoValue = new DtoValueContactInfoUpdateDto();
+		
+		ContactInfoUpdateDto infoDto = new ContactInfoUpdateDto();
+		infoDto.setName(toDtoString(viskunde.getKnavn()));
+		infoDto.setAttention(toDtoString(viskunde.getKpers()));
+		infoDto.setEmail(toDtoString(viskunde.getSyepos()));
+		infoDto.setPhone1(toDtoString(viskunde.getTlf()));
+		
+		dtoValue.setValue(infoDto);
+		
+		
+		return dtoValue;
+	}
+
 	private DtoValueCustomerStatus getStatus(ViskundeDao viskunde) {
 		//sanity check
 		if (viskunde.getAktkod() == null) {
@@ -342,7 +389,28 @@ public class Customer extends Configuration {
 		return dto;
 	}
 
-	public static String logPrefix(int kundnr, String number) {
+	
+    /**
+     * Get Customer Classes
+     * 
+     * Kundeprofil:
+     * 
+     * <p><b>200</b> - OK
+     * @return List&lt;CustomerClassDto&gt;
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    public List<CustomerClassDto> customerGetCustomerClasses() throws RestClientException {
+    	List<CustomerClassDto> dtoList;
+		try {
+			dtoList = customerApi.customerGetCustomerClasses();
+		} catch (RestClientException e) {
+			throw e;
+		}
+		return dtoList;
+	}	
+	
+	
+	public static String logPrefix(int kundnr, Object number) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("::KUNDNR:").append(kundnr).append(", number:"+number);
 		

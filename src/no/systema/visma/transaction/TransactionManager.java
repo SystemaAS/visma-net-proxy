@@ -1,11 +1,13 @@
 package no.systema.visma.transaction;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.FirmDao;
@@ -14,6 +16,7 @@ import no.systema.jservices.common.dao.VissyskunDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VissyskunDaoService;
+import no.systema.visma.PrettyPrintViskundeError;
 import no.systema.visma.integration.Customer;
 
 @Service("tsManager")
@@ -41,30 +44,35 @@ public class TransactionManager {
 	 * 
 	 * 
 	 */
-	public void syncronizeCustomers() {
+	public List<PrettyPrintViskundeError> syncronizeCustomers() {
 		logger.info("Syncronizing all records in VISKUNDE -> Customer.");
 		List<ViskundeDao> viskundeList = viskundeDaoService.findAll(null);
 		
-		List<ViskundeDao> errorList = new ArrayList<ViskundeDao>();
+		List<PrettyPrintViskundeError> errorList = new ArrayList<PrettyPrintViskundeError>();
 		
 		viskundeList.forEach((dao) -> {
 			try {
 				syncronizeCustomer(dao);
-			} catch (RestClientException  | IndexOutOfBoundsException e) {
-				// TODO Auto-generated catch block
-				logger.error(Customer.logPrefix(dao.getKundnr(), null));
+			} 
+			catch (HttpClientErrorException e) {
 				logger.error(e);
-				//TODO bra loggning i tabell
-				
-				errorList.add(dao);
-				
+				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDate.now(), e.getStatusText()));
+				//throw e;
+				//continues with next dao in list
+			}		
+			catch (RestClientException  | IndexOutOfBoundsException e) {
+				logger.error(e);
+				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDate.now(), e.getMessage()));
+				//throw e;
+				//continues with next dao in list
 			}
 
 		});
 
 		logger.info("Syncronized ("+viskundeList.size()+") in VISKUNDE -> Customer.");
-		
 		logger.info("Error list size="+errorList.size());
+		
+		return errorList;
 		
 	}
 	
@@ -73,7 +81,7 @@ public class TransactionManager {
 	 * 
 	 * @param viskundDao
 	 */
-	public void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException {  //TODO Add transaction and smart logging!!
+	public void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException {  //TODO Add transaction 
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" about to be syncronized.");
 		String number = null;
 		try {
@@ -87,21 +95,31 @@ public class TransactionManager {
 				int numberNew = customer.customerPost(viskundeDao);
 				VissyskunDao vissyskundao = createVissyskunDao(viskundeDao, numberNew);
 				vissyskunDaoService.create(vissyskundao);
-				number = String.valueOf(numberNew);
-				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
-				logger.info("Kundnr:"+viskundeDao.getKundnr()+" created in VISSYSKUN.");
+				number = String.valueOf(numberNew); //for logging
 			}
 			
 			viskundeDaoService.delete(viskundeDao);
 			
-		} catch (RestClientException | IndexOutOfBoundsException e) {
+		} 
+		catch (HttpClientErrorException e) {
+			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), number));
+			logger.error("Could not syncronize viskunde, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
+			throw e;
+		} 
+		catch (RestClientException | IndexOutOfBoundsException e) {
 			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), number));
 			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
-		} 
-
+		}
+		catch (Exception e) {
+			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), number));
+			logger.error("Could not syncronize viskunde="+viskundeDao, e);
+			throw e;
+			
+		}
+		
 		logger.debug(Customer.logPrefix(viskundeDao.getKundnr(), number));
-		logger.info("Record="+viskundeDao.toString()+" syncronized.");
+		logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
 		
 	}
 

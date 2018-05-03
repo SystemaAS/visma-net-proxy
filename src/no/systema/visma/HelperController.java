@@ -3,6 +3,7 @@ package no.systema.visma;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jakewharton.fliptables.FlipTableConverters;
 
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
@@ -35,9 +38,8 @@ public class HelperController {
 	 */
 	@RequestMapping(value="syncronizeCustomers.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public String syncCustomsters(HttpSession session, HttpServletRequest request) {
+	public String syncCustomers(HttpSession session, HttpServletRequest request) {
 		StringBuilder sb = new StringBuilder();
-//		List<PrettyPrintAttachments> dagsoppgors = null;
 
 		logger.info("syncronizeCustomers.do...");
 		try {
@@ -49,10 +51,9 @@ public class HelperController {
 			}
 			logger.info("user="+user);
 			
-			transactionManager.syncronizeCustomers();
-			sb.append("nån skön text \n \n");
+			List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
 			
-//			sb.append(FlipTableConverters.fromIterable(dagsoppgors, PrettyPrintAttachments.class));
+			sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 			
 		} catch (Exception e) {
 			// write std.output error output

@@ -8,6 +8,7 @@
 	<bean id="customerApi" class="no.systema.visma.v1client.api.CustomerApi"/>
 	<bean id="tsManager" class="no.systema.visma.transaction.TransactionManager"/>
 
+
     <import resource="classpath:syjservicescommon-data-service-test.xml"/>
     
     

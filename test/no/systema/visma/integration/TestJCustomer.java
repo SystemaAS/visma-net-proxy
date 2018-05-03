@@ -78,6 +78,16 @@ public class TestJCustomer {
 		
 	}	
 
+
+	@Test
+	public void testGetCustomerClasses() {
+		
+		customer.customerGetCustomerClasses();
+		
+	}		
+	
+	
+	
 	@Test
 	public void testCustomerGetByOrgnnr() {
 		String greaterThanValue = null;
