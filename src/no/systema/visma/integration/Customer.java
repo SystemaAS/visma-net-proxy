@@ -97,9 +97,10 @@ public class Customer extends Configuration {
     	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
 
     	try {
+
     		customerApi.customerPutBycustomerCd(number, updateDto);
-    		logger.debug("Customer updated.");
-		} catch (HttpClientErrorException e) {
+
+    	} catch (HttpClientErrorException e) {
 			logger.error(logPrefix(viskundeDao.getKundnr(), number));
 			logger.error(e.getClass()+" On  scustomerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
 			logger.error("message:"+e.getMessage());
@@ -128,19 +129,17 @@ public class Customer extends Configuration {
     	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
     	int number = 0;
     	try {
-			customerApi.customerPost(updateDto);
-			logger.debug("Customer created.");
-    		logger.debug("::customerPost::Response headers="+customerApi.getApiClient().getResponseHeaders());
+
+    		customerApi.customerPost(updateDto);
     		number = getGenereratedNumberFromVisma();
-    		logger.info("Generated Visma.net number="+number+" for kundr="+viskundeDao.getKundnr());
-		} catch (HttpClientErrorException e) {
+
+    	} catch (HttpClientErrorException e) {
 			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error(e.getClass()+" On  scustomerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error(e.getClass()+" On  customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
 			throw e;
 		}
-    	
     	catch (RestClientException  | IllegalArgumentException | IndexOutOfBoundsException e) {
 			logger.error("ERROR: On customerApi.customerPost call. viskundeDao="+viskundeDao.toString(), e);
 			throw e;
@@ -164,9 +163,11 @@ public class Customer extends Configuration {
     	if (responseHeaders.containsKey(HEADERKEY_LOCATION)) {
     		List<String> locationList = responseHeaders.get(HEADERKEY_LOCATION);
     		String location = locationList.get(0);
+
     		return parseLocationForNumber(location);
+
     	} else {
-    		String errMsg = "Could not find key Location in Response Headers";
+    		String errMsg = "Could not find key Location in Response Headers="+responseHeaders;
     		logger.error(errMsg);
     		throw new RuntimeException(errMsg);
     	}
@@ -174,7 +175,7 @@ public class Customer extends Configuration {
 	}
 	
     private int parseLocationForNumber(String location) {
-		logger.debug("Location="+location);
+		logger.info("Location="+location);
     	String basePath = customerApi.getApiClient().getBasePath();
     	String subPath = "/controller/api/v1/customer";	//TODO find a way to remove hardcode.
     	
@@ -182,15 +183,13 @@ public class Customer extends Configuration {
 		int lastSlash = StringUtils.indexOfDifference(location, callUrl);
 		String numberAsString = StringUtils.substring(location, lastSlash + 1);
 		int number = Integer.valueOf(numberAsString);
-		logger.debug("number="+number);
+		logger.info("number="+number);
 
     	return number;
 	}
 
 	/**
      * Get a range of customers
-     * 
-     * Used for query in Visma-net API. e.g. add VISKUNDE.SYRG to corporateId
      * 
      * <p><b>200</b> - OK
      * @param greaterThanValue The greaterThanValue parameter
@@ -254,20 +253,13 @@ public class Customer extends Configuration {
 		dto.setMainContact(getMainContact(viskunde));
 		
 		dto.setCreditTermsId(toDtoString(viskunde.getBetbet())); 
-
 		
-		//TODO kolla customerClass
 		
 		//TODO the rest.....
 		
-		//TESTING
-		//dto.setCreditTermsId(new DtoValueString().value("asdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdf"));
-    	//REMOVE
 		return dto;
 	}
 
-
-		
 	private DtoValueContactInfoUpdateDto getMainContact(ViskundeDao viskunde) {
 		DtoValueContactInfoUpdateDto dtoValue = new DtoValueContactInfoUpdateDto();
 		
@@ -278,7 +270,6 @@ public class Customer extends Configuration {
 		infoDto.setPhone1(toDtoString(viskunde.getTlf()));
 		
 		dtoValue.setValue(infoDto);
-		
 		
 		return dtoValue;
 	}
@@ -371,7 +362,7 @@ public class Customer extends Configuration {
 	
 	/**
 	 * Get a specific customer.
-	 * @param kundnre 
+	 * @param kundnr 
 	 * 
 	 * @param customerCd - Visma-net generated number in api
 	 * @return CustomerDto - the customer
@@ -381,6 +372,7 @@ public class Customer extends Configuration {
 		CustomerDto dto;
 		try {
 			dto = customerApi.customerGetBycustomerCd(number);
+			//TODO add more exception
 		} catch (RestClientException e) {
 			logger.error(logPrefix(kundnr, number));
 			logger.error("Could not find Customer on Visma.net number="+number+" and SYSPED kundnr="+kundnr);

@@ -32,7 +32,7 @@ import no.systema.visma.transaction.TransactionManager;
 @Controller
 public class HelperController {
 	private static Logger logger = Logger.getLogger(HelperController.class);
-
+	
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
 	 */
@@ -52,6 +52,12 @@ public class HelperController {
 			logger.info("user="+user);
 			
 			List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
+			
+			if (errorList.isEmpty()) {
+				sb.append("syncronizeCustomers executed without errors.");
+			} else {
+				sb.append("syncronizeCustomers executed WITH errors.");
+			}
 			
 			sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 			

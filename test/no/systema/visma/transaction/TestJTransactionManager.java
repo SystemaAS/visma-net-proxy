@@ -10,10 +10,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,6 +30,8 @@ import no.systema.visma.PrettyPrintViskundeError;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJTransactionManager {
 
+	private static Logger logger = Logger.getLogger(TransactionManager.class);	
+	
 	@Autowired
 	@Qualifier("tsManager")
 	TransactionManager transactionManager;
@@ -40,26 +44,67 @@ public class TestJTransactionManager {
 	
 
 	@Test
-	public void testSyncCustomer() {
-
+	public void testSyncCustomer2Runs_VAlidAndInValid() {
+		
 		setupValid();
 		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
-		System.out.println("Empty:" + FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		System.out.println("Empty:");
+		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 		assertResultValid();
 
 		setupInValid();
 		errorList = transactionManager.syncronizeCustomers();
 		assertEquals(1, errorList.size());
-		System.out.println("NOT Empty:" + FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		System.out.println("NOT Empty:");
+		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 		assertResultInValid();		
 		
 		//cleanup
 		viskundeDaoService.deleteAll(null);
 		
 	}
+	
+	
+	@Test(expected=AssertionError.class)
+	public void testSyncCustomer1Run_InValidNotExistInVisma() {  //Manully delete selected kunde in Visma.net before run
+		
+		setupValid();
+		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
+		System.out.println("Empty:");
+		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		assertResultValid();
+
+		setupInValid();
+		errorList = transactionManager.syncronizeCustomers();
+		assertEquals(1, errorList.size());
+		System.out.println("NOT Empty:");
+		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		assertResultInValid();		
+		
+		//cleanup
+		viskundeDaoService.deleteAll(null);
+		
+	}	
+	
+	
+	@Test(expected=DuplicateKeyException.class) //on Viskunde
+//	@Test
+	public void testSyncCustomer1Run_InValidDuplicateInVissyskunde() {   //TODO
+		
+		setupDuplicates();
+//		fail("Should not come here....");
+		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
+		assertEquals(1, errorList.size());
+		logger.info("NOT Empty:");
+		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		assertResultDuplicates();		
+		
+		//cleanup
+		//viskundeDaoService.deleteAll(null);
+		
+	}	
 
 	private void setupValid() {
-		//1. Add records in viskunde, if empty, to be able to re-run
 		if (viskundeDaoService.findAll(null).isEmpty()) {
 			getValidViskundeDaos().forEach((vk) ->{
 				viskundeDaoService.create(vk);
@@ -69,7 +114,6 @@ public class TestJTransactionManager {
 	}
 	
 	private void setupInValid() {
-		//1. Add records in viskunde, if empty, to be able to re-run
 		if (viskundeDaoService.findAll(null).isEmpty()) {
 			getInValidViskundeDaos().forEach((vk) ->{
 				viskundeDaoService.create(vk);
@@ -77,10 +121,16 @@ public class TestJTransactionManager {
 			
 		}
 
-		//TODO 3. record 2 = exist in vissyskund but not in Visma.net -> exception
-		
 	}	
-
+	
+	private void setupDuplicates() {
+		if (viskundeDaoService.findAll(null).isEmpty()) {
+			getDuplicatesViskundeDaos().forEach((vk) ->{
+				viskundeDaoService.create(vk);
+			});
+		}
+	}	
+	
 	private void assertResultValid() {
 		//1. check that viskunde is empty
 		getValidViskundeDaos().forEach((vk) ->{
@@ -95,14 +145,22 @@ public class TestJTransactionManager {
 	
 	
 	private void assertResultInValid() {
-		//1. check that viskunde is not empty
 		assertTrue(!getInValidViskundeDaos().isEmpty());
-		//2. check that vissyskund exist
+		//check that vissyskund exist
 		getInValidViskundeDaos().forEach((vk) ->{
 			assertNotNull(vissyskunDaoService.find(vk));
 		});
 		//TODO 3. Assert rollback
 	}	
+
+	private void assertResultDuplicates() {
+		assertTrue(!getDuplicatesViskundeDaos().isEmpty());
+		//check that not exist in vissyskund
+		getDuplicatesViskundeDaos().forEach((vk) ->{
+			assertNull(vissyskunDaoService.find(vk));
+		});
+		//TODO 3. Assert rollback
+	}		
 	
 	private List<ViskundeDao> getInValidViskundeDaos() {
 		List<ViskundeDao> list = getValidViskundeDaos();
@@ -111,6 +169,19 @@ public class TestJTransactionManager {
 		
 		return list;
 	}
+
+	private List<ViskundeDao> getDuplicatesViskundeDaos() {
+		List<ViskundeDao> list = getValidViskundeDaos();
+		ViskundeDao oneDao = list.get(0);
+		
+		ViskundeDao dupDao = oneDao;
+		
+		list.add(dupDao);
+		
+		return list;
+	}	
+	
+	
 	
 	private List<ViskundeDao> getValidViskundeDaos() {
 		List<ViskundeDao> list = new ArrayList<ViskundeDao>();

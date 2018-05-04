@@ -1,6 +1,6 @@
 package no.systema.visma.transaction;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,16 +56,19 @@ public class TransactionManager {
 			} 
 			catch (HttpClientErrorException e) {
 				logger.error(e);
-				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDate.now(), e.getStatusText()));
+				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
 				//throw e;
 				//continues with next dao in list
+				//TODO update viskunde
 			}		
-			catch (RestClientException  | IndexOutOfBoundsException e) {
+			catch (Exception e) {
 				logger.error(e);
-				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDate.now(), e.getMessage()));
+				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
 				//throw e;
 				//continues with next dao in list
+				//TODO update viskunde
 			}
+
 
 		});
 
@@ -87,18 +90,26 @@ public class TransactionManager {
 		try {
 			
 			VissyskunDao vissyskunDao = vissyskunDaoService.findBySyspedKundnr(viskundeDao.getKundnr());
-
+			logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
+			logger.info("VISSYSKUN exist. Dao="+vissyskunDao);
+			
 			if (vissyskunDao != null) { //Update
 				number = String.valueOf(vissyskunDao.getVisknr());
 				customer.customerPutBycustomerCd(String.valueOf(vissyskunDao.getVisknr()), viskundeDao);
+				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
+				logger.info("Customer uppdated.");
 			} else { //New
 				int numberNew = customer.customerPost(viskundeDao);
+				number = String.valueOf(numberNew); //for logging
+				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
+				logger.info("Customer created.");
 				VissyskunDao vissyskundao = createVissyskunDao(viskundeDao, numberNew);
 				vissyskunDaoService.create(vissyskundao);
-				number = String.valueOf(numberNew); //for logging
+				logger.info("VISSYSKUN created. Dao="+vissyskundao);
 			}
 			
 			viskundeDaoService.delete(viskundeDao);
+			logger.info("VISKUNDE deleted, dao="+viskundeDao);
 			
 		} 
 		catch (HttpClientErrorException e) {
@@ -118,7 +129,7 @@ public class TransactionManager {
 			
 		}
 		
-		logger.debug(Customer.logPrefix(viskundeDao.getKundnr(), number));
+		logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
 		
 	}

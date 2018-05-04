@@ -1,6 +1,7 @@
 package no.systema.visma;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * This class is placeholder of info about deviations from syncronization. To be
@@ -12,13 +13,13 @@ import java.time.LocalDate;
 public class PrettyPrintViskundeError {
 
 	private int kundnr;
-	private LocalDate syncDate;
+	private LocalDateTime syncDate;
 	private String errorText;
 
 	protected PrettyPrintViskundeError() {
 	}
 
-	public PrettyPrintViskundeError(int kundnr,  LocalDate syncDate, String errorText) {
+	public PrettyPrintViskundeError(int kundnr,  LocalDateTime syncDate, String errorText) {
 		this.kundnr = kundnr;
 		this.syncDate = syncDate;
 		this.errorText = errorText;
@@ -33,20 +34,20 @@ public class PrettyPrintViskundeError {
 		this.kundnr = kundnr;
 	}
 
-	public LocalDate getSyncDate() {
-		return syncDate;
-	}
-
-	public void setSyncDate(LocalDate syncDate) {
-		this.syncDate = syncDate;
-	}
-
 	public String getErrorText() {
 		return errorText;
 	}
 
 	public void setErrorText(String errorText) {
 		this.errorText = errorText;
+	}
+
+	public LocalDateTime getSyncDate() {
+		return syncDate;
+	}
+
+	public void setSyncDate(LocalDateTime syncDate) {
+		this.syncDate = syncDate;
 	}
 
 }
