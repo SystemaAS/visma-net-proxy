@@ -91,13 +91,13 @@ public class Customer extends Configuration {
      * @throws HttpClientErrorException when an HTTP 4xx is received. Typically when indata is wrong
      */
     public void customerPutBycustomerCd(String number, ViskundeDao viskundeDao) throws RestClientException, HttpClientErrorException {
-    	CustomerDto existingDto = getByCustomerCd(number, viskundeDao.getKundnr());
-    	logger.debug("Found CustomerDto="+ReflectionToStringBuilder.toString(existingDto));
-
-    	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
 
     	try {
-
+    		//Sanity check
+    		CustomerDto existingDto = customerApi.customerGetBycustomerCd(number);   		
+    		logger.debug("Found CustomerDto="+ReflectionToStringBuilder.toString(existingDto));
+    		CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
+    		//Do the update
     		customerApi.customerPutBycustomerCd(number, updateDto);
 
     	} catch (HttpClientErrorException e) {
@@ -112,6 +112,11 @@ public class Customer extends Configuration {
 			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
 			throw e;
 		}
+    	catch (Exception e) {
+			logger.error(logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			throw e;
+		} 
     	
     }
     
@@ -144,6 +149,11 @@ public class Customer extends Configuration {
 			logger.error("ERROR: On customerApi.customerPost call. viskundeDao="+viskundeDao.toString(), e);
 			throw e;
 		} 
+    	catch (Exception e) {
+			logger.error(logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			throw e;
+		}     	
     	
     	return number;
     }
@@ -361,7 +371,7 @@ public class Customer extends Configuration {
 	}
 	
 	/**
-	 * Get a specific customer.
+	 * Get a specific customer. For testing purpose
 	 * @param kundnr 
 	 * 
 	 * @param customerCd - Visma-net generated number in api
@@ -372,7 +382,6 @@ public class Customer extends Configuration {
 		CustomerDto dto;
 		try {
 			dto = customerApi.customerGetBycustomerCd(number);
-			//TODO add more exception
 		} catch (RestClientException e) {
 			logger.error(logPrefix(kundnr, number));
 			logger.error("Could not find Customer on Visma.net number="+number+" and SYSPED kundnr="+kundnr);

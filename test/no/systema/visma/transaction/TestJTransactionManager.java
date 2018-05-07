@@ -45,18 +45,21 @@ public class TestJTransactionManager {
 
 	@Test
 	public void testSyncCustomer2Runs_VAlidAndInValid() {
-		
+		//Prereq:
+		//1. numbers correspond to viskunde-setup
 		setupValid();
 		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
-		System.out.println("Empty:");
+		System.out.println("Empty(prettyprint):");
 		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 		assertResultValid();
 
 		setupInValid();
 		errorList = transactionManager.syncronizeCustomers();
 		assertEquals(1, errorList.size());
-		System.out.println("NOT Empty:");
-		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		System.out.println("NOT Empty(viskundedao):");
+		List<ViskundeDao> daoErrorList = viskundeDaoService.findAll(null);
+		System.out.println(FlipTableConverters.fromIterable(daoErrorList, ViskundeDao.class));
+		
 		assertResultInValid();		
 		
 		//cleanup
@@ -78,7 +81,8 @@ public class TestJTransactionManager {
 		errorList = transactionManager.syncronizeCustomers();
 		assertEquals(1, errorList.size());
 		System.out.println("NOT Empty:");
-		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		List<ViskundeDao> daoErrorList = viskundeDaoService.findAll(null);
+		System.out.println(FlipTableConverters.fromIterable(daoErrorList, ViskundeDao.class));
 		assertResultInValid();		
 		
 		//cleanup

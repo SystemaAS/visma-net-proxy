@@ -1,6 +1,7 @@
 package no.systema.visma.transaction;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class TransactionManager {
 	
 	@Autowired
 	FirmDaoService firmDaoService;
-	
+
+	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
 	
 	/**
 	 * Syncronize all VISKUNDE with Customer in Visma.net <br>
@@ -57,16 +59,16 @@ public class TransactionManager {
 			catch (HttpClientErrorException e) {
 				logger.error(e);
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
-				//throw e;
+				setError(dao, e.getStatusText());
+				viskundeDaoService.updateOnError(dao);
 				//continues with next dao in list
-				//TODO update viskunde
 			}		
 			catch (Exception e) {
 				logger.error(e);
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
-				//throw e;
+				setError(dao, e.getMessage());
+				viskundeDaoService.updateOnError(dao);				
 				//continues with next dao in list
-				//TODO update viskunde
 			}
 
 
@@ -79,6 +81,15 @@ public class TransactionManager {
 		
 	}
 	
+	private void setError(ViskundeDao dao, String errorText) {
+		LocalDateTime now = LocalDateTime.now();
+		String nowDate = now.format(dateFormatter);
+		int syncDa = Integer.valueOf(nowDate);
+		dao.setSyncda(syncDa);
+		dao.setSyerro(errorText);
+		
+	}
+
 	/**
 	 * Syncronize one VISKUNDE with Customer in Visma.net
 	 * 
