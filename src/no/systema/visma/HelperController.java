@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jakewharton.fliptables.FlipTableConverters;
 
+import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
+import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
 import no.systema.visma.transaction.TransactionManager;
 /**
@@ -54,9 +56,9 @@ public class HelperController {
 			List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
 			
 			if (errorList.isEmpty()) {
-				sb.append("syncronizeCustomers executed without errors.");
+				sb.append("syncronizeCustomers executed without errors. \n \n");
 			} else {
-				sb.append("syncronizeCustomers executed WITH errors.");
+				sb.append("syncronizeCustomers executed WITH errors.  \n \n");
 			}
 			
 			sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
@@ -174,5 +176,8 @@ public class HelperController {
 	@Qualifier("tsManager")
 	private TransactionManager transactionManager;
 
+	@Autowired
+	private ViskundeDaoService viskundeDaoService;	
+	
 	
 }

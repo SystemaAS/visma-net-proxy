@@ -79,23 +79,35 @@ public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
 	 * @since 5.0
 	 */
 	protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
+		String responseBody;
 		switch (statusCode.series()) {
 			case CLIENT_ERROR:
-				String responseBody =  new String(getResponseBody(response), getCharset(response));
+				responseBody =  new String(getResponseBody(response), getCharset(response));
 				logger.error("CLIENT_ERROR:, response body="+responseBody);
 //				throw new HttpClientErrorException(statusCode, response.getStatusText(),
 //						response.getHeaders(), getResponseBody(response), getCharset(response));
-				throw new HttpClientErrorException(statusCode, responseBody);
+				throw new HttpClientErrorException(statusCode, getTrimmedResponseBody(responseBody));
 			case SERVER_ERROR:
-				throw new HttpServerErrorException(statusCode, response.getStatusText(),
-						response.getHeaders(), getResponseBody(response), getCharset(response));
+				responseBody =  new String(getResponseBody(response), getCharset(response));
+				logger.error("SERVER_ERROR:, response body="+responseBody);
+//				throw new HttpServerErrorException(statusCode, response.getStatusText(),
+//						response.getHeaders(), getResponseBody(response), getCharset(response));
+				throw new HttpClientErrorException(statusCode,  getTrimmedResponseBody(responseBody));
 			default:
+				responseBody =  new String(getResponseBody(response), getCharset(response));
+				logger.error("default:, response body="+responseBody);				
 				throw new UnknownHttpStatusCodeException(statusCode.value(), response.getStatusText(),
 						response.getHeaders(), getResponseBody(response), getCharset(response));
 		}
 	}	
 	
-	
+
+	private String getTrimmedResponseBody(String responseBody) {
+		int beginIndex = responseBody.length() - 199;  //syerro is set to 200
+
+		return responseBody.substring(beginIndex);
+		
+	}
 	
 	/**
 	 * Read the body of the given response (for inclusion in a status exception).
@@ -125,31 +137,6 @@ public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
 		MediaType contentType = headers.getContentType();
 		return (contentType != null ? contentType.getCharset() : null);
 	}	
-	
-//	@Override
-//	public boolean hasError(ClientHttpResponse response) throws IOException {
-//		HttpStatus.Series series = response.getStatusCode().series();
-//		return (HttpStatus.Series.CLIENT_ERROR.equals(series) || HttpStatus.Series.SERVER_ERROR.equals(series));
-//
-//	}
-//
-//	@Override
-//	public void handleError(ClientHttpResponse response) throws IOException {
-//		logger.error("Response error:  "+response.getStatusCode()+ ", "+response.getStatusText());
-//
-//	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

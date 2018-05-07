@@ -101,8 +101,6 @@ public class TransactionManager {
 		try {
 			
 			VissyskunDao vissyskunDao = vissyskunDaoService.findBySyspedKundnr(viskundeDao.getKundnr());
-			logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
-			logger.info("VISSYSKUN exist. Dao="+vissyskunDao);
 			
 			if (vissyskunDao != null) { //Update
 				number = String.valueOf(vissyskunDao.getVisknr());
