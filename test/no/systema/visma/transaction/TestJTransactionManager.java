@@ -90,24 +90,6 @@ public class TestJTransactionManager {
 		
 	}	
 	
-	
-	@Test(expected=DuplicateKeyException.class) //on Viskunde
-//	@Test
-	public void testSyncCustomer1Run_InValidDuplicateInVissyskunde() {   //TODO
-		
-		setupDuplicates();
-//		fail("Should not come here....");
-		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
-		assertEquals(1, errorList.size());
-		logger.info("NOT Empty:");
-		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
-		assertResultDuplicates();		
-		
-		//cleanup
-		//viskundeDaoService.deleteAll(null);
-		
-	}	
-
 	private void setupValid() {
 		if (viskundeDaoService.findAll(null).isEmpty()) {
 			getValidViskundeDaos().forEach((vk) ->{
