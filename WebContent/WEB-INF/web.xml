@@ -4,24 +4,28 @@
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <display-name>Visma.net proxy</display-name>
- 
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-        /WEB-INF/visma-net-proxy-data-service.xml,
-        /WEB-INF/visma-net-proxy-datasource.xml,
-        /WEB-INF/visma-net-proxy-servlet.xml
-    </param-value> 
-  </context-param>
- 
+  <welcome-file-list>
+    <welcome-file>/WEB-INF/index.jsp</welcome-file>
+  </welcome-file-list>
+
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        /WEB-INF/visma-net-proxy-servlet.xml,
+        /WEB-INF/visma-net-proxy-data-service.xml,
+        /WEB-INF/visma-net-proxy-datasource.xml
+    </param-value> 
+  </context-param>
+ 
   
   <servlet>
     <servlet-name>visma-net-proxy</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>    
+    <load-on-startup>0</load-on-startup>    
   </servlet>
   
   <servlet-mapping>

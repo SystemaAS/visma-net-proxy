@@ -17,31 +17,6 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 	<!-- This will allow Wiring with annotations. [It is not the default]  -->
 	<context:annotation-config/>
 
-	<!-- Enable the annotation configuration to simplify the use of transactions as shown next -->
-<!--  
-	<tx:annotation-driven transaction-manager="dataTransactionManager" />
--->	
-	<!-- ResponseBody secures UTF-8 and other ByteArray issues. Used when returning JSON payloads. Otherwise no UTF-8 will be ensured -->
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                    <property name="supportedMediaTypes">
-                        <list>
-                            <value>text/plain;charset=UTF-8</value>
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.springframework.http.converter.ResourceHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
-	
-	
 	<!--//////////////////////////////////
         MVC resolver for static resources
       ///////////////////////////////////
@@ -53,15 +28,32 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 	<mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> 
 	<mvc:annotation-driven />
 
-	<!-- application properties -->
-	<bean id="placeholderConfigMM" class="no.systema.jservices.common.util.ApplicationPropertiesUtil">
+	<!-- application properties. This class extends: org.springframework.beans.factory.config.PropertyPlaceholderConfigurer -->
+	<bean id="placeholderConfigMM" class="no.systema.main.util.ApplicationPropertiesUtil">
     	<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
     	<property name="locations">
     		<list>
-        		<value>classpath:application.properties</value>
+        		<value>file:${catalina.home}/visma-net-proxy/application.properties</value>
     		</list>
     	</property>
 	</bean>
+
+  	<!-- JSP with JSTL -->
+  	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="2" />
+	</bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> 
+	  <property name="basenames">
+	  		<list>
+				<value>/WEB-INF/messages</value>
+			</list>
+	  </property>
+	</bean>
+
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
 	</bean>	
