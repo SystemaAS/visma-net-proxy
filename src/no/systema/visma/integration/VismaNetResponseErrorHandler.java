@@ -103,6 +103,9 @@ public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
 	
 
 	private String getTrimmedResponseBody(String responseBody) {
+		if (responseBody.length() < 200) {
+			return responseBody;
+		}
 		int beginIndex = responseBody.length() - 199;  //syerro is set to 200
 
 		return responseBody.substring(beginIndex);

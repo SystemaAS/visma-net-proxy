@@ -13,7 +13,6 @@ import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.FirmDao;
 import no.systema.jservices.common.dao.ViskundeDao;
-import no.systema.jservices.common.dao.VissyskunDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VissyskunDaoService;
@@ -97,78 +96,81 @@ public class TransactionManager {
 	 */
 	public void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException {  //TODO Add transaction 
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" about to be syncronized.");
-		String number = null;
 		try {
 			
-			VissyskunDao vissyskunDao = vissyskunDaoService.findBySyspedKundnr(viskundeDao.getKundnr());
+//			VissyskunDao vissyskunDao = vissyskunDaoService.findBySyspedKundnr(viskundeDao.getKundnr());
 			
-			if (vissyskunDao != null) { //Update
-				number = String.valueOf(vissyskunDao.getVisknr());
-				customer.customerPutBycustomerCd(String.valueOf(vissyskunDao.getVisknr()), viskundeDao);
-				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
-				logger.info("Customer uppdated.");
-			} else { //New
-				int numberNew = customer.customerPost(viskundeDao);
-				number = String.valueOf(numberNew); //for logging
-				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
-				logger.info("Customer created.");
-				VissyskunDao vissyskundao = createVissyskunDao(viskundeDao, numberNew);
-				vissyskunDaoService.create(vissyskundao);
-				logger.info("VISSYSKUN created. Dao="+vissyskundao);
-			}
-			
+//			if (vissyskunDao != null) { //Update
+//				number = String.valueOf(vissyskunDao.getVisknr());
+//				customer.customerPutBycustomerCd(String.valueOf(vissyskunDao.getVisknr()), viskundeDao);
+//				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
+//				logger.info("Customer uppdated.");
+//			} else { //New
+//				int numberNew = customer.customerPost(viskundeDao);
+//				number = String.valueOf(numberNew); //for logging
+//				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
+//				logger.info("Customer created.");
+//				VissyskunDao vissyskundao = createVissyskunDao(viskundeDao, numberNew);
+//				vissyskunDaoService.create(vissyskundao);
+//				logger.info("VISSYSKUN created. Dao="+vissyskundao);
+
+		
+			customer.syncronize(viskundeDao);
+		
+			logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
 			viskundeDaoService.delete(viskundeDao);
 			logger.info("VISKUNDE deleted, dao="+viskundeDao);
 			
 		} 
 		catch (HttpClientErrorException e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
 			logger.error("Could not syncronize viskunde, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
 			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
 		}
 		catch (Exception e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), number));
+			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
 			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
 			
 		}
 		
-		logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
+		logger.info(Customer.logPrefix(viskundeDao.getKundnr()));
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
 		
 	}
 
 
-	private VissyskunDao createVissyskunDao(ViskundeDao viskundeDao, int number) {
-		VissyskunDao dao;
-		try {
-			dao = new VissyskunDao();
-			dao.setFirma(getFirma());
-			dao.setKundnr(viskundeDao.getKundnr());
-			dao.setVisknr(number);
-		} catch (Exception e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr(), String.valueOf(number)));
-			logger.error("Could not create VissyskunDao", e);
-			throw e;
-		}
-		
-		return dao;
-	}
+//	private VissyskunDao createVissyskunDao(ViskundeDao viskundeDao, int number) {
+//		VissyskunDao dao;
+//		try {
+//			dao = new VissyskunDao();
+//			dao.setFirma(getFirma());
+//			dao.setKundnr(viskundeDao.getKundnr());
+//			dao.setVisknr(number);
+//		} catch (Exception e) {
+//			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
+//			logger.error("Could not create VissyskunDao", e);
+//			throw e;
+//		}
+//		
+//		return dao;
+//	}
 	
 	
 	/**
 	 * Get fifirm from FIRM
 	 * 
-	 * Note: support only one firma! If multifirma is needed, take as inparam in web-controller
+	 * Support one firma.
 	 * 
 	 * @return fifirm
 	 * @throws IndexOutOfBoundsException if more than one row in FIRM
 	 */
+	//TODO Get firma from FIRMVIS
 	private String getFirma() throws IndexOutOfBoundsException {
 		List<FirmDao> daoList = firmDaoService.findAll(null);
 		String firma;

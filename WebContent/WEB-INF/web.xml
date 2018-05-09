@@ -3,40 +3,44 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" 
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-  <display-name>Visma.net proxy</display-name>
+ 
+  <display-name>Systema eSped Application</display-name>
   <welcome-file-list>
     <welcome-file>/WEB-INF/index.jsp</welcome-file>
   </welcome-file-list>
-
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-
+  
+  <!-- 
+  <listener>
+    <listener-class>no.systema.main.util.HttpSessionManager</listener-class>
+  </listener>
+   -->
+   
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>
-        /WEB-INF/visma-net-proxy-servlet.xml,
-        /WEB-INF/visma-net-proxy-data-service.xml,
-        /WEB-INF/visma-net-proxy-datasource.xml
-    </param-value> 
+    <param-value>/WEB-INF/visma-net-proxy-servlet.xml, /WEB-INF/visma-net-proxy-data-service.xml, /WEB-INF/visma-net-proxy-datasource.xml</param-value>
   </context-param>
- 
-  
   <servlet>
     <servlet-name>visma-net-proxy</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <load-on-startup>0</load-on-startup>    
   </servlet>
   
+  <!-- THIS IS to pre-compile some critical-JSPs in order to help first user <end-user> experience
+       It should be moved to an alternativ jasper/ant task invocation since this method is not a good design for a discrete number of jsp > 20 pages... -->
+       
+  
+  
   <servlet-mapping>
     <servlet-name>visma-net-proxy</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
-
   <session-config>
     <session-timeout>60</session-timeout>
   </session-config>
-
+  
   <filter>  
     <filter-name>encodingFilter</filter-name>  
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  

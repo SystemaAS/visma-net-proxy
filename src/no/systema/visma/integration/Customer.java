@@ -78,10 +78,78 @@ public class Customer extends Configuration {
 		
 	}
 	
-    /**
+
+	/**
+	 * This is the startpoint for syncronizing SYSPED VISKUNDE with Visma-net Customer,.
+	 * 
+	 * @param viskundeDao
+	 * @throws RestClientException
+	 * @throws HttpClientErrorException
+	 */
+	public void syncronize(ViskundeDao viskundeDao) throws RestClientException,  HttpClientErrorException {
+		//For both New and Update
+		CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);			
+		
+		try {
+			
+    		CustomerDto customerExistDto = getGetBycustomerCd(String.valueOf(viskundeDao.getKundnr()));			
+ 
+    		if (customerExistDto != null) {
+  
+    			customerPutBycustomerCd(String.valueOf(viskundeDao.getKundnr()), updateDto);
+    			logger.info("Kunde:"+viskundeDao.getKundnr()+ " is updated.");
+    			
+    		} else {
+    		
+    			customerPost(updateDto);
+    			logger.info("Kunde:"+viskundeDao.getKundnr()+ " is created.");
+    			
+    		}
+    		
+			
+    	} catch (HttpClientErrorException e) {
+			logger.error(logPrefix(viskundeDao.getKundnr()));
+			logger.error(e.getClass()+" On  syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
+			logger.error("message:"+e.getMessage());
+			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
+			throw e;
+		}
+    	catch (RestClientException e) {
+    		logger.error(logPrefix(viskundeDao.getKundnr()));
+			logger.error(e.getClass()+" On syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
+			throw e;
+		}
+    	catch (Exception e) {
+    		logger.error(logPrefix(viskundeDao.getKundnr()));
+			logger.error(e.getClass()+" On syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
+			throw e;
+		} 
+		
+		
+		
+	}
+	
+	private CustomerDto getGetBycustomerCd(String number) {
+		CustomerDto customerExistDto;
+
+		try {
+
+			customerExistDto = customerApi.customerGetBycustomerCd(number);
+			
+		} catch (HttpClientErrorException e) {
+			logger.info("message:" + e.getMessage()+ ", customerExistDto is null;");
+			customerExistDto = null;
+			// continue
+		}
+
+		return customerExistDto;
+
+	}
+	
+	
+	/**
      * Updates a specific customer
      * 
-     * NOTE: There is no delete in the api. Work with Status.
      * 
      * Response Message has StatusCode NoContent if PUT operation succeed
      * <p><b>204</b> - NoContent
@@ -90,31 +158,29 @@ public class Customer extends Configuration {
      * @throws RestClientException if an error occurs while attempting to invoke the API
      * @throws HttpClientErrorException when an HTTP 4xx is received. Typically when indata is wrong
      */
-    public void customerPutBycustomerCd(String number, ViskundeDao viskundeDao) throws RestClientException, HttpClientErrorException {
-
+    private void customerPutBycustomerCd(String number, CustomerUpdateDto customerUpdateDto) throws RestClientException, HttpClientErrorException {
+    	logger.info(logPrefix(number));
+    	logger.info("customerPutBycustomerCd()"); 
+    	
     	try {
-    		//Sanity check
-    		CustomerDto existingDto = customerApi.customerGetBycustomerCd(number);   		
-    		logger.debug("Found CustomerDto="+ReflectionToStringBuilder.toString(existingDto));
-    		CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
-    		//Do the update
-    		customerApi.customerPutBycustomerCd(number, updateDto);
+
+    		customerApi.customerPutBycustomerCd(number, customerUpdateDto);
 
     	} catch (HttpClientErrorException e) {
-			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error(e.getClass()+" On  scustomerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error(logPrefix(number));
+			logger.error(e.getClass()+" On  customerApi.customerPutBycustomerCd call. number="+number+", customerUpdateDto="+customerUpdateDto.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
 			throw e;
 		}
     	catch (RestClientException e) {
-			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error(logPrefix(number));
+			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", customerUpdateDto="+customerUpdateDto.toString());
 			throw e;
 		}
     	catch (Exception e) {
-			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error(logPrefix(number));
+			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", customerUpdateDto="+customerUpdateDto.toString());
 			throw e;
 		} 
     	
@@ -130,73 +196,73 @@ public class Customer extends Configuration {
      * @throws IllegalArgumentException if Location cannot be found in Response Headers
      * @throws IndexOutOfBoundsException if, still,  Location cannot be found in Response Headers
      */
-    public int customerPost(ViskundeDao viskundeDao) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
-    	CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);
-    	int number = 0;
+    private void customerPost(CustomerUpdateDto updateDto) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
+    	logger.info(logPrefix(updateDto.getNumber()));
+    	logger.info("customerPost()"); 
+    	
     	try {
 
     		customerApi.customerPost(updateDto);
-    		number = getGenereratedNumberFromVisma();
 
+    		
     	} catch (HttpClientErrorException e) {
-			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error(e.getClass()+" On  customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error(logPrefix(updateDto.getNumber()));
+			logger.error(e.getClass()+" On customerApi.customerPost call. updateDto="+updateDto.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
 			throw e;
 		}
     	catch (RestClientException  | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error("ERROR: On customerApi.customerPost call. viskundeDao="+viskundeDao.toString(), e);
+			logger.error(e.getClass()+" On customerApi.customerPost call. updateDto="+updateDto.toString(), e);
 			throw e;
 		} 
     	catch (Exception e) {
-			logger.error(logPrefix(viskundeDao.getKundnr(), number));
-			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", viskundeDao="+viskundeDao.toString());
+			logger.error(logPrefix(updateDto.getNumber()));
+			logger.error(e.getClass()+" On customerApi.customerPost call. updateDto="+updateDto.toString());
 			throw e;
 		}     	
     	
-    	return number;
     }
 
-    /**
-     * Since Create Customer is done by POST, there is no response body returned
-     * Instead Response Header is used.
-     * The key - Location hold a re-direct url with trailing generated number (Kundnr:)
-     * 
-     * @return number the generated Kundnr.:
-     * @throws RuntimeException if Location is not found in Response Headers
-     * @throws IndexOutOfBoundsException if , still, Location is not found in Response Headers
-     */
-    private int getGenereratedNumberFromVisma() throws IndexOutOfBoundsException{
-    	String HEADERKEY_LOCATION = "Location";
-    	MultiValueMap<String, String> responseHeaders = customerApi.getApiClient().getResponseHeaders();
-    	if (responseHeaders.containsKey(HEADERKEY_LOCATION)) {
-    		List<String> locationList = responseHeaders.get(HEADERKEY_LOCATION);
-    		String location = locationList.get(0);
-
-    		return parseLocationForNumber(location);
-
-    	} else {
-    		String errMsg = "Could not find key Location in Response Headers="+responseHeaders;
-    		logger.error(errMsg);
-    		throw new RuntimeException(errMsg);
-    	}
-    	
-	}
-	
-    private int parseLocationForNumber(String location) {
-		logger.info("Location="+location);
-    	String basePath = customerApi.getApiClient().getBasePath();
-    	String subPath = "/controller/api/v1/customer";	//TODO find a way to remove hardcode.
-    	
-    	String callUrl = basePath + subPath;
-		int lastSlash = StringUtils.indexOfDifference(location, callUrl);
-		String numberAsString = StringUtils.substring(location, lastSlash + 1);
-		int number = Integer.valueOf(numberAsString);
-		logger.info("number="+number);
-
-    	return number;
-	}
+//    /**
+//     * Since Create Customer is done by POST, there is no response body returned
+//     * Instead Response Header is used.
+//     * The key - Location hold a re-direct url with trailing generated number (Kundnr:)
+//     * 
+//     * @return number the generated Kundnr.:
+//     * @throws RuntimeException if Location is not found in Response Headers
+//     * @throws IndexOutOfBoundsException if , still, Location is not found in Response Headers
+//     */
+//    private int getGenereratedNumberFromVisma() throws IndexOutOfBoundsException{
+//    	String HEADERKEY_LOCATION = "Location";
+//    	MultiValueMap<String, String> responseHeaders = customerApi.getApiClient().getResponseHeaders();
+//    	if (responseHeaders.containsKey(HEADERKEY_LOCATION)) {
+//    		List<String> locationList = responseHeaders.get(HEADERKEY_LOCATION);
+//    		String location = locationList.get(0);
+//
+//    		return parseLocationForNumber(location);
+//
+//    	} else {
+//    		String errMsg = "Could not find key Location in Response Headers="+responseHeaders;
+//    		logger.error(errMsg);
+//    		throw new RuntimeException(errMsg);
+//    	}
+//    	
+//	}
+//	
+//    private int parseLocationForNumber(String location) {
+//		logger.info("Location="+location);
+//    	String basePath = customerApi.getApiClient().getBasePath();
+//    	String subPath = "/controller/api/v1/customer";	//TODO find a way to remove hardcode.
+//    	
+//    	String callUrl = basePath + subPath;
+//		int lastSlash = StringUtils.indexOfDifference(location, callUrl);
+//		String numberAsString = StringUtils.substring(location, lastSlash + 1);
+//		int number = Integer.valueOf(numberAsString);
+//		logger.info("number="+number);
+//
+//    	return number;
+//	}
 
 	/**
      * Get a range of customers
@@ -255,7 +321,8 @@ public class Customer extends Configuration {
 		} 
 	
 		CustomerUpdateDto dto = new CustomerUpdateDto();
-		dto.setAccountReference(toDtoString(viskunde.getKundnr()));
+		dto.setNumber(toDtoString(viskunde.getKundnr()));
+//		dto.setAccountReference(toDtoString(viskunde.getKundnr()));
 		dto.setName(toDtoString(viskunde.getKnavn()));
 		dto.setCorporateId(toDtoString(viskunde.getSyrg())); 
 		dto.setMainAddress(getMainAddress(viskunde));
@@ -263,6 +330,8 @@ public class Customer extends Configuration {
 		dto.setMainContact(getMainContact(viskunde));
 		
 		dto.setCreditTermsId(toDtoString(viskunde.getBetbet())); 
+		
+		dto.setCustomerClassId(toDtoString(1));
 		
 		
 		//TODO the rest.....
@@ -323,74 +392,6 @@ public class Customer extends Configuration {
 		return dtoValueDto;
 	}
 
-
-/* alla   	
-        sb.append("    : ").append(toIndentedString(number)).append("\n");  /
-        sb.append("    : ").append(toIndentedString(name)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    accountReference: ").append(toIndentedString(accountReference)).append("\n");
-        sb.append("    parentRecordNumber: ").append(toIndentedString(parentRecordNumber)).append("\n");
-        sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
-        sb.append("    creditLimit: ").append(toIndentedString(creditLimit)).append("\n");
-        sb.append("    creditDaysPastDue: ").append(toIndentedString(creditDaysPastDue)).append("\n");
-        sb.append("    overrideWithClassValues: ").append(toIndentedString(overrideWithClassValues)).append("\n");
-        sb.append("    customerClassId: ").append(toIndentedString(customerClassId)).append("\n");
-        sb.append("    creditTermsId: ").append(toIndentedString(creditTermsId)).append("\n");
-        sb.append("    printInvoices: ").append(toIndentedString(printInvoices)).append("\n");
-        sb.append("    acceptAutoInvoices: ").append(toIndentedString(acceptAutoInvoices)).append("\n");
-        sb.append("    sendInvoicesByEmail: ").append(toIndentedString(sendInvoicesByEmail)).append("\n");
-        sb.append("    printStatements: ").append(toIndentedString(printStatements)).append("\n");
-        sb.append("    sendStatementsByEmail: ").append(toIndentedString(sendStatementsByEmail)).append("\n");
-        sb.append("    printMultiCurrencyStatements: ").append(toIndentedString(printMultiCurrencyStatements)).append("\n");
-        sb.append("    vatRegistrationId: ").append(toIndentedString(vatRegistrationId)).append("\n");
-        sb.append("    corporateId: ").append(toIndentedString(corporateId)).append("\n");
-        sb.append("    vatZoneId: ").append(toIndentedString(vatZoneId)).append("\n");
-        sb.append("    note: ").append(toIndentedString(note)).append("\n");
-        sb.append("    mainAddress: ").append(toIndentedString(mainAddress)).append("\n");
-        sb.append("    mainContact: ").append(toIndentedString(mainContact)).append("\n");
-        sb.append("    creditVerification: ").append(toIndentedString(creditVerification)).append("\n");
-        sb.append("    invoiceAddress: ").append(toIndentedString(invoiceAddress)).append("\n");
-        sb.append("    invoiceContact: ").append(toIndentedString(invoiceContact)).append("\n");
-        sb.append("    statementType: ").append(toIndentedString(statementType)).append("\n");
-        sb.append("    deliveryAddress: ").append(toIndentedString(deliveryAddress)).append("\n");
-        sb.append("    deliveryContact: ").append(toIndentedString(deliveryContact)).append("\n");
-        sb.append("    priceClassId: ").append(toIndentedString(priceClassId)).append("\n");
-        sb.append("    directDebitLines: ").append(toIndentedString(directDebitLines)).append("\n");
-        sb.append("    attributeLines: ").append(toIndentedString(attributeLines)).append("\n");
- */  			
-		
-
-	private DtoValueString toDtoString(java.lang.Object o) {
-		if (o == null) {
-			logger.error("Object is null.");
-			return null;
-		}
-
-		return new DtoValueString().value(o.toString());
-
-	}
-	
-	/**
-	 * Get a specific customer. For testing purpose
-	 * @param kundnr 
-	 * 
-	 * @param customerCd - Visma-net generated number in api
-	 * @return CustomerDto - the customer
-	 * @throws RestClientException if Customer is not found
-	 */
-	public CustomerDto getByCustomerCd(String number, int kundnr) throws RestClientException{
-		CustomerDto dto;
-		try {
-			dto = customerApi.customerGetBycustomerCd(number);
-		} catch (RestClientException e) {
-			logger.error(logPrefix(kundnr, number));
-			logger.error("Could not find Customer on Visma.net number="+number+" and SYSPED kundnr="+kundnr);
-			throw e;
-		}
-		return dto;
-	}
-
-	
     /**
      * Get Customer Classes
      * 
@@ -411,9 +412,19 @@ public class Customer extends Configuration {
 	}	
 	
 	
-	public static String logPrefix(int kundnr, Object number) {
+	private DtoValueString toDtoString(java.lang.Object o) {
+		if (o == null) {
+			return null;
+		}
+
+		return new DtoValueString().value(o.toString());
+
+	}
+	
+	
+	public static String logPrefix(Object kundnr) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("::KUNDNR:").append(kundnr).append(", number:"+number);
+		sb.append("::KUNDNR:").append(kundnr);
 		
 		return sb.toString();
 		
