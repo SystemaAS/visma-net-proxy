@@ -35,21 +35,15 @@ import no.systema.z.main.maintenance.url.store.MaintenanceMainUrlDataStore;
 public class AdminController {
 	private static final Logger logger = Logger.getLogger(AdminController.class.getName());
 	private ModelAndView loginView = new ModelAndView("login");
-//	private CodeDropDownMgr codeDropDownMgr = new CodeDropDownMgr();
 
-	/**
-	 * @Example
-	 * 		http://localhost:8080/espedsg/report_dashboard.do?report=report_fortolling_no
-	 * 
-	 *
-	 * @return
-	 */
-	@RequestMapping(value = "report_dashboard.do", method={RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView doReportDashboard(HttpSession session, HttpServletRequest request) {
+
+	//TODO behövs denna?
+	@RequestMapping(value = "viskulog_view.do", method={RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView doViskulog(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
 		ModelAndView successView = new ModelAndView(); 
 		Map model = new HashMap();
-		logger.info("Inside: doReportDashboard");
+		logger.info("Inside: doViskulog");
 		
 		String report = request.getParameter("report");
 		logger.info("report="+report);

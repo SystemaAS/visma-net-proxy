@@ -36,6 +36,9 @@
  	<script type="text/javascript" src="resources/selectlist/js/jquery.selectlist.min.js"></script>
 	<script type="text/javascript" src="resources/js/headerReports.js?ver=${user.versionEspedsg}"></script>	
 	
+    <script src="https://cdn.jsdelivr.net/webjars/org.webjars.bower/datatables.net-responsive/2.1.1/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>	
+	
 	<script>
 		var no_NO = {
 				  "decimal": ".",
@@ -101,7 +104,7 @@
 					 		
 					 		
 					 		<td class="text32Bold" width="100%" align="middle" valign="middle" style="color:#778899;" >
-					 			eSped<font style="color:#003300;">sg</font> - Analyser
+					 			eSped<font style="color:#003300;">sg</font> - Visma logs
 					 		</td>
 					 		
 					 		<td class="text14" width="10%" align="center" valign="middle" >
@@ -125,38 +128,7 @@
 			<td height="23" class="tabThinBorderLightGreenLogoutE2" width="100%" align="left" colspan="3"> 
     			 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
-			    		<td class="text12" width="70%" align="left" >&nbsp;&nbsp;
-			    			<%-- --------------------------- --%>
-			    			<%-- Workflow Shipping trip MENU --%>
-			    			<%-- ---------------------------
-			    			<a tabindex=-1 href="transportdisp_workflow.do?action=doFind"> --%>
-				<%-- 
-			    			<a tabindex=-1 href="tror_mainorderlist.do?lang=${user.usrLang}&action=doFind">
-			    				&nbsp;<font 
-			    				<c:choose>           
-		                   			<c:when test="${user.activeMenu=='TROR'}">
-		                       			class="headerMenuMediumGreen"
-		                   			</c:when>
-		                   			<c:otherwise>   
-		                       			class="headerMenuLightGreen"
-		                   			</c:otherwise>
-		               			</c:choose>
-			    				
-			    				>&nbsp;<spring:message code="systema.tror.title"/>&nbsp;</font>
-			    			</a>
-			    				<label onClick="showPop('debugPrintlnUrlStore');" >&nbsp;&nbsp; kalle igen</label>
-			    				<span style="position:absolute; left:350px; top:100px; width:900px; height:600px;" id="debugPrintlnUrlStore" class="popupWithInputText"  >
-						           		<div class="text12" align="left">
-						           			<label>${user.urlStoreProps}</label>
-						           			<br/>
-						           			&nbsp;&nbsp;
-						           			<button name="specialInformationButtonClose" class="buttonGrayInsideDivPopup" type="button" onClick="hidePop('debugPrintlnUrlStore');">
-						           			Close
-						           			</button> 
-						           		</div>
-					        		</span>
-			    	--%>		
-			    			</td>		      				
+			    		<td class="text12" width="70%" align="left" >&nbsp;&nbsp;</td>		      				
 	      				<td class="text12" width="50%" align="right" valign="middle">
 	      				
 	      					<c:if test="${ empty user.usrLang || user.usrLang == 'NO'}">

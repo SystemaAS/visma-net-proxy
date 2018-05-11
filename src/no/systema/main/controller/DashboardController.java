@@ -2,57 +2,48 @@ package no.systema.main.controller;
 
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.log4j.Logger;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.ui.Model;
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.context.annotation.Scope;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-import org.springframework.web.bind.WebDataBinder;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 //import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-//import no.systema.tds.service.MainHdTopicService;
-import no.systema.main.validator.UserValidator;
-
+import no.systema.jservices.common.util.AesEncryptionDecryptionManager;
 //application imports
 import no.systema.main.model.SystemaWebUser;
-import no.systema.main.model.jsonjackson.JsonSystemaUserContainer;
-import no.systema.main.model.jsonjackson.JsonSystemaUserRecord;
-import no.systema.main.model.jsonjackson.JsonSystemaUserExtensionsMultiUserSwitchRecord;
 import no.systema.main.model.jsonjackson.JsonFirmLoginContainer;
 import no.systema.main.model.jsonjackson.JsonFirmLoginRecord;
-
-
+import no.systema.main.model.jsonjackson.JsonSystemaUserContainer;
+import no.systema.main.model.jsonjackson.JsonSystemaUserRecord;
+import no.systema.main.service.FirmLoginService;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.service.login.SystemaWebLoginService;
-import no.systema.main.service.FirmLoginService;
-
 import no.systema.main.url.store.MainUrlDataStore;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.StringManager;
-import no.systema.jservices.common.util.AesEncryptionDecryptionManager;
+//import no.systema.tds.service.MainHdTopicService;
+import no.systema.main.validator.UserValidator;
 
 
 
@@ -95,13 +86,11 @@ public class DashboardController {
 	 */
 	@RequestMapping(value="logonDashboard.do", method= { RequestMethod.POST})
 	public ModelAndView logon(@ModelAttribute (AppConstants.SYSTEMA_WEB_USER_KEY) SystemaWebUser appUser, BindingResult bindingResult, HttpSession session, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttr){
-		ModelAndView successView = new ModelAndView("redirect:report_dashboard.do?report=report_fortolling_no");
-		//Adjust to overview login --> sendinger...
-		String trafikk = request.getParameter(TRAFIKK_REPORT_FLAG);
-		
-		if(strMgr.isNotNull(trafikk)){
-			successView = new ModelAndView("redirect:report_dashboard.do?report=report_trafikkregnskap_overview");
-		}
+		logger.info("Tjohoo, hit the logon in visma-net-proxy");
+		//		ModelAndView successView = new ModelAndView("redirect:report_dashboard.do?report=report_fortolling_no");
+		//TODO overhaul of viskulog. Look in frosk-analyser and strip!
+		ModelAndView successView = new ModelAndView("viskulog");
+
 		Map model = new HashMap();
 		
 		if(appUser==null){
