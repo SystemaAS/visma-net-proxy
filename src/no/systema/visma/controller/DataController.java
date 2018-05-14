@@ -1,4 +1,4 @@
-package no.systema.main.controller;
+package no.systema.visma.controller;
 
 import java.util.List;
 

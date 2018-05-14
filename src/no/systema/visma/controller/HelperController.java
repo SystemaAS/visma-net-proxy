@@ -1,4 +1,4 @@
-package no.systema.visma;
+package no.systema.visma.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,6 +23,7 @@ import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
+import no.systema.visma.PrettyPrintViskundeError;
 import no.systema.visma.transaction.TransactionManager;
 /**
  * 

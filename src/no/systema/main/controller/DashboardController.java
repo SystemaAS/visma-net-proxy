@@ -63,7 +63,6 @@ public class DashboardController {
 	private AesEncryptionDecryptionManager aesManager = new AesEncryptionDecryptionManager();
 	private static final StringManager strMgr = new StringManager();
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
-	private static final String TRAFIKK_REPORT_FLAG = "trafikk";
 	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -86,11 +85,7 @@ public class DashboardController {
 	 */
 	@RequestMapping(value="logonDashboard.do", method= { RequestMethod.POST})
 	public ModelAndView logon(@ModelAttribute (AppConstants.SYSTEMA_WEB_USER_KEY) SystemaWebUser appUser, BindingResult bindingResult, HttpSession session, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttr){
-		logger.info("Tjohoo, hit the logon in visma-net-proxy");
-		//		ModelAndView successView = new ModelAndView("redirect:report_dashboard.do?report=report_fortolling_no");
-		//TODO overhaul of viskulog. Look in frosk-analyser and strip!
-		ModelAndView successView = new ModelAndView("viskulog");
-
+		ModelAndView successView = new ModelAndView("redirect:configuration.do");
 		Map model = new HashMap();
 		
 		if(appUser==null){
@@ -222,13 +217,9 @@ public class DashboardController {
 	 */
 	@RequestMapping(value="logonWRedDashboard.do", method= { RequestMethod.POST, RequestMethod.GET})
 	public ModelAndView logonRedirected(RedirectAttributes redirectAttrs, Model modelX, @ModelAttribute (AppConstants.SYSTEMA_WEB_USER_KEY) SystemaWebUser appUser, HttpSession session, HttpServletRequest request, HttpServletResponse response){
-		ModelAndView successView = new ModelAndView("redirect:report_dashboard.do?report=report_fortolling_no");
+		ModelAndView successView = new ModelAndView("redirect:configuration.do");
 		Map model = new HashMap();
-		//Adjust to overview login --> sendinger...
-		String trafikk = request.getParameter(TRAFIKK_REPORT_FLAG);
-		if(strMgr.isNotNull(trafikk)){
-			successView = new ModelAndView("redirect:report_dashboard.do?report=report_trafikkregnskap_overview");
-		}
+
 		String user = request.getParameter("ru");
 		String pwd = request.getParameter("dp");
 		//set attributes since the method call do not uses those fields' names
@@ -324,9 +315,6 @@ public class DashboardController {
 	 * @return
 	 */
 	private String getTomcatServerRedirectionUrl(SystemaWebUser appUser, HttpServletRequest request){
-		String trafikk = request.getParameter(TRAFIKK_REPORT_FLAG);
-		
-		
 		String retval = null;
 		String HTTP_PREFIX = "http://";
 		String HTTPS_PREFIX = "https://";
@@ -370,13 +358,7 @@ public class DashboardController {
 		
 		//We must user GET until we get Spring 4 (in order to send params on POST)
 		try{
-			if(strMgr.isNotNull(trafikk)){
-				//Trafikk report
-				retval = hostRaw + request.getContextPath() + "/logonWRedDashboard.do?" + TRAFIKK_REPORT_FLAG + "=1" + "&ru=" + appUser.getUser() + "&dp=" + URLEncoder.encode(appUser.getEncryptedPassword(), "UTF-8");
-			}else{
-				//Förtullning NO
 				retval = hostRaw + request.getContextPath() + "/logonWRedDashboard.do?" + "ru=" + appUser.getUser() + "&dp=" + URLEncoder.encode(appUser.getEncryptedPassword(), "UTF-8");
-			}
 		}catch(Exception e){
 			//logger.info("XXXXX:" + request.getContextPath());
 		}

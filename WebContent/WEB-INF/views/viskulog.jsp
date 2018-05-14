@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 <!-- ======================= header ===========================-->
-<jsp:include page="/WEB-INF/views/headerReportDashboard.jsp" />
+<jsp:include page="/WEB-INF/views/header.jsp" />
 <!-- =====================end header ==========================-->
 <style>
 .ui-datepicker { font-size:9pt;}
@@ -27,9 +27,9 @@ function load_data() {
 
 	var runningUrl = baseUrl;
 
+	var selectedKundenr = jq('#selectKundenr').val();
 	var selectedFradato = jq('#selectFradato').val();
 	var selectedTildato = jq('#selectTildato').val();
-	var selectedKundenr = jq('#selectKundenr').val();
 
 	if (selectedKundenr != "" )	{
 		runningUrl = runningUrl + "&kundnr="+selectedKundenr;

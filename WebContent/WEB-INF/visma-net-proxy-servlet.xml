@@ -56,6 +56,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	  <property name="basenames">
 	  		<list>
 				<value>/WEB-INF/messages</value>
+				<value>/WEB-INF/messagesmainmaintenance_no</value>
 			</list>
 	  </property>
 	</bean>

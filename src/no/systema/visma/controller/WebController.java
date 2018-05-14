@@ -1,4 +1,4 @@
-package no.systema.main.controller;
+package no.systema.visma.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,56 +14,61 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import no.systema.jservices.common.dao.FirmvisDao;
+import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dto.SingleValueDto;
 import no.systema.jservices.common.json.JsonDtoContainer;
 import no.systema.jservices.common.json.JsonReader;
-import no.systema.jservices.common.util.StringUtils;
+import no.systema.main.controller.ChildWindowKode;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.service.UrlCgiProxyService;
-import no.systema.main.util.AppConstants; 
+import no.systema.main.util.AppConstants;
 import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainCundfRecord;
 import no.systema.z.main.maintenance.url.store.MaintenanceMainUrlDataStore;
 
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
 @Scope("session")
-public class AdminController {
-	private static final Logger logger = Logger.getLogger(AdminController.class.getName());
-	private ModelAndView loginView = new ModelAndView("login");
+public class WebController {
+	private static final Logger logger = Logger.getLogger(WebController.class.getName());
+	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 
+	@Autowired
+	FirmvisDaoService firmvisDaoService;
 
-	//TODO behövs denna?
-	@RequestMapping(value = "viskulog_view.do", method={RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView doViskulog(HttpSession session, HttpServletRequest request) {
+	
+	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-		ModelAndView successView = new ModelAndView(); 
+		ModelAndView successView = new ModelAndView("visma_configuration"); 
 		Map model = new HashMap();
-		logger.info("Inside: doViskulog");
+		logger.info("Inside: configuration");
 		
-		String report = request.getParameter("report");
-		logger.info("report="+report);
-		
-		if(appUser==null){
+		if (appUser == null) {
 			return loginView;
-		}else{
+		} else {
 
-			
-			if (StringUtils.hasValue(report)) {
-				successView.setViewName(report);
+			if (request.getMethod().equals(RequestMethod.POST.toString())){
+				firmvisDaoService.update(firmvis);
 			} 
-
-			successView.addObject("model", model);			
-			successView.addObject("httpRootCgi", AppConstants.HTTP_ROOT_CGI);		
 			
+			firmvis = firmvisDaoService.get();
+
+			model.put("firmvis", firmvis);
+			successView.addObject("model", model);
+
 			return successView;
+		
 		}
 	}
-
+	
 //	/**
 //	 * This method serve as data populater for all child windows for Report analyses.
 //	 * 

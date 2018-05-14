@@ -4,7 +4,7 @@
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
  
-  <display-name>Systema eSped Application</display-name>
+  <display-name>Systema eSped Visma Integrasjon (2018-05)</display-name>
   <welcome-file-list>
     <welcome-file>/WEB-INF/index.jsp</welcome-file>
   </welcome-file-list>
@@ -12,12 +12,6 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
   
-  <!-- 
-  <listener>
-    <listener-class>no.systema.main.util.HttpSessionManager</listener-class>
-  </listener>
-   -->
-   
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>/WEB-INF/visma-net-proxy-servlet.xml, /WEB-INF/visma-net-proxy-data-service.xml, /WEB-INF/visma-net-proxy-datasource.xml</param-value>
@@ -27,11 +21,6 @@
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <load-on-startup>0</load-on-startup>    
   </servlet>
-  
-  <!-- THIS IS to pre-compile some critical-JSPs in order to help first user <end-user> experience
-       It should be moved to an alternativ jasper/ant task invocation since this method is not a good design for a discrete number of jsp > 20 pages... -->
-       
-  
   
   <servlet-mapping>
     <servlet-name>visma-net-proxy</servlet-name>
