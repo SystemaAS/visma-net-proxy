@@ -15,6 +15,7 @@ import no.systema.visma.v1client.ApiClient;
  * 
  * @author fredrikmoller
  */
+//TODO remove , no longer needed	
 //public abstract class Configuration {
 public class Configuration {
 	
