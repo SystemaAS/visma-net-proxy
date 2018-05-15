@@ -1,4 +1,15 @@
-@import url("espedsg2.css");
+@import url("espedsg2Toten.css");
+/*-------------------------------------
+START override in jQuery UI elements
+------------------------------------- */
+/*.ui-button,  .ui-button-text .ui-button{  
+font-size: 10px !important; 
+}
+.ui-datepicker { font-size:9pt; }
+*/
+/*------------------------------
+END override jQuery elements
+/*------------------------------*/
 
 .ownScrollableSubWindow{    
   width: 1050px;
@@ -75,7 +86,7 @@
 }
 
 .popupFloatingWithRoundCorners3D {
-	position:absolute; left:10; top:5; width:110;
+	position:absolute; left:15; top:5; width:150;
 	-webkit-border-top-right-radius: 5px;
 	-webkit-border-top-left-radius: 5px;
 	-moz-border-top-right-radius: 5px;
@@ -96,7 +107,7 @@
   	color:black;
    	z-index:2;  
 	font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 11px;  
     
 }
 
@@ -210,21 +221,9 @@
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
 	padding: 2px 4px;
-	outline: 0;
-	
-	-webkit-appearance: none;
-	-webkit-background-size: cover;
-  	-moz-background-size: cover;
-  	-o-background-size: cover;
-  	background-size: cover;
-
-	/*background-color:#FCFFF0;*/
 	background-color:#FFFFFF;
-	border-style: outset; 
-    border-width: 0px 1px 1px 0px; 
-    border-color:#778899;
-    
-}
+	outline: 0;
+	-webkit-appearance: none;
 	
 }
 .dashboardFrameMain{
@@ -248,8 +247,6 @@
 	
 }
 
-
-
 .dashboardFrameHeader { 
 	border: 0px solid #ccc;
 	-webkit-border-top-right-radius: 5px;
@@ -262,13 +259,15 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	font-size: 12px; 
 	color:#000000; 
-	border-color:#2E64FE;
-    background-color: #778899
+	background-color: #696969;
+    border-style: solid; 
+    border-width: 0px 2px 2px 0px; 
+    border-color:#000000;
+    
 }
 
 .dashboardFrame{
-	/*border: 1px solid #4169E1;*/
-	/*border: 0px solid #ccc;*/
+	border: 0px solid #ccc;
 	-webkit-border-bottom-right-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-bottom-right-radius: 5px;
@@ -278,24 +277,10 @@
 	padding: 2px 4px;
 	outline: 0;
 	-webkit-appearance: none;
-	/*
-	background-color:#FAFAFA;
+	background-color:#FFFFFF;
 	border-style: solid; 
     border-width: 0px 2px 2px 0px; 
-    border-color:#778899
-    */
-}
-.aDashboardLink{
-  display:inline;
-  height:100%;
-  width:100%;
-}
-.aDashboardLinkInForm{
-  border: 0; 
-  padding: 0; 
-  display: inline; 
-  background: none; 
-  cursor: pointer;
+    border-color:#e52320;
 }
 .grayTitanBg { 
 	background-color:#3D3D3D;
@@ -306,10 +291,10 @@
 }
 
 .headerTdsBannerAreaBg{
-	background-color:#FCFFF0;
+	background-color:#FFFFFF;
 	border-style: outset; 
-    border-width: 0px 1px 0px 0px; 
-    border-color:##778899
+    border-width: 0px 0px 0px 0px; 
+    border-color:##FFFFFF
 }
 
 .headerMenuBlue{
@@ -371,8 +356,8 @@
 	border: 0px solid #ccc;
 	font-size: 14px;
 	padding: 2px 4px;
-	background-color:#8FBC8F;
-	color:#575757;
+	background-color:#858585;
+	color:#000000;
 	cursor:pointer;
 }
 .headerMenuGreenNoPointer{
@@ -382,8 +367,8 @@
 	border: 0px solid #ccc;
 	font-size: 14px;
 	padding: 2px 4px;
-	background-color:#8FBC8F;
-	color:#575757;
+	background-color:#858585;
+	color:#000000;
 }
 
 .headerMenuLightGreen{
@@ -394,7 +379,7 @@
 	font-size: 14px;
 	font-weight: normal;
 	padding: 2px 4px;
-	background-color:#8FBC8F;
+	background-color:#858585;
 	color:#FFFFFF;	
 	cursor:pointer;
 }
@@ -407,8 +392,8 @@
 	font-size: 14px;
 	font-weight: bold;
 	padding: 2px 4px;
-	background-color:#3F9E4D;
-	color:#F1F1F1;
+	background-color:#A0A0A0;
+	color:#FFFFFF;
 	cursor:pointer;
 }
 
@@ -445,15 +430,16 @@
 	background-color:#CCCCCC;
 	outline: 0;
 	-webkit-appearance: none;
+	
+	
 }
-
 
 .inputFormLogin{
 	border: 1px solid #DDDDDD;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	padding: 4px 7px;
 	outline: 0;
 }
@@ -463,7 +449,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	background-color:#4169E1;
 	color:#FFFFFF;
 	padding: 4px 7px;
@@ -472,12 +458,12 @@
 	-webkit-appearance: none;
 }
 .inputFormLoginSubmitGreen{
-	border: 1px solid #DDDDDD;
+	border: 1px solid #e52320;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
-	background-color:#3F9E4D;
+	font-size: 14px;
+	background-color:#858585;
 	color:#FFFFFF;
 	padding: 4px 7px;
 	outline: 0;
@@ -494,36 +480,27 @@
 	-webkit-box-shadow: 2px 2px 3px #666;
 	box-shadow: 2px 2px 3px #666;
 	border-collapse: separate;
-	font-size: 12px;
+	font-size: 14px;
 	padding: 4px 7px;
 	outline: 0;
 	-webkit-appearance: none;
 }
 
 .inputFormSubmitStd{
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-	padding: 4px 7px;
-	font-size: 14px;
+	
 	cursor:pointer;
  }
 .inputFormSubmit{
-	border: 1px solid #ccc;
+	border: 1px solid #e52320;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 	font-size: 14px;
 	background-color---Blue:#4169E1;
-	background-color:#3F9E4D;
+	background-color:#858585;
 	color:#FFFFFF;
 	padding: 4px 7px;
 	cursor:pointer;
-}
-.inputFormSubmit:focus{
-	color:#000000;
-	background-color: lightyellow;
-	border: 2px solid #3F9E4D;
 }
 .inputFormSubmit11{
 	border: 1px solid #ccc;
@@ -592,7 +569,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: bold;
 	background-color:#CCCCCC;
 	color:#000000;
@@ -605,7 +582,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: bold;
 	background-color:#CCCCCC;
 	color:red;
@@ -691,7 +668,7 @@
 	outline: 0;
 }
 
-.UoppNeutralR {  
+.inputFormSubmitUoppNeutralR {  
     border: 1px solid #CCCCCC;
 	font-size: 10px;
 	font-weight:bold ;
@@ -720,12 +697,12 @@
 	padding: 4px 7px;
 	outline: 0;
 }
-.inputText14{
+.inputText16{
 	border: 1px solid #DDDDDD;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 14px;
+	font-size: 16px;
 	padding: 4px 7px;
 	outline: 0;
 }
@@ -806,7 +783,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	background-color:#DDDDDD;
 	padding: 4px 7px
 }
@@ -916,34 +893,6 @@
 	outline: 0;
 	color: #000080;
 	text-transform:uppercase;
-}
-
-.inputTextMediumBlueMandatoryFieldUPPERCASE{
-	border: 1px solid #DDDDDD;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-	font-size: 14px;
-	padding: 4px 7px;
-	outline: 0;
-	color: #000080;
-	background-color:#FFFFFF;
-	border-style: solid; 
-    border-width: 1px 2px 2px 1px; 
-    border-color: #F79F81;
-    text-transform:uppercase;
-}
-
-.inputTextMediumBlue14Bold{
-	border: 1px solid #DDDDDD;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-	font-size: 14px;
-	font-weight: bold;
-	padding: 4px 7px;
-	outline: 0;
-	color: #000080;
 }
 
 .inputTextMediumBlue11{
@@ -1075,7 +1024,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	padding: 4px 7px;
 	outline: 0;
 	color: #CCCCCC;
@@ -1086,7 +1035,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	padding: 4px 7px;
 	outline: 0;
 	font-weight: bold;
@@ -1111,7 +1060,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	padding: 4px 7px;
 	outline: 0;
 	font-weight: bold;
@@ -1124,7 +1073,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	padding: 4px 7px;
 	outline: 0;
 	background-color: #FFFFFF;
@@ -1140,7 +1089,7 @@
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
 	padding: 2px 4px;
-	background-color:#F2F5F0;
+	background-color:#CCCCCC;
 	outline: 0;
 	-webkit-appearance: none;
 }
@@ -1224,9 +1173,9 @@
 	border-top-left-radius: 5px;
 	
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 12px; 
+	font-size: 14px; 
 	color:#000000; 
-    background-color: #9DB68C
+    background-color: #3D3D3D
     
 }
 .formFrameHeaderBlueWithBorder { 
@@ -1239,7 +1188,7 @@
 	border-top-left-radius: 5px;
 	
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 12px; 
+	font-size: 14px; 
 	color:#000000; 
     background-color: #4E78A0;
     
@@ -1255,7 +1204,7 @@
 	border-top-left-radius: 5px;
 	
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 12px; 
+	font-size: 14px; 
 	color:#FFFFFF; 
     background-color: #FFFFFF;
     
@@ -1281,7 +1230,7 @@
 	border-top-left-radius: 5px;
 
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 12px;
+	font-size: 14px;
 	color:#FFFFFF; 
     background-color: #FF0000
  
@@ -1309,7 +1258,7 @@
 	border-top-left-radius: 5px;
 	
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 12px; 
+	font-size: 14px; 
 	color:#000000; 
     background-color: #CCCCCC;
     
@@ -1335,7 +1284,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	font-size: 12px;
+	font-size: 14px;
 	background-color:#CCCCCC;
 	color:#000000;
 	padding: 2px 4px;
@@ -1355,12 +1304,8 @@
 	padding: 2px 4px;
 	outline: 0;
 	cursor:pointer;
+	
 }
-.buttonGrayWithGreenFrame:focus{
-	color:#000000;
-	background-color: lightyellow;
-}
-
 .buttonGrayWithGreenFrame11{
 	border: 2px solid #3F9E4D;
 	-moz-border-radius: 5px;
@@ -1400,11 +1345,11 @@
 .text10{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 10px; color:#000000;
 }
-.text10Orange{  
-    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 10px; color:#FF6600;
-}
 .text10Red{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 10px; color:#FF0000;  
+}
+.text10Orange{  
+    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 10px; color:#FF6600;
 }
 .text10Bold{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 10px; color:#000000; font-weight:bold ; 
@@ -1419,7 +1364,7 @@
 }
 
 .text11User{  
-    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 11px; color:#000000;
+    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 11px; color:#FFFFFF;
 }
 .text11Gray{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; 
@@ -1429,7 +1374,6 @@
 .text11Orange{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 11px; color:#FF6600;
 }
-
 .text11Red{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 11px; color:#FF0000;  
 }
@@ -1454,7 +1398,6 @@
 .text11SkyBlue{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 11px; color: #4E78A0; 
 }
-
 .text11White{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 11px; color:#FFFFFF;
 }
@@ -1463,9 +1406,6 @@
 }
 
 .text12{  
-    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 12px; color:#000000;
-}
-.text12User{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 12px; color:#000000;
 }
 .text12UPPERCASE{  
@@ -1496,16 +1436,7 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	font-size: 12px; 
 	color: #7cbf4c; 
-    background-color: #9DB68C;
-    
-}
-.text14BoldWhiteForItemLinenr{  
-    font-weight:bold ; 
-    border: 0px solid #4E78A0;
-	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 14px; 
-	color: #FFFFFF; 
-    background-color: #9DB68C;
+    background-color: #3D3D3D;
     
 }
 .text12BoldLightGreenForItemLinenrBlueBg{  
@@ -1532,16 +1463,7 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	font-size: 12px; 
 	color: #FF0000; 
-    background-color: #9DB68C;
-    
-}
-.text14BoldRedForItemLinenr{  
-    font-weight:bold ; 
-    border: 0px solid #4E78A0;
-	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	font-size: 14px; 
-	color: #FF0000; 
-    background-color: #9DB68C;
+    background-color: #3D3D3D;
     
 }
 .text12BoldRedForItemLinenrBlueBg{  
@@ -1615,10 +1537,8 @@
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 14px; color: #4E78A0; 
 }
 
-.text14Gray{  
-    font-family: Helvetica Neue, verdana, Arial, sans-serif; 
-    font-size: 14px; 
-    color:#555555;
+.text14UPPERCASE{  
+    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 14px; color:#000000;text-transform:uppercase;
 }
 
 .text14Red{  
@@ -1699,12 +1619,6 @@
 .text16MediumBlue{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 16px; color: #000080; font-weight:normal;
 }
-.text16NavyBlue{  
-    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 16px; color: #003152; 
-}
-.text16NavyBlueBold{  
-    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 16px; color: #003152; font-weight:bold ; 
-}
 .text18{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 18px; 
 }
@@ -1726,6 +1640,9 @@
 }
 .text22OrangeBold{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 22px; color:#FF6600;font-weight:bold ;
+}
+.text28Bold{  
+    font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 28px; color:#000000; font-weight:bold;
 }
 .text32Bold{  
     font-family: Helvetica Neue, verdana, Arial, sans-serif; font-size: 32px; color:#000000; font-weight:bold; 
@@ -1764,7 +1681,6 @@
     border-width: 1px 1px 1px 0px; 
     border-color:#4E78A0
 }
-
 .tableHeaderFieldFirst10 { 
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	font-size: 10px; 
@@ -1796,10 +1712,10 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	font-size: 14px; 
 	color:#000000; 
-    background-color: #F2F5EF ;
+    background-color: #DCDCDC ;
     border-style: solid; 
     border-width: 1px 1px 1px 0px; 
-    border-color:#D5E0CE
+    border-color:#4E78A0
 }
 .tableHeaderFieldOmberegning {  
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
@@ -1823,25 +1739,19 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	font-size: 14px; 
 	color:#000000; 
-    background-color: #F2F5EF ;
+    background-color: #DCDCDC ;
     border-style: solid; 
     border-width: 1px 1px 1px 1px; 
-    border-color:#D5E0CE
-}
-.tableProformaAngivelseRow {  
-        font-family: Verdana, Arial, Helvetica, sans-serif; 
-        font-size: 12px; 
-        color: #9F6000;
-    	background-color: #FEEFB3;
+    border-color:#4E78A0
 }
 .tableOddRow {  
         font-family: Verdana, Arial, Helvetica, sans-serif; 
-        font-size: 10px; 
+        font-size: 14px; 
         background-color:#FFFFFF
 }
 .tableRow {  
         font-family: Verdana, Arial, Helvetica, sans-serif; 
-        font-size: 10px; 
+        font-size: 14px; 
         background-color: #FFFFFF
 }
 .tableCell{  
@@ -1850,22 +1760,13 @@
     color: black; 
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
-    border-color:#D5E0CE
+    border-color:#4E78A0
      
 }
 .tableCellGray{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
     font-size: 14px;
     color: black; 
-    border-style: solid; 
-    border-width: 0px 1px 1px 0px; 
-    border-color:#DDDDDD
-     
-}
-.tableCellRedFont{  
-    font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 14px;
-    color: red; 
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
     border-color:#DDDDDD
@@ -1882,7 +1783,7 @@
 }
 .tableCellDangerousGoods{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;
+    font-size: 11px;
     color: black; 
     background-color:#EEEED1; /*#FCFFF0 tentative */
     border-style: solid; 
@@ -1892,32 +1793,32 @@
 
 .tableCellOmberegning{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 10px;
+    font-size: 11px;
     color: black; 
     /*background-color:#EEEED1; #FCFFF0 tentative */
     background-color: lightyellow;
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
-    border-color:#D5E0CE  
+    border-color:#4E78A0  
 }
 .tableCellEbookingPrint{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 10px;
+    font-size: 14px;
     color: black; 
     /*background-color:#EEEED1; #FCFFF0 tentative */
     background-color: lightyellow;
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
-    border-color:#D5E0CE  
+    border-color:#4E78A0  
 }
 
 .tableCellOnlyBottomBorder{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 10px;
+    font-size: 14px;
     color: black; 
     border-style: solid; 
     border-width: 0px 0px 1px 0px; 
-    border-color:#D5E0CE
+    border-color:#4E78A0
      
 }
 .tableCell11{  
@@ -1926,7 +1827,7 @@
     color: black; 
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
-    border-color:#D5E0CE
+    border-color:#4E78A0
      
 }
 .tableCell12{  
@@ -1935,7 +1836,7 @@
     color: black; 
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
-    border-color:#D5E0CE
+    border-color:#4E78A0
      
 }
 .tableCell14{  
@@ -1944,7 +1845,7 @@
     color: black; 
     border-style: solid; 
     border-width: 0px 1px 1px 0px; 
-    border-color:#D5E0CE
+    border-color:#4E78A0
      
 }
 .tableCellFirst{  
@@ -1953,7 +1854,7 @@
     color: black;
     border-style: solid; 
     border-width: 0px 1px 1px 1px; 
-    border-color:#D5E0CE 
+    border-color:#4E78A0 
 }
 .tableCellFirst11{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
@@ -1961,7 +1862,7 @@
     color: black;
     border-style: solid; 
     border-width: 0px 1px 1px 1px; 
-    border-color:#D5E0CE 
+    border-color:#4E78A0 
 }
 .tableCellFirst12{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
@@ -1969,7 +1870,7 @@
     color: black;
     border-style: solid; 
     border-width: 0px 1px 1px 1px; 
-    border-color:#D5E0CE 
+    border-color:#4E78A0 
 }
 .tableCellFirst14{  
     font-family: verdana, Arial, Helvetica, sans-serif; 
@@ -1977,7 +1878,7 @@
     color: black;
     border-style: solid; 
     border-width: 0px 1px 1px 1px; 
-    border-color:#D5E0CE 
+    border-color:#4E78A0 
 }
 
 .tabThinBorderSlateGray {  
@@ -1989,15 +1890,15 @@
 }
 .tabThinBorderLightSlateGray {  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    background-color:#778899; 
+    background-color:#DDDDDD; 
     border-style: ridge; 
-    border-width: 0px 1px 1px 0px; 
-    border-color:#2E64FE
+    border-width: 0px 2px 5px 0px; 
+    border-color:#e52320
 }
 
 .tabThinBorderGray {  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 14px;  
     color: #4E78A0; 
     background-color:#CCCCCC;
     border-style: solid; 
@@ -2007,42 +1908,42 @@
 
 .tabThinBorderWhite {  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 14px;  
     color: #4E78A0; 
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 0px 1px 1px 1px; 
-    border-color: #D5E0CE;
+    border-color: #858585;
 }
 
 .tabThinBorderWhiteWithTopBorder {  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 14px;  
     color: #4E78A0; 
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 1px 1px 1px 1px; 
-    border-color: #D5E0CE;
+    border-color: #4E78A0;
 }
 
 .tabThinBorderWhiteWithSideBorders {  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 14px;  
     color: #4E78A0; 
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 0px 1px 0px 1px; 
-    border-color: #D5E0CE;
+    border-color: #4E78A0;
 }
 
 .tabNoBorderSeparatorWhite {  
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 11px;  
     color: #4E78A0; 
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 0px 0px 0px 0px; 
-    border-color: #D5E0CE;
+    border-color: #4E78A0;
 }
 .tab {
 	border: 1px solid #ccc;
@@ -2050,12 +1951,12 @@
 	-webkit-border-radius: 2px;
 	border-radius: 5px 5px 0px 0px;
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;
+    font-size: 14px;
     color: #4E78A0; 
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 1px 1px 0px 1px; 
-    border-color: #D5E0CE;
+    border-color: #858585;
     margin: 2px;
     padding: 2px
 }
@@ -2065,12 +1966,12 @@
 	-webkit-border-radius: 2px;
 	border-radius: 5px 5px 0px 0px;
 	font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px; 
+    font-size: 14px; 
     color: #4E78A0; 
     background-color:#DDDDDD;
     border-style: solid; 
     border-width: 1px 1px 1px 1px; 
-    border-color: #D5E0CE;
+    border-color: #858585;
     margin: 2px;
     padding: 2px      
 }
@@ -2081,12 +1982,12 @@
 	-webkit-border-radius: 2px;
 	border-radius: 10px 10px 0px 0px;
 	font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px; 
+    font-size: 14px; 
     color: #4E78A0; 
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 1px 1px 0px 1px; 
-    border-color: #D5E0CE; 
+    border-color: #4E78A0; 
     margin: 2px;
     padding: 2px     
 }
@@ -2096,12 +1997,12 @@
 	-webkit-border-radius: 2px;
 	border-radius: 10px 10px 0px 0px;
 	font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px; 
+    font-size: 14px; 
     color: #4E78A0; 
     background-color: #FFFFCC;
     border-style: solid; 
     border-width: 1px 1px 1px 1px; 
-    border-color: #D5E0CE; 
+    border-color: #4E78A0; 
     margin: 2px;
     padding: 2px   
 }
@@ -2113,7 +2014,7 @@
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 0px 0px 1px 0px; 
-    border-color: #D5E0CE;
+    border-color: #4E78A0;
     margin: 2px;
     padding: 2px
 }
@@ -2123,7 +2024,7 @@
     background-color:#FFFFFF;
     border-style: solid; 
     border-width: 0px 0px 1px 0px; 
-    border-color: #D5E0CE;
+    border-color: #4E78A0;
     margin: 1px;
     padding: 1px      
 }
@@ -2134,16 +2035,16 @@
     font-weight: bold;
     color:#000000; 
 }
+
 .tabLinkMinor{ 
     font-family: verdana, Arial, Helvetica, sans-serif; 
     font-size: 12px;
     font-weight: bold;
     color:#000000; 
 }
-
 .tabLinkSign{ 
     font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 14px;
+    font-size: 12px;
     color:#000000; 
 }
 
@@ -2157,6 +2058,7 @@
     font-size: 12px;
     color:#555555;    
 }
+
 .tdFixSize500px {    
   width:500px; 
   height:50px;
@@ -2273,7 +2175,7 @@
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
 	font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 12px;  
+    font-size: 11px;  
     color: #4E78A0; 
     background-color:lightyellow;
     border-style: solid; 
@@ -2376,27 +2278,6 @@
     border-width: 1px 1px 1px 1px; 
     border-color: #4E78A0;
 }
-.tableBorderWithRoundCornersLightYellow {  
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-moz-border-top-right-radius: 5px;
-	-moz-border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	border-top-left-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-moz-border-bottom-right-radius: 5px;
-	-moz-border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px;
-	font-family: verdana, Arial, Helvetica, sans-serif; 
-    font-size: 11px;  
-    color: #4E78A0; 
-    background-color:#FCFFF0;
-    border-style: solid; 
-    border-width: 1px 1px 1px 1px; 
-    border-color: #4E78A0;
-}
 
 .tableBorderWithRoundCornersRed {  
 	-webkit-border-top-right-radius: 5px;
@@ -2476,18 +2357,12 @@
 
 input[type=text]:focus, textarea:focus{
 	background-color: lightyellow;
-	/*border: 2px solid #4169E1;*/
-	box-shadow: 0 0 5px rgba(66, 148, 255, 1);
-	border: 2px solid rgba(66, 148, 255, 1);
-	
+	border: 1px solid #4169E1;
 	
 }
 input[type=password]:focus, textarea:focus{
 	background-color: lightyellow;
-	/*border: 2px solid #4169E1;*/
-	box-shadow: 0 0 5px rgba(66, 148, 255, 1);
-	border: 2px solid rgba(66, 148, 255, 1);
-	
+	border: 1px solid #4169E1;
 	
 }
 input[type=button]:focus{
@@ -2498,106 +2373,13 @@ input[type=button]:focus{
 select:focus{
 	/*border: 1px solid #CCC;*/
 	background-color: lightyellow;
-	border: 2px solid #4169E1;	
+	border: 1px solid #4169E1;	
 }
 
-.container-fluid {
-  padding-left: 10px;
-  padding-right: 20px;
+select {
+  font-size: 14px;
 }
 
-.number-display {
-  font-size: 30px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.padded {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-/*
-
-.dc-chart .axis text{
-  font-size: 12px;
-}
-
-text {
-  font-size: 16px;
-  fill: black;
-}
-*/
-
-.filterBold {
-  font-size: 16px;
-  fill: black;
-}
-
-.padded-row {
-  padding-bottom: 50px;
-}
-
-.padded-row-small {
-  padding-bottom: 10px;
-}
-
-a { cursor: pointer }
-
-.show-grid-small {
-    border: 1px solid #ddd;
-    background-color: #eee !important;
-}
-
-.add-field {
-    border: 1px solid #ddd;
-    background-color: #eee !important;
-    vertical-align: bottom;
-    font-size: 8px;
-}
-
-.show-grid-left {
-    border: 1px solid #ddd;
-    background-color: #eee !important;
-    border-right-style: none;
-    font-size: 16px;
-    fill: black;   
-}
-
-.show-grid-right {
-    border: 1px solid #ddd;
-    background-color: #eee !important;
-    border-left-style: none;
-    text-align: right;
-    font-size: xx-small;
-    
-}
-
-.show-grid-center-large {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border: 1px solid #ddd;
-    background-color: #eee !important;
-    border-right-style: none;
-    font-weight: bold;
-    font-size: 18px;
-    text-align: center;
-}
-
-.show-grid-center-small {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border: 1px solid #ddd;
-    background-color: #eee !important;
-    border-right-style: none;
-    font-weight: bold;
-    font-size: 12px;
-    text-align: center;
-}
-
-.border {
-    border: 1px solid #ddd;
-}
 
 a.menu:link {text-decoration: none ; font-weight: normal; border: 0px }
 a.menu:visited {text-decoration: none ; color:#FFFFFF; font-weight: normal; border: 0px }

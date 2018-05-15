@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 <!-- ======================= header ===========================-->
-<jsp:include page="/WEB-INF/views/header.jsp" />
+<jsp:include page="/WEB-INF/views/headerVisma.jsp" />
 <!-- =====================end header ==========================-->
 <style>
 .ui-datepicker { font-size:9pt;}
