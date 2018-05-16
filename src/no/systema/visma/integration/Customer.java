@@ -4,13 +4,10 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -18,8 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
-//import no.systema.jservices.common.util.StringUtils;
-import no.systema.visma.Configuration;
 import no.systema.visma.v1client.ApiClient;
 import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
@@ -40,12 +35,9 @@ import no.systema.visma.v1client.model.DtoValueString;
  * @author fredrikmoller
  */
 @Service
-public class Customer extends Configuration {
+public class Customer  {
 	private static Logger logger = Logger.getLogger(Customer.class);
 	
-	@Autowired
-	public Configuration configuration;	
-
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;	
 	
@@ -126,7 +118,6 @@ public class Customer extends Configuration {
 		} 
 		
 		
-		
 	}
 	
 	private CustomerDto getGetBycustomerCd(String number) {
@@ -137,7 +128,7 @@ public class Customer extends Configuration {
 			customerExistDto = customerApi.customerGetBycustomerCd(number);
 			
 		} catch (HttpClientErrorException e) {
-			logger.info("message:" + e.getMessage()+ ", customerExistDto is null;");
+			logger.info("message:" + e.getMessage()+ ", customerExistDto is null, continue...");
 			customerExistDto = null;
 			// continue
 		}
@@ -224,45 +215,6 @@ public class Customer extends Configuration {
     	
     }
 
-//    /**
-//     * Since Create Customer is done by POST, there is no response body returned
-//     * Instead Response Header is used.
-//     * The key - Location hold a re-direct url with trailing generated number (Kundnr:)
-//     * 
-//     * @return number the generated Kundnr.:
-//     * @throws RuntimeException if Location is not found in Response Headers
-//     * @throws IndexOutOfBoundsException if , still, Location is not found in Response Headers
-//     */
-//    private int getGenereratedNumberFromVisma() throws IndexOutOfBoundsException{
-//    	String HEADERKEY_LOCATION = "Location";
-//    	MultiValueMap<String, String> responseHeaders = customerApi.getApiClient().getResponseHeaders();
-//    	if (responseHeaders.containsKey(HEADERKEY_LOCATION)) {
-//    		List<String> locationList = responseHeaders.get(HEADERKEY_LOCATION);
-//    		String location = locationList.get(0);
-//
-//    		return parseLocationForNumber(location);
-//
-//    	} else {
-//    		String errMsg = "Could not find key Location in Response Headers="+responseHeaders;
-//    		logger.error(errMsg);
-//    		throw new RuntimeException(errMsg);
-//    	}
-//    	
-//	}
-//	
-//    private int parseLocationForNumber(String location) {
-//		logger.info("Location="+location);
-//    	String basePath = customerApi.getApiClient().getBasePath();
-//    	String subPath = "/controller/api/v1/customer";	//TODO find a way to remove hardcode.
-//    	
-//    	String callUrl = basePath + subPath;
-//		int lastSlash = StringUtils.indexOfDifference(location, callUrl);
-//		String numberAsString = StringUtils.substring(location, lastSlash + 1);
-//		int number = Integer.valueOf(numberAsString);
-//		logger.info("number="+number);
-//
-//    	return number;
-//	}
 
 	/**
      * Get a range of customers
@@ -334,7 +286,7 @@ public class Customer extends Configuration {
 		dto.setCustomerClassId(toDtoString(1));
 		
 		
-		//TODO the rest.....
+		//TODO the rest.....?
 		
 		return dto;
 	}

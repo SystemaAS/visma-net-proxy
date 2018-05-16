@@ -81,6 +81,56 @@ public class WebController {
 		
 		}
 	}	
+
+	//TODO create viskulog.do
+	@RequestMapping(value = "viskulog.do", method={RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView getViskulog( HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("viskulog"); 
+		Map model = new HashMap();
+		logger.info("Inside: viskulog");
+		
+		if (appUser == null) {
+			return loginView;
+		} else {
+
+
+			
+//			firmvis = firmvisDaoService.get();
+//
+//			model.put("firmvis", firmvis);
+			successView.addObject("model", model);
+
+			return successView;
+		
+		}
+	}	
+	
+	//TODO create viskunde.do
+	@RequestMapping(value = "viskunde.do", method={RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView getViskunde( HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("viskunde"); 
+		Map model = new HashMap();
+		logger.info("Inside: viskunde");
+		
+		if (appUser == null) {
+			return loginView;
+		} else {
+
+
+			
+//			firmvis = firmvisDaoService.get();
+//
+//			model.put("firmvis", firmvis);
+			successView.addObject("model", model);
+
+			return successView;
+		
+		}
+	}		
+	
+	
 	
 	//TODO create supplier.do
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET, RequestMethod.POST})

@@ -63,7 +63,7 @@
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap>
 									<a href="mainmaintenancecundf_kontaktpersoner_list.do">
 										<font class="tabDisabledLinkMinor">&nbsp;
-										Transaksjoner - feil
+										Faktura - feil
 										</font>&nbsp;						
 									</a>
 								</td>
@@ -79,7 +79,7 @@
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap>
 									<a href="mainmaintenancecundf_kontaktpersoner_list.do">
 										<font class="tabDisabledLinkMinor">&nbsp;
-										Transaksjoner - historikk
+										Faktura - historikk
 										</font>&nbsp;						
 									</a>
 								</td>	

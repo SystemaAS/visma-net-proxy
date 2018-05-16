@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jakewharton.fliptables.FlipTableConverters;
 
-import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
-import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
 import no.systema.visma.PrettyPrintViskundeError;
 import no.systema.visma.transaction.TransactionManager;
@@ -129,7 +127,7 @@ public class HelperController {
 	
 	/**
 	 * 
-	 * @Example: http://gw.systema.no:8080/visma-net-proxy/showHistory.do?user=FREDRIK&filename=log4j_visma-net-proxy-transaction.log
+	 * @Example: http://gw.systema.no:8080/visma-net-proxy/showHistory.do?user=SYSTEMA&filename=log4j_visma-net-proxy-transaction.log
 	 * 
 	 * @param session
 	 * @param request, user 
@@ -170,15 +168,11 @@ public class HelperController {
 	}	
 	
 	@Autowired
-	@Qualifier("bridfDaoService")
 	private BridfDaoService bridfDaoService;
 	
 	@Autowired
 	@Qualifier("tsManager")
 	private TransactionManager transactionManager;
 
-	@Autowired
-	private ViskundeDaoService viskundeDaoService;	
-	
 	
 }

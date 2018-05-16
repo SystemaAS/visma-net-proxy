@@ -1,6 +1,5 @@
 package no.systema.visma;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**

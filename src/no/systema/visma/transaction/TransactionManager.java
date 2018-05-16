@@ -98,26 +98,9 @@ public class TransactionManager {
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" about to be syncronized.");
 		try {
 			
-//			VissyskunDao vissyskunDao = vissyskunDaoService.findBySyspedKundnr(viskundeDao.getKundnr());
-			
-//			if (vissyskunDao != null) { //Update
-//				number = String.valueOf(vissyskunDao.getVisknr());
-//				customer.customerPutBycustomerCd(String.valueOf(vissyskunDao.getVisknr()), viskundeDao);
-//				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
-//				logger.info("Customer uppdated.");
-//			} else { //New
-//				int numberNew = customer.customerPost(viskundeDao);
-//				number = String.valueOf(numberNew); //for logging
-//				logger.info(Customer.logPrefix(viskundeDao.getKundnr(), number));
-//				logger.info("Customer created.");
-//				VissyskunDao vissyskundao = createVissyskunDao(viskundeDao, numberNew);
-//				vissyskunDaoService.create(vissyskundao);
-//				logger.info("VISSYSKUN created. Dao="+vissyskundao);
-
-		
 			customer.syncronize(viskundeDao);
-		
 			logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
+
 			viskundeDaoService.delete(viskundeDao);
 			logger.info("VISKUNDE deleted, dao="+viskundeDao);
 			
@@ -144,47 +127,7 @@ public class TransactionManager {
 		
 	}
 
-
-//	private VissyskunDao createVissyskunDao(ViskundeDao viskundeDao, int number) {
-//		VissyskunDao dao;
-//		try {
-//			dao = new VissyskunDao();
-//			dao.setFirma(getFirma());
-//			dao.setKundnr(viskundeDao.getKundnr());
-//			dao.setVisknr(number);
-//		} catch (Exception e) {
-//			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
-//			logger.error("Could not create VissyskunDao", e);
-//			throw e;
-//		}
-//		
-//		return dao;
-//	}
 	
-	
-	/**
-	 * Get fifirm from FIRM
-	 * 
-	 * Support one firma.
-	 * 
-	 * @return fifirm
-	 * @throws IndexOutOfBoundsException if more than one row in FIRM
-	 */
-	//TODO Get firma from FIRMVIS
-	private String getFirma() throws IndexOutOfBoundsException {
-		List<FirmDao> daoList = firmDaoService.findAll(null);
-		String firma;
-		try {
-			firma = daoList.get(0).getFifirm();
-		} catch (IndexOutOfBoundsException e) {
-			logger.error("Could not select one fifirm from FIRMA!");
-			throw e;
-		}
-
-		return firma;
-
-	}
-
 	/**
 	 * For test and debugging purpose. Just sync one VISKUNDE to Customer
 	 * 

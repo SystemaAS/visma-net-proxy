@@ -5,14 +5,14 @@
 <html>
 	<head>
 		<link href="resources/${user.cssEspedsg}?ver=${user.versionEspedsg}" rel="stylesheet" type="text/css"/>
-		<link href="resources/jquery.calculator.css" rel="stylesheet" type="text/css"/>
-		<link type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/overcast/jquery-ui.css" rel="stylesheet">
-		<%--<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/smoothness/jquery-ui.css" rel="stylesheet"> --%>
-		
-		<%-- datatables grid CSS --%>
-		<link type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.css" rel="stylesheet">
-		<%-- <link type="text/css" href="http://cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.css" rel="stylesheet">--%>
-		
+		<link rel="stylesheet" type="text/css" href="resources/selectlist/css/selectlist.css"/>
+		<link type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css" rel="stylesheet"/>
+		<link type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/overcast/jquery-ui.css" rel="stylesheet"/>
+		<link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/dc.css"/>
+  		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"/>
+
+		<link rel="SHORTCUT ICON" type="image/png" href="resources/images/systema_logo.png"></link>
+
 		<c:choose>
 			<c:when test="${ fn:contains(user.cssEspedsg, 'Toten') }"> 
 				<link rel="SHORTCUT ICON" type="image/ico" href="resources/images/toten_ico.ico"></link>
@@ -21,21 +21,47 @@
 				<link rel="SHORTCUT ICON" type="image/png" href="resources/images/systema_logo.png"></link>
 			</c:otherwise>
 		</c:choose>
-		<%-- <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"> --%>
+
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
-		<title>eSpedsg - Visma Integrasjon</title>
+		<title>Systema - eSpedsg</title>
+
 	</head>
 	<body>
-	<%-- include som javascript functions --%>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js""></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script type="text/javascript" src="resources/js/jquery.blockUI.js"></script>
 	<script type="text/javascript" src="resources/js/systemaWebGlobal.js?ver=${user.versionEspedsg}"></script>
-
-	<%--datatables grid --%>
-	<script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-	<%--<script type="text/javascript" src="http://cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.js"></script> --%>
+	<script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<!-- using dc.js as the driver of upgrading of d3 and crossfilter, hence the https://dc-js.github.io/dc.js/js, NO! They are using latest/createt! Specify d3 version-->
+	<!--script type="text/javascript" src="https://dc-js.github.io/dc.js/js/d3.js"></script-->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-queue.v3.min.js"></script>
+	<script type="text/javascript" src="https://dc-js.github.io/dc.js/js/crossfilter.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+ 	<script type="text/javascript" src="resources/selectlist/js/jquery.selectlist.min.js"></script>
+	<script type="text/javascript" src="resources/js/headerReports.js?ver=${user.versionEspedsg}"></script>	
 	
+	<script>
+		var no_NO = {
+				  "decimal": ".",
+				  "thousands": ".",
+				  "grouping": [3],
+				  "currency": ["NOK", ""],
+				  "dateTime": "%a %b %e %X %Y",
+				  "date": "%d%m%Y",
+				  "time": "%H:%M:%S",
+				  "periods": ["AM", "PM"],
+				  "days": ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"],
+				  "shortDays": ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"],
+				  "months": ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"],
+				  "shortMonths": ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
+				};	
+	  	var NO = d3.locale(no_NO);  
+	</script>
 	
     <table class="noBg" width="100%" border="0" cellspacing="0" cellpadding="0">
 		<%--Banner --%>
