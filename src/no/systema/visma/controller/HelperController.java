@@ -37,9 +37,9 @@ public class HelperController {
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
 	 */
-	@RequestMapping(value="syncronizeCustomers.do", method={RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value="syncronizeCustomersOBSO.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public String syncCustomers(HttpSession session, HttpServletRequest request) {
+	public String syncCustomersOBSO(HttpSession session, HttpServletRequest request) {
 		StringBuilder sb = new StringBuilder();
 
 		logger.info("syncronizeCustomers.do...");

@@ -139,11 +139,11 @@
 					<td>
 						<table class="formFrameHeaderTransparent" style="width: 100%">
 							<tr height="20">
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="customer.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde - feil </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="customer.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde </font>&nbsp;
 								</a></td>
 
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="xxx.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - feil </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="xxx.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
 								</a></td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Kunde - historikk </font>&nbsp;</td>
@@ -177,13 +177,9 @@
 														<div class="col-md-1 text12">
 															<font class="text14">Fra dato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 														</div>
-														<div class="col-md-1 text12">
-															<font class="text14">Til dato:</font><br> <input type="text" class="inputText" name="selectTildato" id="selectTildato" size="9" maxlength="8">
-														</div>
-
 														<div class="col-md-2" align="right">
 															<br>
-															<button class="inputFormSubmit" onclick="load_data()" autofocus>Sök</button>
+															<button class="inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
 														</div>
 
 													</div>

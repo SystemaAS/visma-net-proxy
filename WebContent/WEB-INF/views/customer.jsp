@@ -30,7 +30,6 @@
 
 		var selectedKundenr = jq('#selectKundenr').val();
 		var selectedFradato = jq('#selectFradato').val();
-		var selectedTildato = jq('#selectTildato').val();
 
 		if (selectedKundenr != "") {
 			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
@@ -41,12 +40,6 @@
 			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
 		} else {
 			runningUrl = runningUrl + "&fraDato=ALL";
-		}
-		if (selectedTildato != null && selectedTildato != "") {
-			runningUrl = runningUrl + "&tilDato=" + selectedTildato;
-		} else {
-			runningUrl = runningUrl + "&tilDato=ALL";
-
 		}
 
 		console.log("runningUrl=" + runningUrl);
@@ -158,9 +151,9 @@
 					<td>
 						<table class="formFrameHeaderTransparent" style="width: 100%">
 							<tr height="20">
-								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Kunde - feil </font>&nbsp;</td>
+								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Kunde </font>&nbsp;</td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="yyy.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - feil </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="yyy.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
 								</a></td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="viskulog.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde - historikk </font>&nbsp;
@@ -188,15 +181,14 @@
 												<div class="container-fluid">
 													<div class="row">
 														<div class="col-md-1 text12 text-nowrap">
-															<font class="text14">Kunde:</font><br> <input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"> <a tabindex="-1"
+															<font class="text14">Kunde:</font><br> 
+															<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
+															<a tabindex="-1"
 																id="kundenrLink"> <img style="cursor: pointer; vertical-align: middle;" src="resources/images/find.png" width="14px" height="14px" border="0" />
 															</a>&nbsp;
 														</div>
 														<div class="col-md-1 text12">
 															<font class="text14">Fra dato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
-														</div>
-														<div class="col-md-1 text12">
-															<font class="text14">Til dato:</font><br> <input type="text" class="inputText" name="selectTildato" id="selectTildato" size="9" maxlength="8">
 														</div>
 
 														<div class="col-md-2" align="right">

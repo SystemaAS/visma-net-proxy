@@ -43,7 +43,7 @@ public class TransactionManager {
 	/**
 	 * Syncronize all VISKUNDE with Customer in Visma.net <br>
 	 * 
-	 * 
+	 * @return List<PrettyPrintViskundeError> could be empty
 	 */
 	public List<PrettyPrintViskundeError> syncronizeCustomers() {
 		logger.info("Syncronizing all records in VISKUNDE -> Customer.");
