@@ -23,7 +23,9 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/viskunde?user=${user.user}";
-
+	var syncCustomerUrl = "syncronizeCustomers.do?user=${user.user}";
+	
+	
 	function load_data() {
 
 		var runningUrl = baseUrl;
@@ -90,6 +92,27 @@
 		
 	}
 
+
+	function syncCustomer() {
+		jq.blockUI({
+			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
+		});
+		
+		jq.ajax({
+			url : syncCustomerUrl,
+			method : "POST", //to avoid invalidate session
+		}).done(function() {
+			alert("Synkronisering er ferdig.");
+			load_data();
+		}).fail(function(data) {
+			console.log("Error", data);
+			alert("Synkronisering gikk feil.", data);
+		}).always(function() {
+			jq.unblockUI();
+		});
+
+	}
+
 	jq(document).ready(function() {
 
 	});
@@ -146,6 +169,16 @@
 					<td>&nbsp;</td>
 				</tr>
 
+				<tr height="20">
+					<td class="text14">&nbsp;</td>
+					<td>&nbsp;&nbsp;Synkronisere eSpedsg Kunderegister med Visma.net Financials :&nbsp;&nbsp;
+					<button class="inputFormSubmit" onclick="syncCustomer()" autofocus>Synkronisere</button></td>
+				</tr>
+
+				<tr height="20">
+					<td>&nbsp;</td>
+				</tr>
+				
 				<tr>
 					<td>&nbsp;</td>
 					<td>
@@ -193,7 +226,7 @@
 
 														<div class="col-md-2" align="right">
 															<br>
-															<button class="inputFormSubmit" onclick="load_data()" autofocus>Sök</button>
+															<button class="inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
 														</div>
 
 													</div>

@@ -83,15 +83,13 @@ public class WebController {
 
 //		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 
-		session.invalidate();
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
 		return sb.toString();
 
 	}	
-	
-	
-	
-	
-	
 	
 	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
