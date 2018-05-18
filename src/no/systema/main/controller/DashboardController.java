@@ -85,7 +85,7 @@ public class DashboardController {
 	 */
 	@RequestMapping(value="logonDashboard.do", method= { RequestMethod.POST})
 	public ModelAndView logon(@ModelAttribute (AppConstants.SYSTEMA_WEB_USER_KEY) SystemaWebUser appUser, BindingResult bindingResult, HttpSession session, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttr){
-		ModelAndView successView = new ModelAndView("redirect:configuration.do");
+		ModelAndView successView = new ModelAndView("redirect:customer.do");
 		Map model = new HashMap();
 		
 		if(appUser==null){

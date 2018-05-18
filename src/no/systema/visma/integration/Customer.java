@@ -79,6 +79,7 @@ public class Customer  {
 	 * @throws HttpClientErrorException
 	 */
 	public void syncronize(ViskundeDao viskundeDao) throws RestClientException,  HttpClientErrorException {
+		logger.info("syncronize(ViskundeDao viskundeDao)");
 		//For both New and Update
 		CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);			
 		
@@ -121,6 +122,7 @@ public class Customer  {
 	}
 	
 	private CustomerDto getGetBycustomerCd(String number) {
+		logger.info("getGetBycustomerCd(String number)");
 		CustomerDto customerExistDto;
 
 		try {
@@ -265,6 +267,7 @@ public class Customer  {
 	 * @throws RuntimeException if Kundnr is 0.
 	 */
     public CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde) {
+    	logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde)");
     	//Sanity checks
 		if (viskunde.getKundnr() == 0) {
 			String errMsg = "KUNDNR can not be 0";

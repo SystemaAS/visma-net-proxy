@@ -27,13 +27,16 @@
 					<td></td>
 				</tr>
 				<tr height="25">
-					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Konfigurasjon</font>&nbsp;</td>
-					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+					<td>&nbsp;</td>
 					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a id="customer" onClick="setBlockUI(this);" href="customer.do"> <font class="tabDisabledLink">&nbsp;Kunde</font>&nbsp;
 					</a></td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a id="supplier" onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
 					</a></td>
+					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+	
+					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Konfigurasjon</font>&nbsp;</td>
+
 					<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 				</tr>
 			</table>

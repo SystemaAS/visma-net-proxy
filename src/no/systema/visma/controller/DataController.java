@@ -1,10 +1,7 @@
 package no.systema.visma.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.SneakyThrows;
-import no.systema.jservices.common.dao.CundfDao;
 import no.systema.jservices.common.dao.ViskulogDao;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
-import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.ViskundeDto;
 
 @RestController
@@ -108,7 +103,7 @@ public class DataController {
 			dto.setSpraak(dao.getSpraak());
 			dto.setBetbet(dao.getBetbet());
 			dto.setSyland(dao.getSyland());
-			dto.setSyncda(LocalDate.ofEpochDay(dao.getSyncda()));
+			dto.setSyncda(dao.getSyncda());
 			dto.setSyerro(dao.getSyerro());
 			
 			viskundeDtoList.add(dto);
@@ -116,7 +111,8 @@ public class DataController {
 		});
 		return viskundeDtoList;
 	}	
-	
+
+
 	private void checkUser(String user) {
 		if (bridfDaoService.getUserName(user) == null) {
 			throw new RuntimeException("ERROR: parameter, user, is not valid!");

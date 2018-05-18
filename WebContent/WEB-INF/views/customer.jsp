@@ -58,11 +58,15 @@
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 1, "desc" ] ],
+			"order" : [ [ 3, "desc" ] ],
 			"aoColumns" : [ {
 				"mData" : "kundnr"
 			}, {
 				"mData" : "knavn"
+			}, {
+				"mData" : "syncda"
+			}, {
+				"mData" : "syerro"
 			}, {
 				"mData" : "postnr"
 			}, {
@@ -75,10 +79,6 @@
 				"mData" : "spraak"
 			} ,{
 				"mData" : "aktkod"
-			} ,{
-				"mData" : "syncda"
-			} ,{
-				"mData" : "syerro"
 			} ],
 			"lengthMenu" : [ 75, 100 ],
 			"language" : {
@@ -103,6 +103,8 @@
 			method : "POST", //to avoid invalidate session
 		}).done(function() {
 			alert("Synkronisering er ferdig.");
+			var formatTime = d3.timeFormat("%Y%m%d");
+			jq('#selectFradato').val(formatTime(new Date) - 1);
 			load_data();
 		}).fail(function(data) {
 			console.log("Error", data);
@@ -136,13 +138,10 @@
 			<%-- tab container component --%>
 			<table width="100%" class="text12">
 				<tr height="2">
-					<td></td>
+					<td>&nbsp;</td>
 				</tr>
 				<tr height="25">
-					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-					<a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Konfigurasjon</font>&nbsp;
-					</a></td>
-					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+					<td>&nbsp;</td>
 					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Kunde</font>&nbsp;</td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 					<td width="15%" valign="bottom" class="tabDisabled" align="center">
@@ -152,6 +151,11 @@
 -->	
 					<font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
 					</td>
+					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+
+					<td width="15%" valign="bottom" class="tabDisabled" align="center">
+					<a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Konfigurasjon</font>&nbsp;
+					</a></td>
 	
 					<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 				</tr>
@@ -240,14 +244,14 @@
 																<tr>
 																	<th>Kundnr</th>
 																	<th>Navn</th>
+																	<th>Dato</th>
+																	<th>Visma feilmelding</th>
 																	<th>Postnr</th>
 																	<th>Land</th>
 																	<th>Valuta</th>
 																	<th>Språk</th>
 																	<th>Bet.beting.</th>
 																	<th>Type</th>
-																	<th>Dato</th>
-																	<th>Feil</th>
 																</tr>
 															</thead>
 														</table>

@@ -1,7 +1,5 @@
 package no.systema.visma;
 
-import java.time.LocalDate;
-
 import lombok.Data;
 
 @Data
@@ -16,7 +14,7 @@ public class ViskundeDto {
 	private String spraak;
 	private String betbet;
 	private String syland;
-	private LocalDate syncda;
+	private int syncda;
 	private String syerro;
 
 }

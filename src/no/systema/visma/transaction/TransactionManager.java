@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import no.systema.jservices.common.dao.FirmDao;
+import no.systema.jservices.common.dao.ViskulogDao;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
+import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VissyskunDaoService;
 import no.systema.visma.PrettyPrintViskundeError;
@@ -37,8 +38,12 @@ public class TransactionManager {
 	
 	@Autowired
 	FirmDaoService firmDaoService;
+	
+	@Autowired
+	ViskulogDaoService viskulogDaoService;
 
-	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
+	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
+	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
 	
 	/**
 	 * Syncronize all VISKUNDE with Customer in Visma.net <br>
@@ -53,20 +58,31 @@ public class TransactionManager {
 		
 		viskundeList.forEach((dao) -> {
 			try {
+
 				syncronizeCustomer(dao);
+
+				ViskulogDao viskulogDao = getViskulogDao(dao, null);
+				viskulogDaoService.create(viskulogDao);
+				logger.info("VISKULOG created, dao="+viskulogDao);	
 			} 
 			catch (HttpClientErrorException e) {
 				logger.error(e);
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
 				setError(dao, e.getStatusText());
 				viskundeDaoService.updateOnError(dao);
+				ViskulogDao viskulogDao = getViskulogDao(dao, e.getStatusText());
+				viskulogDaoService.create(viskulogDao);
+				logger.info("VISKULOG created, dao="+viskulogDao);			
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
 				logger.error(e);
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
 				setError(dao, e.getMessage());
-				viskundeDaoService.updateOnError(dao);				
+				viskundeDaoService.updateOnError(dao);		
+				ViskulogDao viskulogDao = getViskulogDao(dao, e.getMessage());
+				viskulogDaoService.create(viskulogDao);
+				logger.info("VISKULOG created, dao="+viskulogDao);	
 				//continues with next dao in list
 			}
 
@@ -81,6 +97,16 @@ public class TransactionManager {
 	}
 	
 	private void setError(ViskundeDao dao, String errorText) {
+		logger.info("Inside setError, errorText="+errorText);
+		//TODO json parse and trim
+		
+//		JsonReader<SingleValueDto> jsonReader = new JsonReader<SingleValueDto>();
+//		jsonReader.set(new SingleValueDto());
+//
+//		SingleValueDto error = (SingleValueDto) jsonReader.get(errorText);
+//		
+//		logger.error("error.getValue()"+error.getValue());
+		
 		LocalDateTime now = LocalDateTime.now();
 		String nowDate = now.format(dateFormatter);
 		int syncDa = Integer.valueOf(nowDate);
@@ -94,7 +120,7 @@ public class TransactionManager {
 	 * 
 	 * @param viskundDao
 	 */
-	public void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException {  //TODO Add transaction 
+	public void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException { 
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" about to be syncronized.");
 		try {
 			
@@ -103,6 +129,7 @@ public class TransactionManager {
 
 			viskundeDaoService.delete(viskundeDao);
 			logger.info("VISKUNDE deleted, dao="+viskundeDao);
+			
 			
 		} 
 		catch (HttpClientErrorException e) {
@@ -128,6 +155,34 @@ public class TransactionManager {
 	}
 
 	
+	private ViskulogDao getViskulogDao(ViskundeDao viskundeDao, String errorText) {
+		String syerror;
+		ViskulogDao dao = new ViskulogDao();
+		dao.setFirma(viskundeDao.getFirma());
+		dao.setKnavn(viskundeDao.getKnavn());
+		dao.setKundnr(viskundeDao.getKundnr());
+
+		if (errorText != null) {
+			if (errorText.length() < 200) {
+				syerror = errorText;
+			}
+			int beginIndex = errorText.length() - 199;  //syerro is set to 200
+			syerror = errorText.substring(beginIndex);		
+			dao.setSyerro(syerror);
+			dao.setStatus("ER");
+		}
+
+		LocalDateTime now = LocalDateTime.now();
+		String nowDate = now.format(dateFormatter);
+		String nowTime = now.format(timeFormatter);
+		int syncDa = Integer.valueOf(nowDate);
+		int synctm = Integer.valueOf(nowTime);	
+		dao.setSyncda(syncDa);
+		dao.setSynctm(synctm);
+		
+		return dao;
+	}
+
 	/**
 	 * For test and debugging purpose. Just sync one VISKUNDE to Customer
 	 * 
