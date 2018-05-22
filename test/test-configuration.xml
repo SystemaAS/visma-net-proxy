@@ -4,8 +4,9 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="customer" class="no.systema.visma.integration.Customer"/>
-	<bean id="configuration" class="no.systema.visma.Configuration"/>
+	<bean id="customerInvoice" class="no.systema.visma.integration.CustomerInvoice"/>
 	<bean id="customerApi" class="no.systema.visma.v1client.api.CustomerApi"/>
+	<bean id="customerInvoiceApi" class="no.systema.visma.v1client.api.CustomerInvoiceApi"/>
 	<bean id="tsManager" class="no.systema.visma.transaction.TransactionManager"/>
 
 

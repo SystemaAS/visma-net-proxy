@@ -35,27 +35,14 @@ import no.systema.visma.v1client.model.DtoValueString;
  * @author fredrikmoller
  */
 @Service
-public class Customer  {
+public class Customer  extends Configuration{
 	private static Logger logger = Logger.getLogger(Customer.class);
 	
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;	
 	
-	@Bean
-	public ApiClient apiClient(){
-		return new ApiClient(restTemplate());
-	}
-	
-	@Bean
-	public RestTemplate restTemplate(){
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new VismaNetResponseErrorHandler());
-		return restTemplate;  
-	}	
-
 	@Autowired
 	public CustomerApi customerApi = new CustomerApi(apiClient());
-	
 
 	@PostConstruct
 	public void post_construct() {
@@ -101,19 +88,19 @@ public class Customer  {
     		
 			
     	} catch (HttpClientErrorException e) {
-			logger.error(logPrefix(viskundeDao.getKundnr()));
+			logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
 			logger.error(e.getClass()+" On  syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
 			throw e;
 		}
     	catch (RestClientException e) {
-    		logger.error(logPrefix(viskundeDao.getKundnr()));
+    		logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
 			logger.error(e.getClass()+" On syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
 			throw e;
 		}
     	catch (Exception e) {
-    		logger.error(logPrefix(viskundeDao.getKundnr()));
+    		logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
 			logger.error(e.getClass()+" On syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
 			throw e;
 		} 
@@ -121,7 +108,13 @@ public class Customer  {
 		
 	}
 	
-	private CustomerDto getGetBycustomerCd(String number) {
+	/**
+	 * Get a specific Customer
+	 * 
+	 * @param number
+	 * @return CustomerDto return null if not found.
+	 */
+	public CustomerDto getGetBycustomerCd(String number) {
 		logger.info("getGetBycustomerCd(String number)");
 		CustomerDto customerExistDto;
 
@@ -152,7 +145,7 @@ public class Customer  {
      * @throws HttpClientErrorException when an HTTP 4xx is received. Typically when indata is wrong
      */
     private void customerPutBycustomerCd(String number, CustomerUpdateDto customerUpdateDto) throws RestClientException, HttpClientErrorException {
-    	logger.info(logPrefix(number));
+    	logger.info(Helper.logPrefix(number));
     	logger.info("customerPutBycustomerCd()"); 
     	
     	try {
@@ -160,19 +153,19 @@ public class Customer  {
     		customerApi.customerPutBycustomerCd(number, customerUpdateDto);
 
     	} catch (HttpClientErrorException e) {
-			logger.error(logPrefix(number));
+			logger.error(Helper.logPrefix(number));
 			logger.error(e.getClass()+" On  customerApi.customerPutBycustomerCd call. number="+number+", customerUpdateDto="+customerUpdateDto.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
 			throw e;
 		}
     	catch (RestClientException e) {
-			logger.error(logPrefix(number));
+			logger.error(Helper.logPrefix(number));
 			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", customerUpdateDto="+customerUpdateDto.toString());
 			throw e;
 		}
     	catch (Exception e) {
-			logger.error(logPrefix(number));
+			logger.error(Helper.logPrefix(number));
 			logger.error(e.getClass()+" On customerApi.customerPutBycustomerCd call. number="+number+", customerUpdateDto="+customerUpdateDto.toString());
 			throw e;
 		} 
@@ -190,7 +183,7 @@ public class Customer  {
      * @throws IndexOutOfBoundsException if, still,  Location cannot be found in Response Headers
      */
     private void customerPost(CustomerUpdateDto updateDto) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
-    	logger.info(logPrefix(updateDto.getNumber()));
+    	logger.info(Helper.logPrefix(updateDto.getNumber()));
     	logger.info("customerPost()"); 
     	
     	try {
@@ -199,7 +192,7 @@ public class Customer  {
 
     		
     	} catch (HttpClientErrorException e) {
-			logger.error(logPrefix(updateDto.getNumber()));
+			logger.error(Helper.logPrefix(updateDto.getNumber()));
 			logger.error(e.getClass()+" On customerApi.customerPost call. updateDto="+updateDto.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
@@ -210,7 +203,7 @@ public class Customer  {
 			throw e;
 		} 
     	catch (Exception e) {
-			logger.error(logPrefix(updateDto.getNumber()));
+			logger.error(Helper.logPrefix(updateDto.getNumber()));
 			logger.error(e.getClass()+" On customerApi.customerPost call. updateDto="+updateDto.toString());
 			throw e;
 		}     	
@@ -276,20 +269,16 @@ public class Customer  {
 		} 
 	
 		CustomerUpdateDto dto = new CustomerUpdateDto();
-		dto.setNumber(toDtoString(viskunde.getKundnr()));
-//		dto.setAccountReference(toDtoString(viskunde.getKundnr()));
-		dto.setName(toDtoString(viskunde.getKnavn()));
-		dto.setCorporateId(toDtoString(viskunde.getSyrg())); 
+		dto.setNumber(Helper.toDtoString(viskunde.getKundnr()));
+		dto.setName(Helper.toDtoString(viskunde.getKnavn()));
+		dto.setCorporateId(Helper.toDtoString(viskunde.getSyrg())); 
 		dto.setMainAddress(getMainAddress(viskunde));
 		dto.setStatus(getStatus(viskunde));
 		dto.setMainContact(getMainContact(viskunde));
 		
-		dto.setCreditTermsId(toDtoString(viskunde.getBetbet())); 
+		dto.setCreditTermsId(Helper.toDtoString(viskunde.getBetbet())); 
 		
-		dto.setCustomerClassId(toDtoString(1));
-		
-		
-		//TODO the rest.....?
+		dto.setCustomerClassId(Helper.toDtoString(1)); //Hardcode
 		
 		return dto;
 	}
@@ -298,10 +287,10 @@ public class Customer  {
 		DtoValueContactInfoUpdateDto dtoValue = new DtoValueContactInfoUpdateDto();
 		
 		ContactInfoUpdateDto infoDto = new ContactInfoUpdateDto();
-		infoDto.setName(toDtoString(viskunde.getKnavn()));
-		infoDto.setAttention(toDtoString(viskunde.getKpers()));
-		infoDto.setEmail(toDtoString(viskunde.getSyepos()));
-		infoDto.setPhone1(toDtoString(viskunde.getTlf()));
+		infoDto.setName(Helper.toDtoString(viskunde.getKnavn()));
+		infoDto.setAttention(Helper.toDtoString(viskunde.getKpers()));
+		infoDto.setEmail(Helper.toDtoString(viskunde.getSyepos()));
+		infoDto.setPhone1(Helper.toDtoString(viskunde.getTlf()));
 		
 		dtoValue.setValue(infoDto);
 		
@@ -335,12 +324,12 @@ public class Customer  {
 		DtoValueAddressUpdateDto dtoValueDto = new DtoValueAddressUpdateDto();
 
 		AddressUpdateDto addressdto = new AddressUpdateDto();
-		addressdto.setAddressLine1(toDtoString(viskunde.getAdr1()));
-		addressdto.setAddressLine2(toDtoString(viskunde.getAdr2()));
-		addressdto.setAddressLine3(toDtoString(viskunde.getAdr3()));
-		addressdto.countryId(toDtoString(viskunde.getSyland()));
-		addressdto.setPostalCode(toDtoString(viskunde.getPostnr()));
-		addressdto.setCity(toDtoString(viskunde.getAdr3()));
+		addressdto.setAddressLine1(Helper.toDtoString(viskunde.getAdr1()));
+		addressdto.setAddressLine2(Helper.toDtoString(viskunde.getAdr2()));
+		addressdto.setAddressLine3(Helper.toDtoString(viskunde.getAdr3()));
+		addressdto.countryId(Helper.toDtoString(viskunde.getSyland()));
+		addressdto.setPostalCode(Helper.toDtoString(viskunde.getPostnr()));
+		addressdto.setCity(Helper.toDtoString(viskunde.getAdr3()));
 		
 		dtoValueDto.setValue(addressdto);
 
@@ -365,24 +354,5 @@ public class Customer  {
 		}
 		return dtoList;
 	}	
-	
-	
-	private DtoValueString toDtoString(java.lang.Object o) {
-		if (o == null) {
-			return null;
-		}
-
-		return new DtoValueString().value(o.toString());
-
-	}
-	
-	
-	public static String logPrefix(Object kundnr) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("::KUNDNR:").append(kundnr);
-		
-		return sb.toString();
-		
-	}
 	
 }

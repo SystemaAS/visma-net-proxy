@@ -19,6 +19,7 @@ import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VissyskunDaoService;
 import no.systema.visma.PrettyPrintViskundeError;
 import no.systema.visma.integration.Customer;
+import no.systema.visma.integration.Helper;
 
 @Service("tsManager")
 public class TransactionManager {
@@ -98,14 +99,6 @@ public class TransactionManager {
 	
 	private void setError(ViskundeDao dao, String errorText) {
 		logger.info("Inside setError, errorText="+errorText);
-		//TODO json parse and trim
-		
-//		JsonReader<SingleValueDto> jsonReader = new JsonReader<SingleValueDto>();
-//		jsonReader.set(new SingleValueDto());
-//
-//		SingleValueDto error = (SingleValueDto) jsonReader.get(errorText);
-//		
-//		logger.error("error.getValue()"+error.getValue());
 		
 		LocalDateTime now = LocalDateTime.now();
 		String nowDate = now.format(dateFormatter);
@@ -133,23 +126,23 @@ public class TransactionManager {
 			
 		} 
 		catch (HttpClientErrorException e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
+			logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
 			logger.error("Could not syncronize viskunde, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
+			logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
 			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
 		}
 		catch (Exception e) {
-			logger.error(Customer.logPrefix(viskundeDao.getKundnr()));
+			logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
 			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
 			
 		}
 		
-		logger.info(Customer.logPrefix(viskundeDao.getKundnr()));
+		logger.info(Helper.logPrefix(viskundeDao.getKundnr()));
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
 		
 	}
