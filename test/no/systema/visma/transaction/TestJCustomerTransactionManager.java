@@ -1,7 +1,6 @@
 package no.systema.visma.transaction;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -22,38 +21,41 @@ import com.jakewharton.fliptables.FlipTableConverters;
 
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
-import no.systema.jservices.common.dao.services.VissyskunDaoService;
 import no.systema.visma.PrettyPrintViskundeError;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
-public class TestJTransactionManager {
+public class TestJCustomerTransactionManager {
 
-	private static Logger logger = Logger.getLogger(TransactionManager.class);	
+	private static Logger logger = Logger.getLogger(CustomerTransactionManager.class);	
 	
 	@Autowired
-	@Qualifier("tsManager")
-	TransactionManager transactionManager;
+	CustomerTransactionManager transactionManager;
 	
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
 	
-	@Autowired
-	VissyskunDaoService vissyskunDaoService;	
-	
 
 	@Test
-	public void testSyncCustomer2Runs_VAlidAndInValid() {
-		//Prereq:
-		//1. numbers correspond to viskunde-setup
+	public void testSyncCustomerValid() {
 		setupValid();
+		
 		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
-		System.out.println("Empty(prettyprint):");
-		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
-		assertResultValid();
+		logger.info("Empty(prettyprint):");
+		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 
+		assertResultValid();
+		
+		//cleanup
+		viskundeDaoService.deleteAll(null);
+		
+	}
+	
+	@Test
+	public void testSyncCustomer_InValid() {
 		setupInValid();
-		errorList = transactionManager.syncronizeCustomers();
+		
+		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
 		assertEquals(1, errorList.size());
 		System.out.println("NOT Empty(viskundedao):");
 		List<ViskundeDao> daoErrorList = viskundeDaoService.findAll(null);
@@ -64,7 +66,9 @@ public class TestJTransactionManager {
 		//cleanup
 		viskundeDaoService.deleteAll(null);
 		
-	}
+	}	
+	
+	
 	
 	
 	@Test(expected=AssertionError.class)
@@ -108,45 +112,21 @@ public class TestJTransactionManager {
 
 	}	
 	
-	private void setupDuplicates() {
-		if (viskundeDaoService.findAll(null).isEmpty()) {
-			getDuplicatesViskundeDaos().forEach((vk) ->{
-				viskundeDaoService.create(vk);
-			});
-		}
-	}	
-	
 	private void assertResultValid() {
 		//1. check that viskunde is empty
 		getValidViskundeDaos().forEach((vk) ->{
 			assertNull(viskundeDaoService.find(vk));
 		});
-		//2. check that vissyskund exist
-		getValidViskundeDaos().forEach((vk) ->{
-			assertNotNull(vissyskunDaoService.find(vk));
-		});
-		//TODO 3. Assert rollback
+		//TODO 2. Assert rollback
 	}	
 	
 	
 	private void assertResultInValid() {
 		assertTrue(!getInValidViskundeDaos().isEmpty());
-		//check that vissyskund exist
-		getInValidViskundeDaos().forEach((vk) ->{
-			assertNotNull(vissyskunDaoService.find(vk));
-		});
-		//TODO 3. Assert rollback
+		//TODO 1. Assert rollback
 	}	
 
-	private void assertResultDuplicates() {
-		assertTrue(!getDuplicatesViskundeDaos().isEmpty());
-		//check that not exist in vissyskund
-		getDuplicatesViskundeDaos().forEach((vk) ->{
-			assertNull(vissyskunDaoService.find(vk));
-		});
-		//TODO 3. Assert rollback
-	}		
-	
+
 	private List<ViskundeDao> getInValidViskundeDaos() {
 		List<ViskundeDao> list = getValidViskundeDaos();
 		//Invalidate one
@@ -155,19 +135,6 @@ public class TestJTransactionManager {
 		return list;
 	}
 
-	private List<ViskundeDao> getDuplicatesViskundeDaos() {
-		List<ViskundeDao> list = getValidViskundeDaos();
-		ViskundeDao oneDao = list.get(0);
-		
-		ViskundeDao dupDao = oneDao;
-		
-		list.add(dupDao);
-		
-		return list;
-	}	
-	
-	
-	
 	private List<ViskundeDao> getValidViskundeDaos() {
 		List<ViskundeDao> list = new ArrayList<ViskundeDao>();
 		

@@ -1,8 +1,6 @@
 package no.systema.visma.controller;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +11,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,20 +23,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.jakewharton.fliptables.FlipTableConverters;
-
 import no.systema.jservices.common.dao.CundfDao;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.CundfDaoService;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.jservices.common.util.Log4jUtils;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.StringManager;
 import no.systema.main.validator.LoginValidator;
 import no.systema.visma.PrettyPrintViskundeError;
-import no.systema.visma.transaction.TransactionManager;
+import no.systema.visma.transaction.CustomerTransactionManager;
 
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
@@ -59,8 +56,7 @@ public class WebController {
 	BridfDaoService bridfDaoService;
 	
 	@Autowired
-	@Qualifier("tsManager")
-	TransactionManager transactionManager;
+	CustomerTransactionManager transactionManager;
 	
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
@@ -255,11 +251,46 @@ public class WebController {
 		
 	}
 	
+
+	/**
+	 * 
+	 * @Example: http://gw.systema.no:8080/visma-net-proxy/showHistory.do?user=SYSTEMA&filename=log4j_visma-net-proxy-transaction.log
+	 * 
+	 * @param session
+	 * @param request, user 
+	 * @return status
+	 */	
+	@RequestMapping(value = "showHistory.do", method = { RequestMethod.GET })
+	@ResponseBody
+	public String showHistory(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		logger.info("showHistory.do...");
+		StringBuilder logResult = new StringBuilder();
+
+		checkUser(user);
+
+		String fileName = request.getParameter("filename");
+		Assert.notNull(fileName, "fileName must be delivered.");
+
+		try {
+			logResult.append(Log4jUtils.getLog4jData(fileName));
+		} catch (IOException e) {
+			logger.info(e);
+			logResult.append(e);
+		} finally {
+			session.invalidate();
+		}
+
+		return logResult.toString();
+
+	}	
+
 	private void checkUser(String user) {
 		if (bridfDaoService.getUserName(user) == null) {
 			throw new RuntimeException("ERROR: parameter, user, is not valid!");
 		}		
 	}
+	
+	
 	
 	
 }

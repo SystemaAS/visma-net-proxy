@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import no.systema.visma.transaction.TransactionManager;
+import no.systema.visma.transaction.CustomerTransactionManager;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 
 @RunWith(SpringRunner.class)

@@ -7,7 +7,7 @@
 	<bean id="customerInvoice" class="no.systema.visma.integration.CustomerInvoice"/>
 	<bean id="customerApi" class="no.systema.visma.v1client.api.CustomerApi"/>
 	<bean id="customerInvoiceApi" class="no.systema.visma.v1client.api.CustomerInvoiceApi"/>
-	<bean id="tsManager" class="no.systema.visma.transaction.TransactionManager"/>
+	<bean id="customerTransactionManager" class="no.systema.visma.transaction.CustomerTransactionManager"/>
 
 
     <import resource="classpath:syjservicescommon-data-service-test.xml"/>

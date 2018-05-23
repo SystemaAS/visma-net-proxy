@@ -8,7 +8,7 @@ import no.systema.visma.v1client.model.DtoValueString;
 public class Helper {
 
 	/**
-	 * Standardized logformat for Kundnr.
+	 * Standardized logformat for Kundnr for convenience.
 	 * 
 	 * @param kundnr
 	 * @return String logformat on Kundnr
@@ -60,10 +60,6 @@ public class Helper {
 		return dto;
 
 	}		
-	
-	
-	
-	
 	
 	
 }

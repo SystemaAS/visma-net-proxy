@@ -21,12 +21,12 @@ import no.systema.visma.PrettyPrintViskundeError;
 import no.systema.visma.integration.Customer;
 import no.systema.visma.integration.Helper;
 
-@Service("tsManager")
-public class TransactionManager {
+@Service
+public class CustomerTransactionManager {
 	/**
 	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
-	private static Logger logger = Logger.getLogger(TransactionManager.class);
+	private static Logger logger = Logger.getLogger(CustomerTransactionManager.class);
 	
 	@Autowired
 	Customer customer;
@@ -34,9 +34,6 @@ public class TransactionManager {
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
 
-	@Autowired
-	VissyskunDaoService vissyskunDaoService;	
-	
 	@Autowired
 	FirmDaoService firmDaoService;
 	

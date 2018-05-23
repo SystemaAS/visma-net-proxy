@@ -53,7 +53,7 @@ public class Customer  extends Configuration{
 		customerApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		customerApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
 		
-		// customerApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaNetResponseErrorHandler	
+		//customerApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaNetResponseErrorHandler	
 		
 	}
 	

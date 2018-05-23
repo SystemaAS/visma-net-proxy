@@ -1,5 +1,6 @@
 package no.systema.visma.integration;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,17 @@ import no.systema.jservices.common.dao.ViskundeDao;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJCustomer {
 
+	private static Logger logger = Logger.getLogger(TestJCustomer.class);	
+	
 	@Autowired 
 	Customer customer;
+
+	@Test
+	public void testGetCustomer() {
+		
+		logger.debug("dto="+customer.getGetBycustomerCd("10010"));
+
+	}	
 	
 
 	@Test(expected=HttpClientErrorException.class)  //Postcode value
