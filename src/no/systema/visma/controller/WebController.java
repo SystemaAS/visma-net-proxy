@@ -34,7 +34,7 @@ import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.StringManager;
 import no.systema.main.validator.LoginValidator;
-import no.systema.visma.PrettyPrintViskundeError;
+import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.transaction.CustomerTransactionManager;
 
 @Controller

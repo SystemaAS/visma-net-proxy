@@ -1,4 +1,4 @@
-package no.systema.visma;
+package no.systema.visma.dto;
 
 import java.math.BigDecimal;
 

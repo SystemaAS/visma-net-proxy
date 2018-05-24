@@ -21,7 +21,7 @@ import com.jakewharton.fliptables.FlipTableConverters;
 
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
-import no.systema.visma.PrettyPrintViskundeError;
+import no.systema.visma.dto.PrettyPrintViskundeError;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")

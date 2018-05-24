@@ -16,9 +16,9 @@ import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
-import no.systema.visma.PrettyPrintViskundeError;
-import no.systema.visma.VistranskHeadDto;
-import no.systema.visma.VistranskTransformer;
+import no.systema.visma.dto.PrettyPrintViskundeError;
+import no.systema.visma.dto.VistranskHeadDto;
+import no.systema.visma.dto.VistranskTransformer;
 import no.systema.visma.integration.CustomerInvoice;
 
 @Service

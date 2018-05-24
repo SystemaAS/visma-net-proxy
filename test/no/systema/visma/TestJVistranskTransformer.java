@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import no.systema.jservices.common.dao.VistranskDao;
+import no.systema.visma.dto.VistranskHeadDto;
+import no.systema.visma.dto.VistranskTransformer;
 
 public class TestJVistranskTransformer {
 

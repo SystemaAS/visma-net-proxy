@@ -16,7 +16,7 @@ import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
-import no.systema.visma.ViskundeDto;
+import no.systema.visma.dto.ViskundeDto;
 
 @RestController
 public class DataController {

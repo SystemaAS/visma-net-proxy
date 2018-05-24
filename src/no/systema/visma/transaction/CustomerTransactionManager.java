@@ -16,7 +16,7 @@ import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
-import no.systema.visma.PrettyPrintViskundeError;
+import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.integration.Customer;
 import no.systema.visma.integration.DtoValueHelper;
 import no.systema.visma.integration.LogHelper;
