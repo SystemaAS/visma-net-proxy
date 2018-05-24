@@ -5,22 +5,14 @@ import java.math.BigDecimal;
 import no.systema.visma.v1client.model.DtoValueDecimal;
 import no.systema.visma.v1client.model.DtoValueString;
 
-public class Helper {
+/**
+ * This helper is transforming proprietary SYSPED types into Visma.net types.
+ * 
+ * @author fredrikmoller
+ *
+ */
+public class DtoValueHelper {
 
-	/**
-	 * Standardized logformat for Kundnr for convenience.
-	 * 
-	 * @param kundnr
-	 * @return String logformat on Kundnr
-	 */
-	public static String logPrefix(Object kundnr) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("::KUNDNR:").append(kundnr);
-		
-		return sb.toString();
-		
-	}
-	
 	/**
 	 * Converts Object into DtoValueString.
 	 * 

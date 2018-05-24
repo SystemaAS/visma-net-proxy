@@ -1,5 +1,8 @@
 package no.systema.visma.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import no.systema.visma.transaction.CustomerTransactionManager;
+import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 
 @RunWith(SpringRunner.class)
@@ -29,58 +32,38 @@ public class TestJCustomerInvoice {
 
 	}	
 	
+//	@Test
+//	public void testCustomerInvoiceSync() {
+//		String name = "Kalles chokladfabrik (medium)";
+//		VistranskDao dao =getMediumDao(10, "123999" ,name);
+//
+//		customerInvoice.syncronize(dao);
+//		
+//	}
 	
+	
+	private List<VistranskDao> getList() {
+		List<VistranskDao> list = new ArrayList<VistranskDao>();
+		
+		list.add(getVistranskDao(1, 100, 1, "T-shirt"));
+		list.add(getVistranskDao(1, 100, 2, "Hat"));
+		
+		return list;
+		
+	}
+	
+	
+	private VistranskDao getVistranskDao(int recnr, int bilnr, int posnr, String biltxt) {
+		VistranskDao dao = new VistranskDao();
+		dao.setRecnr(recnr);
+		dao.setBilnr(bilnr);
+		dao.setPosnr(posnr);
+		dao.setBiltxt(biltxt);
+		
+		dao.setAktkod("A");
 
-//	@Test(expected=HttpClientErrorException.class)  //Postcode value
-//	public void testCustomerSyncSmall() {
-//		String name = "Kalles chokladfabrik (small)";
-//		ViskundeDao dao =getSmallDao(10, name);
-//		
-//		customerInvoice.syncronize(dao);
-//
-//	}
-//	
-//	@Test
-//	public void testCustomerSyncMedium() {
-//		String name = "Kalles chokladfabrik (medium)";
-//		ViskundeDao dao =getMediumDao(10, "123999" ,name);
-//
-//		customerInvoice.syncronize(dao);
-//		
-//	}
-//
-//	@Test
-//	public void testCustomerUpdate() {
-//		String name = "Kalles chokladfabrik (medium)";
-//		ViskundeDao dao =getMediumDao(1,"123456" ,name);
-//		dao.setKnavn("Kalles chokladfabrik (UPDATE 11:41)");
-//		
-//		customerInvoice.syncronize(dao);
-//		
-//	}	
-//
-//	private ViskundeDao getSmallDao(int kundnr, String name) {
-//		ViskundeDao dao = new ViskundeDao();
-//		dao.setKundnr(kundnr);
-//		dao.setKnavn(name);
-//		dao.setAktkod("A"); //I
-//		return dao;
-//	}		
-//	
-//	private ViskundeDao getMediumDao(int kundnr, String syrg, String name) {
-//		ViskundeDao dao = new ViskundeDao();
-//		dao.setKundnr(kundnr);
-//		dao.setKnavn(name);
-//		dao.setAdr1("adr1");
-//		dao.setAdr2("adr2");
-//		dao.setAdr3("adr3");
-//		dao.setSyland("NO");
-//		dao.setPostnr(6001);
-//		dao.setSyrg(syrg);
-//		dao.setAktkod("A"); //I
-//
-//		
-//		return dao;
-//	}	
+		
+		return dao;
+	}	
 	
 }

@@ -17,14 +17,12 @@ import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
-import no.systema.visma.v1client.api.LocationApi;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
 import no.systema.visma.v1client.model.CustomerInvoiceUpdateDto;
 import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueString;
-import no.systema.visma.v1client.model.LocationIdNameDto;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 
 /**
@@ -56,8 +54,7 @@ public class CustomerInvoice extends Configuration {
 		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		customerInvoiceApi.getApiClient().setAccessToken(firmvis.getViacto().trim());
 
-		// customerApi.getApiClient().setDebugging(true); //Warning...set
-		// debugging in VismaNetResponseErrorHandler
+		// customerApi.getApiClient().setDebugging(true); //Warning...set debugging in VismaNetResponseErrorHandler
 
 	}
 
@@ -97,17 +94,17 @@ public class CustomerInvoice extends Configuration {
 			}
 
 		} catch (HttpClientErrorException e) {
-			logger.error(Helper.logPrefix(vistranskDao.getFkund()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskDao.getRecnr(), vistranskDao.getBilnr(), vistranskDao.getPosnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranskDao=" + vistranskDao.toString());
 			logger.error("message:" + e.getMessage());
 			logger.error("status text:" + new String(e.getStatusText())); // Status text contains Response body from Visma.net
 			throw e;
 		} catch (RestClientException e) {
-			logger.error(Helper.logPrefix(vistranskDao.getFkund()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskDao.getRecnr(), vistranskDao.getBilnr(), vistranskDao.getPosnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranskDao=" + vistranskDao.toString());
 			throw e;
 		} catch (Exception e) {
-			logger.error(Helper.logPrefix(vistranskDao.getFkund()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskDao.getRecnr(), vistranskDao.getBilnr(), vistranskDao.getPosnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranskDao=" + vistranskDao.toString());
 			throw e;
 		}
@@ -174,7 +171,7 @@ public class CustomerInvoice extends Configuration {
 	 *             if an error occurs while attempting to invoke the API
 	 */
 	public void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto) throws RestClientException {
-		logger.info(Helper.logPrefix(updateDto.getCustomerNumber()));
+		logger.info(LogHelper.logPrefixCustomer(updateDto.getCustomerNumber()));
 		logger.info("customerInvoiceCreate()");
 
 		try {
@@ -182,16 +179,15 @@ public class CustomerInvoice extends Configuration {
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
 
 		} catch (HttpClientErrorException e) {
-			logger.info(Helper.logPrefix(updateDto.getCustomerNumber()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); //TODO fix
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
-			logger.error("message:" + e.getMessage());
-			logger.error("status text:" + new String(e.getStatusText())); // Status text containsResponsebodyfromVisma.net
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); //TODO fix
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-			logger.info(Helper.logPrefix(updateDto.getCustomerNumber()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); //TODO fix
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
 			throw e;
 		}
@@ -214,16 +210,14 @@ public class CustomerInvoice extends Configuration {
 
 		// Head //TODO cache it somehow
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();
-		dto.setCustomerNumber(Helper.toDtoString(vistranskDao.getRecnr()));
+		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskDao.getRecnr()));
 		dto.setDocumentDate(getDocumentDate(vistranskDao));
-		dto.setReferenceNumber(Helper.toDtoString(vistranskDao.getRecnr()));
+		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskDao.getRecnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranskDao));
-		dto.setCreditTermsId(Helper.toDtoString(vistranskDao.getBetbet()));
+		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskDao.getBetbet()));
 		dto.setDocumentDueDate(getDocumentDueDate(vistranskDao));
-		dto.setCashDiscountDate(getDocumentDueDate(vistranskDao)); // Note: same
-																	// as
-																	// DocumentDueDate
-		dto.setLocationId(Helper.toDtoString("Main")); // TODO verify Main
+		dto.setCashDiscountDate(getDocumentDueDate(vistranskDao)); // Note: same as DocumentDueDate
+		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main
 
 		// Lines
 		dto.setInvoiceLines(getInvoiceLines(vistranskDao));
@@ -243,13 +237,9 @@ public class CustomerInvoice extends Configuration {
 
 	private DtoValueString getFinancialsPeriod(VistranskDao vistranskDao) {
 		String year = String.valueOf(vistranskDao.getPeraar());
-		String month = String.format("%02d", vistranskDao.getPernr()); // pad up
-																		// to 2
-																		// char,
-																		// ex. 1
-																		// -> 01
+		String month = String.format("%02d", vistranskDao.getPernr()); // pad up to 2 char, ex. 1 -> 01
 
-		return Helper.toDtoString(year + month); // ex. 201805
+		return DtoValueHelper.toDtoString(year + month); // ex. 201805
 
 	}
 
@@ -266,14 +256,12 @@ public class CustomerInvoice extends Configuration {
 		List<CustomerInvoiceLinesUpdateDto> list = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 		CustomerInvoiceLinesUpdateDto updateDto = new CustomerInvoiceLinesUpdateDto();
 
-		updateDto.setQuantity(Helper.toDtoDecimal(1)); // Hardcode to 1
-		updateDto.setUnitPriceInCurrency(Helper.toDtoDecimal(vistranskDao.getBbelop())); // BBELOP
-																							// 11
-																							// 2
-		updateDto.setVatCodeId(Helper.toDtoString(vistranskDao.getMomsk()));
-		updateDto.setAccountNumber(Helper.toDtoString(vistranskDao.getKonto()));
+		updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1)); // Hardcode to 1
+		updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(vistranskDao.getBbelop())); // BBELOP 11 2
+		updateDto.setVatCodeId(DtoValueHelper.toDtoString(vistranskDao.getMomsk()));
+		updateDto.setAccountNumber(DtoValueHelper.toDtoString(vistranskDao.getKonto()));
 		updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(vistranskDao.getKbarer()))));
-		updateDto.setDescription(Helper.toDtoString(vistranskDao.getBiltxt()));
+		updateDto.setDescription(DtoValueHelper.toDtoString(vistranskDao.getBiltxt()));
 
 		list.add(updateDto);
 

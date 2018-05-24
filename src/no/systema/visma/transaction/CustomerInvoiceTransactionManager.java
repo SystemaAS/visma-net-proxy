@@ -18,7 +18,7 @@ import no.systema.jservices.common.dao.services.FirmDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.visma.PrettyPrintViskundeError;
 import no.systema.visma.integration.CustomerInvoice;
-import no.systema.visma.integration.Helper;
+import no.systema.visma.integration.DtoValueHelper;
 
 @Service
 public class CustomerInvoiceTransactionManager {
@@ -51,7 +51,9 @@ public class CustomerInvoiceTransactionManager {
 		
 		List<PrettyPrintViskundeError> errorList = new ArrayList<PrettyPrintViskundeError>();
 
-		//TODO något smart sätt att gruppera på fakturanummer
+		//TODO Skapa Dtoer from List
+		//typ: https://stackoverflow.com/questions/21678430/group-a-list-of-objects-by-an-attribute-java
+		
 		
 		
 		vistranskList.forEach((dao) -> {
@@ -94,16 +96,6 @@ public class CustomerInvoiceTransactionManager {
 		
 	}
 	
-	private void setError(VistranskDao dao, String errorText) {
-		logger.info("Inside setError, errorText="+errorText);
-		
-		LocalDateTime now = LocalDateTime.now();
-		String nowDate = now.format(dateFormatter);
-		int syncDa = Integer.valueOf(nowDate);
-		dao.setSyncda(syncDa);
-		dao.setSyerro(errorText);
-		
-	}
 
 	/**
 	 * Syncronize one VISKUNDE with Customer in Visma.net
@@ -173,4 +165,17 @@ public class CustomerInvoiceTransactionManager {
 		return dao;
 	}
 
+	private void setError(VistranskDao dao, String errorText) {
+		logger.info("Inside setError, errorText="+errorText);
+		
+		LocalDateTime now = LocalDateTime.now();
+		String nowDate = now.format(dateFormatter);
+		int syncDa = Integer.valueOf(nowDate);
+		dao.setSyncda(syncDa);
+		dao.setSyerro(errorText);
+		
+	}
+	
+	
+	
 }
