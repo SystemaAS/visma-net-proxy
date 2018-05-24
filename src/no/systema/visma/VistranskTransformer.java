@@ -5,10 +5,6 @@ import static java.util.stream.Collectors.groupingBy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
@@ -22,12 +18,11 @@ import no.systema.visma.v1client.api.CustomerInvoiceApi;
  */
 public class VistranskTransformer {
 
-	
 	/**
-	 * Transform list of {@link VistranskDao} into {@link List<VistranskHeadDto>
+	 * Transform flat list of {@link VistranskDao} into composite list of {@link VistranskHeadDto}.
 	 * 
-	 * @param List<VistranskDao> vistranskDaoList
-	 * @return List<VistranskHeadDto>
+	 * @param vistranskDaoList
+	 * @return List of {@link VistranskHeadDto}
 	 */
 	public static List<VistranskHeadDto> transform(List<VistranskDao> vistranskDaoList) {
 		final List<VistranskHeadDto> vistranskHeadtDtoList = new ArrayList<VistranskHeadDto>();
@@ -40,6 +35,7 @@ public class VistranskTransformer {
 
 		groupedByBilnr.forEach((bilnr, daoList) -> {  //Head and lines to correspond to Visma.net format
 			VistranskHeadDto head = new VistranskHeadDto();
+			/*every VISTRANSK contains headerinfo in below attributes, using first row to populate head.*/
 			head.setRecnr(daoList.get(0).getRecnr());
 			head.setBilnr(daoList.get(0).getBilnr());
 			head.setPosnr(daoList.get(0).getPosnr());
@@ -50,9 +46,10 @@ public class VistranskTransformer {
 			head.setFfdmnd(daoList.get(0).getFfdmnd());
 			head.setFfddag(daoList.get(0).getFfddag());
 			head.setBetbet(daoList.get(0).getBetbet());
+			head.setPeraar(daoList.get(0).getPeraar());
+			head.setPernr(daoList.get(0).getPernr());
 			
-			daoList.forEach(dao -> {
-				//Lines
+			daoList.forEach(dao -> { //Lines
 				VistranskLineDto line = new VistranskLineDto();
 				line.setBbelop(dao.getBbelop());
 				line.setMomsk(dao.getMomsk());
@@ -70,9 +67,8 @@ public class VistranskTransformer {
 			
 		});
 		
-//		vistranskHeadtDtoList.forEach(head -> System.out.println(ReflectionToStringBuilder.toString(head, ToStringStyle.MULTI_LINE_STYLE) ));
-		
 		return vistranskHeadtDtoList;
+
 	}
 	
 }

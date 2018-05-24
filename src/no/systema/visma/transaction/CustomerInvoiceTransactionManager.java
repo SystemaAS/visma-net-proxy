@@ -17,8 +17,9 @@ import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.visma.PrettyPrintViskundeError;
+import no.systema.visma.VistranskHeadDto;
+import no.systema.visma.VistranskTransformer;
 import no.systema.visma.integration.CustomerInvoice;
-import no.systema.visma.integration.DtoValueHelper;
 
 @Service
 public class CustomerInvoiceTransactionManager {
@@ -44,22 +45,17 @@ public class CustomerInvoiceTransactionManager {
 	 * 
 	 * @return List<PrettyPrintViskundeError> could be empty
 	 */
-	//TODO mycket todo i syncInvoices
 	public List<PrettyPrintViskundeError> syncronizeCustomerInvoices() {
 		logger.info("Syncronizing all records in VISKUNDE -> Customer.");
-		List<VistranskDao> vistranskList = vistranskDaoService.findAll(null);
-		
 		List<PrettyPrintViskundeError> errorList = new ArrayList<PrettyPrintViskundeError>();
 
-		//TODO Skapa Dtoer from List
-		//typ: https://stackoverflow.com/questions/21678430/group-a-list-of-objects-by-an-attribute-java
+		List<VistranskDao> vistranskDaoList = vistranskDaoService.findAll(null);
+		List<VistranskHeadDto> headDtolist = VistranskTransformer.transform( vistranskDaoList );
 		
-		
-		
-		vistranskList.forEach((dao) -> {
+		headDtolist.forEach((dto) -> {
 			try {
 
-				syncronizeCustomerInvoice(dao);
+				syncronizeCustomerInvoice(dto);
 
 //				ViskulogDao viskulogDao = getViskulogDao(dao, null);
 //				viskulogDaoService.create(viskulogDao);
@@ -68,8 +64,8 @@ public class CustomerInvoiceTransactionManager {
 			catch (HttpClientErrorException e) {
 				logger.error(e);
 //				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
-				setError(dao, e.getStatusText());
-				vistranskDaoService.updateOnError(dao);
+//				setError(dao, e.getStatusText());
+//				vistranskDaoService.updateOnError(dao);
 //				ViskulogDao viskulogDao = getViskulogDao(dao, e.getStatusText());
 //				viskulogDaoService.create(viskulogDao);
 //				logger.info("VISKULOG created, dao="+viskulogDao);			
@@ -78,8 +74,8 @@ public class CustomerInvoiceTransactionManager {
 			catch (Exception e) {
 				logger.error(e);
 //				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
-				setError(dao, e.getMessage());
-				vistranskDaoService.updateOnError(dao);		
+//				setError(dao, e.getMessage());
+//				vistranskDaoService.updateOnError(dao);		
 //				ViskulogDao viskulogDao = getViskulogDao(dao, e.getMessage());
 //				viskulogDaoService.create(viskulogDao);
 //				logger.info("VISKULOG created, dao="+viskulogDao);	
@@ -89,7 +85,7 @@ public class CustomerInvoiceTransactionManager {
 
 		});
 
-		logger.info("Syncronized ("+vistranskList.size()+") in VISKUNDE -> Customer.");
+		logger.info("Syncronized ("+vistranskDaoList.size()+") in VISTRANSK -> CustomerInvoice.");
 		logger.info("Error list size="+errorList.size());
 		
 		return errorList;
@@ -98,19 +94,20 @@ public class CustomerInvoiceTransactionManager {
 	
 
 	/**
-	 * Syncronize one VISKUNDE with Customer in Visma.net
+	 * Syncronize one VISTRANSK with CustomerInvoice in Visma.net
 	 * 
 	 * @param viskundDao
 	 */
-	public void syncronizeCustomerInvoice(VistranskDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException { 
+	public void syncronizeCustomerInvoice(VistranskHeadDto vistranskHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
 //		logger.info("Kundnr:"+viskundeDao.getKundnr()+" about to be syncronized.");
 		try {
 			
-			customerInvoice.syncronize(viskundeDao);
+			customerInvoice.syncronize(vistranskHeadDto);
 //			logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
 
-			vistranskDaoService.delete(viskundeDao);
-			logger.info("VISKUNDE deleted, dao="+viskundeDao);
+			//TODO
+//			vistranskDaoService.delete(viskundeDao);
+//			logger.info("VISKUNDE deleted, dao="+viskundeDao);
 			
 			
 		} 
@@ -121,12 +118,12 @@ public class CustomerInvoiceTransactionManager {
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
 //			logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
-			logger.error("Could not syncronize viskunde="+viskundeDao, e);
+//			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
 		}
 		catch (Exception e) {
 //			logger.error(Helper.logPrefix(viskundeDao.getKundnr()));
-			logger.error("Could not syncronize viskunde="+viskundeDao, e);
+//			logger.error("Could not syncronize viskunde="+viskundeDao, e);
 			throw e;
 			
 		}

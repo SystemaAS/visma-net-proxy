@@ -23,6 +23,8 @@ public class VistranskHeadDto {
 	private int ffdmnd;
 	private int ffddag;
 	private String betbet;
+	private int peraar;
+	private int pernr;
 	private List<VistranskLineDto> lines;
 	
 }

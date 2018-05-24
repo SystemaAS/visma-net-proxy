@@ -16,6 +16,8 @@ import org.springframework.web.client.RestClientException;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.visma.VistranskHeadDto;
+import no.systema.visma.VistranskLineDto;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
@@ -62,50 +64,51 @@ public class CustomerInvoice extends Configuration {
 	 * This is the startingpoint for syncronizing SYSPED VISTRANSK with
 	 * Visma-net CustomerInvoice.
 	 * 
-	 * @param vistranskDao
+	 * @param vistranskHeadDto
 	 * @throws RestClientException
 	 * @throws HttpClientErrorException
 	 */
-	public void syncronize(VistranskDao vistranskDao) throws RestClientException, HttpClientErrorException {
-		logger.info("syncronize(VistranskDao vistranskDao)");
+	public void syncronize(VistranskHeadDto vistranskHeadDto) throws RestClientException, HttpClientErrorException {
+		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+		logger.info("syncronize(VistranskHeadDto vistranskHeadDto)");
 		// For both New and Update
-		CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskDao);
+		CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
 
 		try {
 			// Sanity check
-			CustomerDto customerExistDto = customer.getGetBycustomerCd(String.valueOf(vistranskDao.getRecnr()));
+			CustomerDto customerExistDto = customer.getGetBycustomerCd(String.valueOf(vistranskHeadDto.getRecnr()));
 			if (customerExistDto != null) {
-				logger.error("Could not find Customer on number:" + vistranskDao.getRecnr());
-				throw new RuntimeException("Could not find Customer on number:" + vistranskDao.getRecnr());
+				logger.error("Could not find Customer on number:" + vistranskHeadDto.getRecnr());
+				throw new RuntimeException("Could not find Customer on number:" + vistranskHeadDto.getRecnr());
 			} else { // do the thing
-				String referenceNumber = String.valueOf(vistranskDao.getBilnr());
+				String referenceNumber = String.valueOf(vistranskHeadDto.getBilnr());
 				CustomerInvoiceDto customerInvoiceExistDto = getByinvoiceNumber(referenceNumber);
 				if (customerInvoiceExistDto != null) {
 
 					customerInvoiceUpdateByinvoiceNumber(referenceNumber, updateDto);
-					logger.info("Kundetransaksjon:" + vistranskDao.getRecnr() + " is updated.");
+					logger.info("Kundetransaksjon:" + vistranskHeadDto.getRecnr() + " is updated.");
 
 				} else {
 
 					customerInvoiceCreate(updateDto);
-					logger.info("Kundetransaksjon:" + vistranskDao.getRecnr() + " is created.");
+					logger.info("Kundetransaksjon:" + vistranskHeadDto.getRecnr() + " is created.");
 
 				}
 			}
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskDao.getRecnr(), vistranskDao.getBilnr(), vistranskDao.getPosnr()));
-			logger.error(e.getClass() + " On syncronize.  vistranskDao=" + vistranskDao.toString());
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(e.getClass() + " On syncronize.  vistranskHeadDto=" + vistranskHeadDto.toString());
 			logger.error("message:" + e.getMessage());
 			logger.error("status text:" + new String(e.getStatusText())); // Status text contains Response body from Visma.net
 			throw e;
 		} catch (RestClientException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskDao.getRecnr(), vistranskDao.getBilnr(), vistranskDao.getPosnr()));
-			logger.error(e.getClass() + " On syncronize.  vistranskDao=" + vistranskDao.toString());
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(e.getClass() + " On syncronize.  vistranskHeadDto=" + vistranskHeadDto.toString());
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskDao.getRecnr(), vistranskDao.getBilnr(), vistranskDao.getPosnr()));
-			logger.error(e.getClass() + " On syncronize.  vistranskDao=" + vistranskDao.toString());
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(e.getClass() + " On syncronize.  vistranskHeadDto=" + vistranskHeadDto.toString());
 			throw e;
 		}
 
@@ -194,78 +197,82 @@ public class CustomerInvoice extends Configuration {
 
 	}
 
-	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskDao vistranskDao) {
+	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
 		logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde)");
 		// Sanity checks
-		if (vistranskDao.getRecnr() == 0) {
+		if (vistranskHeadDto.getRecnr() == 0) {
 			String errMsg = "RECNR can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (vistranskDao.getPosnr() == 0) {
-			String errMsg = "POSNR can not be 0";
+		if (vistranskHeadDto.getBilnr() == 0) {
+			String errMsg = "BILNR can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
 
-		// Head //TODO cache it somehow
+		// Head
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();
-		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskDao.getRecnr()));
-		dto.setDocumentDate(getDocumentDate(vistranskDao));
-		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskDao.getRecnr()));
-		dto.setFinancialPeriod(getFinancialsPeriod(vistranskDao));
-		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskDao.getBetbet()));
-		dto.setDocumentDueDate(getDocumentDueDate(vistranskDao));
-		dto.setCashDiscountDate(getDocumentDueDate(vistranskDao)); // Note: same as DocumentDueDate
+		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getRecnr()));
+		dto.setDocumentDate(getDocumentDate(vistranskHeadDto));
+		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getRecnr()));
+		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
+		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
+		dto.setDocumentDueDate(getDocumentDueDate(vistranskHeadDto));
+		dto.setCashDiscountDate(getDocumentDueDate(vistranskHeadDto)); // Note: same as DocumentDueDate
 		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main
 
 		// Lines
-		dto.setInvoiceLines(getInvoiceLines(vistranskDao));
+		dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines()));
 
 		return dto;
 
 	}
 
-	private DtoValueDateTime getDocumentDueDate(VistranskDao vistranskDao) {
+	private DtoValueDateTime getDocumentDueDate(VistranskHeadDto vistranskHeadDto) {
 		DtoValueDateTime dto = new DtoValueDateTime();
-		LocalDateTime value = LocalDateTime.of(vistranskDao.getFfdaar(), vistranskDao.getFfdmnd(), vistranskDao.getFfddag(), 0, 0);
+		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag(), 0, 0);
 
 		dto.setValue(value);
 
 		return dto;
 	}
 
-	private DtoValueString getFinancialsPeriod(VistranskDao vistranskDao) {
-		String year = String.valueOf(vistranskDao.getPeraar());
-		String month = String.format("%02d", vistranskDao.getPernr()); // pad up to 2 char, ex. 1 -> 01
+	private DtoValueString getFinancialsPeriod(VistranskHeadDto vistranskHeadDto) {
+		String year = String.valueOf(vistranskHeadDto.getPeraar());
+		String month = String.format("%02d", vistranskHeadDto.getPernr()); // pad up to 2 char, ex. 1 -> 01
 
 		return DtoValueHelper.toDtoString(year + month); // ex. 201805
 
 	}
 
-	private DtoValueDateTime getDocumentDate(VistranskDao vistranskDao) {
+	private DtoValueDateTime getDocumentDate(VistranskHeadDto vistranskHeadDto) {
 		DtoValueDateTime dto = new DtoValueDateTime();
-		LocalDateTime value = LocalDateTime.of(vistranskDao.getKrdaar(), vistranskDao.getKrdmnd(), vistranskDao.getKrddag(), 0, 0);
+		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag(), 0, 0);
 
 		dto.setValue(value);
 
 		return dto;
 	}
 
-	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(VistranskDao vistranskDao) {
-		List<CustomerInvoiceLinesUpdateDto> list = new ArrayList<CustomerInvoiceLinesUpdateDto>();
-		CustomerInvoiceLinesUpdateDto updateDto = new CustomerInvoiceLinesUpdateDto();
+	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList) {
+		List<CustomerInvoiceLinesUpdateDto> updateDtoList = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 
-		updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1)); // Hardcode to 1
-		updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(vistranskDao.getBbelop())); // BBELOP 11 2
-		updateDto.setVatCodeId(DtoValueHelper.toDtoString(vistranskDao.getMomsk()));
-		updateDto.setAccountNumber(DtoValueHelper.toDtoString(vistranskDao.getKonto()));
-		updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(vistranskDao.getKbarer()))));
-		updateDto.setDescription(DtoValueHelper.toDtoString(vistranskDao.getBiltxt()));
-
-		list.add(updateDto);
-
-		return list;
+		lineDtoList.forEach(lineDto -> {
+			CustomerInvoiceLinesUpdateDto updateDto = new CustomerInvoiceLinesUpdateDto();
+			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1)); // Hardcode to 1
+			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getBbelop())); // BBELOP 11 2
+			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));
+			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
+			updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(lineDto.getKbarer()))));
+			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
+			
+			updateDtoList.add(updateDto);
+			
+		});
+		
+		return updateDtoList;
+		
 	}
 
 }
