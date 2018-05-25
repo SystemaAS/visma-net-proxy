@@ -180,7 +180,7 @@ public class Customer  extends Configuration{
      */
     private void customerPost(CustomerUpdateDto updateDto) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
     	logger.info(LogHelper.logPrefixCustomer(updateDto.getNumber()));
-    	logger.info("customerPost()"); 
+    	logger.info("customerPost(CustomerUpdateDto updateDto)"); 
     	
     	try {
 

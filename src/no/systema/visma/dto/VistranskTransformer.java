@@ -51,6 +51,7 @@ public class VistranskTransformer {
 			
 			daoList.forEach(dao -> { //Lines
 				VistranskLineDto line = new VistranskLineDto();
+				line.setPosnr(dao.getPosnr());
 				line.setBbelop(dao.getBbelop());
 				line.setMomsk(dao.getMomsk());
 				line.setKonto(dao.getKonto());

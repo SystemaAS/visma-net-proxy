@@ -20,5 +20,6 @@ public class VistranskLineDto {
 	private int ksted;
 	private int kbarer;	
 	private String biltxt;	
+	private int posnr;
 	
 }

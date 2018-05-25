@@ -11,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.systema.jservices.common.dao.VistranskDao;
+import no.systema.visma.dto.VistranskHeadDto;
+import no.systema.visma.dto.VistranskTransformer;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 
 @RunWith(SpringRunner.class)
@@ -32,21 +34,22 @@ public class TestJCustomerInvoice {
 
 	}	
 	
-//	@Test
-//	public void testCustomerInvoiceSync() {
-//		String name = "Kalles chokladfabrik (medium)";
-//		VistranskDao dao =getMediumDao(10, "123999" ,name);
-//
-//		customerInvoice.syncronize(dao);
-//		
-//	}
+	@Test
+	public void testCustomerInvoiceSync() {
+		
+		List<VistranskHeadDto> list = VistranskTransformer.transform( getList() );
+		
+
+		customerInvoice.syncronize(list.get(0));
+		
+	}
 	
 	
 	private List<VistranskDao> getList() {
 		List<VistranskDao> list = new ArrayList<VistranskDao>();
 		
-		list.add(getVistranskDao(1, 100, 1, "T-shirt"));
-		list.add(getVistranskDao(1, 100, 2, "Hat"));
+		list.add(getVistranskDao(10, 100, 1, "T-shirt"));
+//		list.add(getVistranskDao(1, 100, 2, "Hat"));
 		
 		return list;
 		
@@ -59,9 +62,18 @@ public class TestJCustomerInvoice {
 		dao.setBilnr(bilnr);
 		dao.setPosnr(posnr);
 		dao.setBiltxt(biltxt);
-		
 		dao.setAktkod("A");
-
+		dao.setKrdaar(2018);
+		dao.setKrdmnd(5);
+		dao.setKrddag(25);
+		dao.setFfdaar(2018);
+		dao.setFfdmnd(5);
+		dao.setFfddag(25);	
+		dao.setMomsk("M");
+		dao.setKonto(3000);		
+		dao.setKbarer(1000);
+		dao.setBetbet("14");
+		
 		
 		return dao;
 	}	

@@ -18,7 +18,6 @@ import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.integration.Customer;
-import no.systema.visma.integration.DtoValueHelper;
 import no.systema.visma.integration.LogHelper;
 
 @Service
@@ -155,11 +154,14 @@ public class CustomerTransactionManager {
 		if (errorText != null) {
 			if (errorText.length() < 200) {
 				syerror = errorText;
+			} else {
+				int beginIndex = errorText.length() - 199;  //syerro is set to 200
+				syerror = errorText.substring(beginIndex);		
 			}
-			int beginIndex = errorText.length() - 199;  //syerro is set to 200
-			syerror = errorText.substring(beginIndex);		
 			dao.setSyerro(syerror);
 			dao.setStatus("ER");
+		} else {
+			dao.setStatus("OK");			
 		}
 
 		LocalDateTime now = LocalDateTime.now();

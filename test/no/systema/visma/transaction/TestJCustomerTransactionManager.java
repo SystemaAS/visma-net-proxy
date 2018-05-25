@@ -34,6 +34,16 @@ public class TestJCustomerTransactionManager {
 	
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
+
+	
+	@Test
+	public void testSyncCustomerFromDB() {
+		
+		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
+		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		
+	}	
+	
 	
 
 	@Test

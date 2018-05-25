@@ -3,6 +3,7 @@ package no.systema.visma.integration;
 import java.math.BigDecimal;
 
 import no.systema.visma.v1client.model.DtoValueDecimal;
+import no.systema.visma.v1client.model.DtoValueInt32;
 import no.systema.visma.v1client.model.DtoValueString;
 
 /**
@@ -51,6 +52,27 @@ public class DtoValueHelper {
 
 		return dto;
 
+	}
+
+	/**
+	 * Convert Object into DtoValueInt32.<br>
+	 * 
+	 * @param o supports Integer
+	 * @return DtoValueInt32
+	 */
+	public static DtoValueInt32 toDtoValueInt32(java.lang.Object o) {
+		DtoValueInt32 dto;
+		if (o == null) {
+			return null;
+		}
+		if (o instanceof Integer) {
+			Integer oo = (Integer) o;
+			dto = new DtoValueInt32().value(oo);
+		}  else {
+			throw new IllegalArgumentException(o.getClass()+" Not supported");
+		}
+		
+		return dto;
 	}		
 	
 	

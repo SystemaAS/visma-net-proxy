@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
+import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
@@ -71,13 +72,14 @@ public class CustomerInvoice extends Configuration {
 	public void syncronize(VistranskHeadDto vistranskHeadDto) throws RestClientException, HttpClientErrorException {
 		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
 		logger.info("syncronize(VistranskHeadDto vistranskHeadDto)");
+
 		// For both New and Update
 		CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
 
 		try {
 			// Sanity check
 			CustomerDto customerExistDto = customer.getGetBycustomerCd(String.valueOf(vistranskHeadDto.getRecnr()));
-			if (customerExistDto != null) {
+			if (customerExistDto == null) {
 				logger.error("Could not find Customer on number:" + vistranskHeadDto.getRecnr());
 				throw new RuntimeException("Could not find Customer on number:" + vistranskHeadDto.getRecnr());
 			} else { // do the thing
@@ -174,23 +176,23 @@ public class CustomerInvoice extends Configuration {
 	 *             if an error occurs while attempting to invoke the API
 	 */
 	public void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto) throws RestClientException {
-		logger.info(LogHelper.logPrefixCustomer(updateDto.getCustomerNumber()));
-		logger.info("customerInvoiceCreate()");
+		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); 
+		logger.info("customerInvoiceCreate(CustomerInvoiceUpdateDto updateDt)");
 
 		try {
 
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); //TODO fix
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); 
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); //TODO fix
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null));
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); //TODO fix
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null));
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
 			throw e;
 		}
@@ -198,19 +200,10 @@ public class CustomerInvoice extends Configuration {
 	}
 
 	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
-		logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde)");
-		// Sanity checks
-		if (vistranskHeadDto.getRecnr() == 0) {
-			String errMsg = "RECNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (vistranskHeadDto.getBilnr() == 0) {
-			String errMsg = "BILNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-
+		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
+		
+		mandatoryCheck(vistranskHeadDto);
+		
 		// Head
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();
 		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getRecnr()));
@@ -227,6 +220,62 @@ public class CustomerInvoice extends Configuration {
 
 		return dto;
 
+	}
+
+	// Sanity checks
+	private void mandatoryCheck(VistranskHeadDto vistranskHeadDto) {
+		if (vistranskHeadDto.getRecnr() == 0) {
+			String errMsg = "RECNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getBilnr() == 0) {
+			String errMsg = "BILNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getPosnr() == 0) {
+			String errMsg = "POSNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (vistranskHeadDto.getPosnr() == 0) {
+			String errMsg = "POSNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getKrdaar() == 0) {
+			String errMsg = "KRDAAR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}	
+		if (vistranskHeadDto.getKrdmnd() == 0) {
+			String errMsg = "KRDMND can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getKrddag() == 0) {
+			String errMsg = "KRDDAG can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (vistranskHeadDto.getFfdaar() == 0) {
+			String errMsg = "FFDAAR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (vistranskHeadDto.getFfdmnd() == 0) {
+			String errMsg = "FFDMND can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}	
+		if (vistranskHeadDto.getFfddag() == 0) {
+			String errMsg = "FFDDAG can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		
+		
 	}
 
 	private DtoValueDateTime getDocumentDueDate(VistranskHeadDto vistranskHeadDto) {
@@ -259,8 +308,12 @@ public class CustomerInvoice extends Configuration {
 		List<CustomerInvoiceLinesUpdateDto> updateDtoList = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 
 		lineDtoList.forEach(lineDto -> {
+
+			mandatoryCheck(lineDto);
+			
 			CustomerInvoiceLinesUpdateDto updateDto = new CustomerInvoiceLinesUpdateDto();
-			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1)); // Hardcode to 1
+			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
+			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getBbelop())); // BBELOP 11 2
 			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
@@ -272,6 +325,41 @@ public class CustomerInvoice extends Configuration {
 		});
 		
 		return updateDtoList;
+		
+	}
+
+	//Sanity checks
+	private void mandatoryCheck(VistranskLineDto lineDto) {
+		if (lineDto.getPosnr() == 0) {
+			String errMsg = "POSNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (lineDto.getBbelop() == null) {
+			String errMsg = "BBELOP can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (lineDto.getMomsk() == null) {
+			String errMsg = "MOMSK can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (lineDto.getKonto() == 0) {
+			String errMsg = "KONTO can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (lineDto.getKbarer() == 0) {
+			String errMsg = "KBARER can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (lineDto.getBiltxt() == null) {
+			String errMsg = "BILTXT can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
 		
 	}
 
