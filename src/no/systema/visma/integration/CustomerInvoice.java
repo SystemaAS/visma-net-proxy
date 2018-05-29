@@ -1,6 +1,9 @@
 package no.systema.visma.integration;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.FirmvisDao;
-import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranskLineDto;
@@ -23,10 +24,12 @@ import no.systema.visma.v1client.api.CustomerInvoiceApi;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
+import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto.OperationEnum;
 import no.systema.visma.v1client.model.CustomerInvoiceUpdateDto;
 import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
+import no.systema.visma.v1client.model.TaxDetailUpdateDto;
 
 /**
  * A Wrapper on {@linkplain CustomerInvoiceApi}
@@ -57,7 +60,7 @@ public class CustomerInvoice extends Configuration {
 		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		customerInvoiceApi.getApiClient().setAccessToken(firmvis.getViacto().trim());
 
-		// customerApi.getApiClient().setDebugging(true); //Warning...set debugging in VismaNetResponseErrorHandler
+//		customerInvoiceApi.getApiClient().setDebugging(true); //Warning...debugging in VismaClientHttpRequestInceptor
 
 	}
 
@@ -207,14 +210,20 @@ public class CustomerInvoice extends Configuration {
 		// Head
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();
 		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getRecnr()));
-		dto.setDocumentDate(getDocumentDate(vistranskHeadDto));
+		//TODO find right Date format
+		//		dto.setDocumentDate((DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag())));
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getRecnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
-		dto.setDocumentDueDate(getDocumentDueDate(vistranskHeadDto));
-		dto.setCashDiscountDate(getDocumentDueDate(vistranskHeadDto)); // Note: same as DocumentDueDate
+//		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
+		// Note: same as DocumentDueDate
+//		dto.setCashDiscountDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));		
 		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main
 
+		//Tax lines
+//		dto.setTaxDetailLines(getTaxDetailLines(vistranskHeadDto.getLines()));
+		
+		
 		// Lines
 		dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines()));
 
@@ -234,11 +243,6 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (vistranskHeadDto.getPosnr() == 0) {
-			String errMsg = "POSNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}		
 		if (vistranskHeadDto.getPosnr() == 0) {
 			String errMsg = "POSNR can not be 0";
 			logger.error(errMsg);
@@ -278,15 +282,39 @@ public class CustomerInvoice extends Configuration {
 		
 	}
 
-	private DtoValueDateTime getDocumentDueDate(VistranskHeadDto vistranskHeadDto) {
-		DtoValueDateTime dto = new DtoValueDateTime();
-		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag(), 0, 0);
-
-		dto.setValue(value);
-
-		return dto;
-	}
-
+//	private DtoValueDateTime getDocumentDueDate(VistranskHeadDto vistranskHeadDto) {
+//		DtoValueDateTime dto = new DtoValueDateTime();
+//		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag(), 10, 10, 10);
+////		OffsetDateTime value = OffsetDateTime.of(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag(), 0, 0, 0, 0, ZoneOffset.UTC);		
+//
+//		dto.setValue(value);
+//
+//		return dto;
+//	}
+//
+//	private DtoValueDateTime getDocumentDate(VistranskHeadDto vistranskHeadDto) {
+//		DtoValueDateTime dto = new DtoValueDateTime();
+//		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag(), 10, 10, 10);
+//
+////		OffsetDateTime value = OffsetDateTime.of(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag(), 0, 0, 0, 0, ZoneOffset.UTC);		
+//		
+//		logger.info("value" + value);
+//		logger.info("now=" + LocalDateTime.now());
+//
+//		value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+//
+//		String text = value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+//		LocalDateTime parsedDate = LocalDateTime.parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+//
+//		logger.info("parsedDate" + parsedDate);
+//		
+//		dto.setValue(value);
+//
+//		return dto;
+//	}	
+	
+	
+	
 	private DtoValueString getFinancialsPeriod(VistranskHeadDto vistranskHeadDto) {
 		String year = String.valueOf(vistranskHeadDto.getPeraar());
 		String month = String.format("%02d", vistranskHeadDto.getPernr()); // pad up to 2 char, ex. 1 -> 01
@@ -295,15 +323,27 @@ public class CustomerInvoice extends Configuration {
 
 	}
 
-	private DtoValueDateTime getDocumentDate(VistranskHeadDto vistranskHeadDto) {
-		DtoValueDateTime dto = new DtoValueDateTime();
-		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag(), 0, 0);
+	private List<TaxDetailUpdateDto> getTaxDetailLines(List<VistranskLineDto> lineDtoList) {
+		List<TaxDetailUpdateDto> updateDtoList = new ArrayList<TaxDetailUpdateDto>();
 
-		dto.setValue(value);
+		lineDtoList.forEach(lineDto -> {
 
-		return dto;
-	}
-
+			mandatoryCheck(lineDto);
+			
+			TaxDetailUpdateDto updateDto = new TaxDetailUpdateDto();
+//			updateDto.setTaxId(DtoValueHelper.toDtoString(lineDto.getMomsk())); //TODO funkar inte
+			//TODO the rest of taxLines
+			updateDtoList.add(updateDto);
+			
+		});		
+		
+		return updateDtoList;
+	}	
+	
+	
+	
+	
+	
 	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList) {
 		List<CustomerInvoiceLinesUpdateDto> updateDtoList = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 
@@ -315,10 +355,11 @@ public class CustomerInvoice extends Configuration {
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getBbelop())); // BBELOP 11 2
-			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));
+			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  //?
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
 			updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(lineDto.getKbarer()))));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
+			updateDto.setOperation(OperationEnum.INSERT);  //TODO respect New and update, now hardcode for testing
 			
 			updateDtoList.add(updateDto);
 			
@@ -360,6 +401,16 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
+		if (lineDto.getMomsk() == null) {
+			String errMsg = "MOMSK can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}	
+		if (lineDto.getKonto() == 0) {
+			String errMsg = "KONTO can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}			
 		
 	}
 

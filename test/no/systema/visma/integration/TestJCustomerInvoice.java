@@ -1,5 +1,8 @@
 package no.systema.visma.integration;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranskTransformer;
+import no.systema.visma.v1client.RFC3339DateFormat;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 
 @RunWith(SpringRunner.class)
@@ -69,13 +73,17 @@ public class TestJCustomerInvoice {
 		dao.setFfdaar(2018);
 		dao.setFfdmnd(5);
 		dao.setFfddag(25);	
-		dao.setMomsk("M");
+//		   vatCategoryId: 32
+//		    description: Utgående mva, middels sats - rå fisk
+		dao.setMomsk("32");
 		dao.setKonto(3000);		
 		dao.setKbarer(1000);
 		dao.setBetbet("14");
-		
+		dao.setPeraar(2018);
+		dao.setPernr(5);
 		
 		return dao;
 	}	
+	
 	
 }

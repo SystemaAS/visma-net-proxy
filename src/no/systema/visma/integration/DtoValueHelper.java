@@ -1,7 +1,10 @@
 package no.systema.visma.integration;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
+import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueDecimal;
 import no.systema.visma.v1client.model.DtoValueInt32;
 import no.systema.visma.v1client.model.DtoValueString;
@@ -74,6 +77,30 @@ public class DtoValueHelper {
 		
 		return dto;
 	}		
+
+	/**
+	 * Convert SYSPED date into DtoValueDateTime.<br>
+	 * 
+	 * @param aar
+	 * @param mnd
+	 * @param dag
+	 * @return DtoValueDateTime using LocalDateTime
+	 */
+	public static DtoValueDateTime toDtoValueDateTime(int aar, int mnd, int dag) {
+		DtoValueDateTime dto = new DtoValueDateTime();
+		Objects.requireNonNull(aar, "aar is mandatory");
+		Objects.requireNonNull(mnd, "mnd is mandatory");
+		Objects.requireNonNull(aar, "dag is mandatory");
+
+		LocalDateTime value = LocalDateTime.of(aar, mnd, dag, 0, 0, 0);  //TODO verify
+
+		dto.setValue(value);
+
+		
+		return dto;
+	}			
+	
+	
 	
 	
 }
