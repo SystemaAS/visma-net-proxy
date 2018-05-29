@@ -1,5 +1,6 @@
 package no.systema.visma.integration;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -231,56 +232,7 @@ public class CustomerInvoice extends Configuration {
 
 	}
 
-	// Sanity checks
-	private void mandatoryCheck(VistranskHeadDto vistranskHeadDto) {
-		if (vistranskHeadDto.getRecnr() == 0) {
-			String errMsg = "RECNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (vistranskHeadDto.getBilnr() == 0) {
-			String errMsg = "BILNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (vistranskHeadDto.getPosnr() == 0) {
-			String errMsg = "POSNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (vistranskHeadDto.getKrdaar() == 0) {
-			String errMsg = "KRDAAR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}	
-		if (vistranskHeadDto.getKrdmnd() == 0) {
-			String errMsg = "KRDMND can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (vistranskHeadDto.getKrddag() == 0) {
-			String errMsg = "KRDDAG can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}		
-		if (vistranskHeadDto.getFfdaar() == 0) {
-			String errMsg = "FFDAAR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}		
-		if (vistranskHeadDto.getFfdmnd() == 0) {
-			String errMsg = "FFDMND can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}	
-		if (vistranskHeadDto.getFfddag() == 0) {
-			String errMsg = "FFDDAG can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}		
-		
-		
-	}
+
 
 //	private DtoValueDateTime getDocumentDueDate(VistranskHeadDto vistranskHeadDto) {
 //		DtoValueDateTime dto = new DtoValueDateTime();
@@ -347,6 +299,8 @@ public class CustomerInvoice extends Configuration {
 	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList) {
 		List<CustomerInvoiceLinesUpdateDto> updateDtoList = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 
+		logger.info("FRMO, lineDtoList.size="+lineDtoList.size());
+		
 		lineDtoList.forEach(lineDto -> {
 
 			mandatoryCheck(lineDto);
@@ -355,7 +309,8 @@ public class CustomerInvoice extends Configuration {
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getBbelop())); // BBELOP 11 2
-			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  //?
+			//TODO formodlinge behövs någon form av cross-ref, Visma har 2 tegn , SYSPED 1 TEGN
+			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
 			updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(lineDto.getKbarer()))));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -369,6 +324,60 @@ public class CustomerInvoice extends Configuration {
 		
 	}
 
+	// Sanity checks
+	private void mandatoryCheck(VistranskHeadDto vistranskHeadDto) {
+		if (vistranskHeadDto.getRecnr() == 0) {
+			String errMsg = "RECNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getBilnr() == 0) {
+			String errMsg = "BILNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getPosnr() == 0) {
+			String errMsg = "POSNR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getKrdaar() == 0) {
+			String errMsg = "KRDAAR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}	
+		if (vistranskHeadDto.getKrdmnd() == 0) {
+			String errMsg = "KRDMND can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranskHeadDto.getKrddag() == 0) {
+			String errMsg = "KRDDAG can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (vistranskHeadDto.getFfdaar() == 0) {
+			String errMsg = "FFDAAR can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (vistranskHeadDto.getFfdmnd() == 0) {
+			String errMsg = "FFDMND can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}	
+		if (vistranskHeadDto.getFfddag() == 0) {
+			String errMsg = "FFDDAG can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		
+	}	
+	
+	
+	
+	
+	
 	//Sanity checks
 	private void mandatoryCheck(VistranskLineDto lineDto) {
 		if (lineDto.getPosnr() == 0) {
@@ -376,12 +385,12 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (lineDto.getBbelop() == null) {
+		if (lineDto.getBbelop() == null || lineDto.getBbelop().equals(BigDecimal.ZERO)) {
 			String errMsg = "BBELOP can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (lineDto.getMomsk() == null) {
+		if (lineDto.getMomsk() == null  || lineDto.getMomsk().isEmpty()) {
 			String errMsg = "MOMSK can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
@@ -396,21 +405,11 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (lineDto.getBiltxt() == null) {
+		if (lineDto.getBiltxt() == null || lineDto.getBiltxt().isEmpty()) {
 			String errMsg = "BILTXT can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (lineDto.getMomsk() == null) {
-			String errMsg = "MOMSK can not be empty";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}	
-		if (lineDto.getKonto() == 0) {
-			String errMsg = "KONTO can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}			
 		
 	}
 

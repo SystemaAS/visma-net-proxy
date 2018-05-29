@@ -71,7 +71,7 @@ public class Customer  extends Configuration{
     		CustomerDto customerExistDto = getGetBycustomerCd(String.valueOf(viskundeDao.getKundnr()));			
  
     		if (customerExistDto != null) {
-  
+    			logger.info("Kunde:"+viskundeDao.getKundnr()+ " exist, trying to update.");
     			customerPutBycustomerCd(String.valueOf(viskundeDao.getKundnr()), updateDto);
     			logger.info("Kunde:"+viskundeDao.getKundnr()+ " is updated.");
     			

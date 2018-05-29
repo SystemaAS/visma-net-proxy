@@ -57,19 +57,18 @@ public class CustomerTransactionManager {
 			try {
 
 				syncronizeCustomer(dao);
+				
+				deleteViskunde(dao);
+				
+				createViskulog(dao);
 
-				ViskulogDao viskulogDao = getViskulogDao(dao, null);
-				viskulogDaoService.create(viskulogDao);
-				logger.info("VISKULOG created, dao="+viskulogDao);	
 			} 
 			catch (HttpClientErrorException e) {
 				logger.error(e);
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
 				setError(dao, e.getStatusText());
 				viskundeDaoService.updateOnError(dao);
-				ViskulogDao viskulogDao = getViskulogDao(dao, e.getStatusText());
-				viskulogDaoService.create(viskulogDao);
-				logger.info("VISKULOG created, dao="+viskulogDao);			
+				createViskulog(dao,  e.getStatusText());				
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
@@ -77,12 +76,9 @@ public class CustomerTransactionManager {
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
 				setError(dao, e.getMessage());
 				viskundeDaoService.updateOnError(dao);		
-				ViskulogDao viskulogDao = getViskulogDao(dao, e.getMessage());
-				viskulogDaoService.create(viskulogDao);
-				logger.info("VISKULOG created, dao="+viskulogDao);	
+				createViskulog(dao,  e.getMessage());	
 				//continues with next dao in list
 			}
-
 
 		});
 
@@ -93,6 +89,26 @@ public class CustomerTransactionManager {
 		
 	}
 	
+	private void createViskulog(ViskundeDao dao) {
+		ViskulogDao viskulogDao = getViskulogDao(dao, null);
+		viskulogDaoService.create(viskulogDao);
+		logger.info("VISKULOG created, dao="+viskulogDao);	
+	}
+
+	
+	private void createViskulog(ViskundeDao dao, String errorText) {
+		ViskulogDao viskulogDao = getViskulogDao(dao, errorText);
+		viskulogDaoService.create(viskulogDao);
+		logger.info("VISKULOG created(with error), dao="+viskulogDao);	
+	}	
+	
+	
+	private void deleteViskunde(ViskundeDao dao) {
+		viskundeDaoService.delete(dao);
+		logger.info("VISKUNDE deleted, dao="+dao);
+		
+	}
+
 	private void setError(ViskundeDao dao, String errorText) {
 		logger.info("Inside setError, errorText="+errorText);
 		
@@ -104,21 +120,12 @@ public class CustomerTransactionManager {
 		
 	}
 
-	/**
-	 * Syncronize one VISKUNDE with Customer in Visma.net
-	 * 
-	 * @param viskundDao
-	 */
-	public void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException { 
+	private void syncronizeCustomer(ViskundeDao viskundeDao) throws RestClientException,  IndexOutOfBoundsException { 
 		logger.info("Kundnr:"+viskundeDao.getKundnr()+" about to be syncronized.");
 		try {
 			
 			customer.syncronize(viskundeDao);
 			logger.info("Kundnr:"+viskundeDao.getKundnr()+" syncronized.");
-
-			viskundeDaoService.delete(viskundeDao);
-			logger.info("VISKUNDE deleted, dao="+viskundeDao);
-			
 			
 		} 
 		catch (HttpClientErrorException e) {

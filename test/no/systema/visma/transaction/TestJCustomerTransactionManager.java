@@ -48,6 +48,7 @@ public class TestJCustomerTransactionManager {
 
 	@Test
 	public void testSyncCustomerValid() {
+
 		setupValid();
 		
 		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
@@ -85,17 +86,21 @@ public class TestJCustomerTransactionManager {
 	public void testSyncCustomer1Run_InValidNotExistInVisma() {  //Manully delete selected kunde in Visma.net before run
 		
 		setupValid();
+
 		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
 		System.out.println("Empty:");
 		System.out.println(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+
 		assertResultValid();
 
 		setupInValid();
+
 		errorList = transactionManager.syncronizeCustomers();
 		assertEquals(1, errorList.size());
 		System.out.println("NOT Empty:");
 		List<ViskundeDao> daoErrorList = viskundeDaoService.findAll(null);
 		System.out.println(FlipTableConverters.fromIterable(daoErrorList, ViskundeDao.class));
+
 		assertResultInValid();		
 		
 		//cleanup

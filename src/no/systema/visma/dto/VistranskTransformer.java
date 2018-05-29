@@ -36,6 +36,7 @@ public class VistranskTransformer {
 		groupedByBilnr.forEach((bilnr, daoList) -> {  //Head and lines to correspond to Visma.net format
 			VistranskHeadDto head = new VistranskHeadDto();
 			/*every VISTRANSK contains headerinfo in below attributes, using first row to populate head.*/
+			head.setFirma(daoList.get(0).getFirma());
 			head.setRecnr(daoList.get(0).getRecnr());
 			head.setBilnr(daoList.get(0).getBilnr());
 			head.setPosnr(daoList.get(0).getPosnr());

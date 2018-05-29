@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class VistranskHeadDto {
 
+	private String firma;
 	private int recnr;
 	private int bilnr;
 	private int posnr;

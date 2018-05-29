@@ -3,10 +3,7 @@
  */
 package no.systema.visma.integration;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -15,12 +12,21 @@ import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.FileCopyUtils;
+
+import no.systema.visma.v1client.ApiClient;
 
 /**
+ * Intercepts client-side HTTP requests. This class is {@linkplain
+ * org.springframework.web.client.RestTemplate#setInterceptors(java.util.List) registered} with
+ * {@link org.springframework.web.client.RestTemplate RestTemplate} on {@link ApiClient} in {@link Configuration}, as to modify the outgoing {@link ClientHttpRequest}
+ * and/or the incoming {@link ClientHttpResponse}.
+ *
+ * <p>The main entry point for interceptors is {@link #intercept(HttpRequest, byte[], ClientHttpRequestExecution)}.
+ * 
  * @author fredrikmoller
  *
  */

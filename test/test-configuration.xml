@@ -11,7 +11,7 @@
 	<bean id="vatCategoryApi" class="no.systema.visma.v1client.api.VatCategoryApi"/>
 	
 	<bean id="customerTransactionManager" class="no.systema.visma.transaction.CustomerTransactionManager"/>
-
+	<bean id="customerInvoiceTransactionManager" class="no.systema.visma.transaction.CustomerInvoiceTransactionManager"/>
 
     <import resource="classpath:syjservicescommon-data-service-test.xml"/>
     
