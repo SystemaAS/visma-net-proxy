@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskulogDao;
 import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
+import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.visma.dto.ViskundeDto;
+import no.systema.visma.dto.VistranskDto;
 
 @RestController
 public class DataController {
@@ -27,6 +30,9 @@ public class DataController {
 	
 	@Autowired
 	ViskundeDaoService viskundeDao;
+
+	@Autowired
+	VistranskDaoService vistranskDaoService;	
 	
 	@Autowired
 	private BridfDaoService bridfDaoService;
@@ -84,12 +90,65 @@ public class DataController {
 		
 		viskundeDaoList = viskundeDao.findAllInFirma(qKundnr, qFraDato);
 		
-		return convertToDto(viskundeDaoList);
+		return convertToViskundeDto(viskundeDaoList);
 
 	}
 
+	/**
+	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistransk?user=SYSTEMA&kundnr=1&fraDato=20180101
+	 * @param kundnr
+	 * @param fraDato
+	 * @return
+	 */
+	@RequestMapping(path = "/vistransk", method = RequestMethod.GET)
+	@SneakyThrows
+	public List<VistranskDto> getVistransk(@RequestParam("user") String user, @RequestParam("kundnr") String kundnr, @RequestParam("fraDato") String fraDato) {
+		logger.debug("/vistransk entered...");
+		List<VistranskDao> vistranskDaoList;		
+		int qKundnr = 0;
+		int qFraDato = 0;
 
-	private List<ViskundeDto> convertToDto(List<ViskundeDao> viskundeDaoList) {
+		checkUser(user);
+
+		if( !kundnr.equals("ALL") ){
+			qKundnr = Integer.valueOf(kundnr);		
+		}
+		if( !fraDato.equals("ALL") ){
+			qFraDato = Integer.valueOf(fraDato);
+		}			
+		
+		vistranskDaoList = vistranskDaoService.findAllInFirma(qKundnr, qFraDato);
+		
+		return convertToVistranskDto(vistranskDaoList);
+
+	}	
+	
+	private List<VistranskDto> convertToVistranskDto(List<VistranskDao> vistranskDaoList) {
+		List<VistranskDto> vistranskDtoList = new ArrayList<VistranskDto>();
+
+		vistranskDaoList.forEach(dao -> {
+			VistranskDto dto = new VistranskDto();
+			dto.setAktkod(dao.getAktkod());
+			dto.setFirma(dao.getFirma());
+			dto.setRecnr(dao.getRecnr());
+			dto.setBilnr(dao.getBilnr());
+			dto.setBetbet(dao.getBetbet());
+			dto.setPosnr(dao.getPosnr());
+			dto.setKonto(dao.getKonto());
+			dto.setKsted(dao.getKsted());
+			dto.setKbarer(dao.getKbarer());
+			dto.setBiltxt(dao.getBiltxt());
+			dto.setSyncda(dao.getSyncda());
+			dto.setSyerro(dao.getSyerro());
+			
+			vistranskDtoList.add(dto);
+
+		});
+		
+		return vistranskDtoList;
+	}
+
+	private List<ViskundeDto> convertToViskundeDto(List<ViskundeDao> viskundeDaoList) {
 		List<ViskundeDto> viskundeDtoList = new ArrayList<ViskundeDto>();
 
 		viskundeDaoList.forEach(dao -> {
@@ -109,7 +168,9 @@ public class DataController {
 			viskundeDtoList.add(dto);
 
 		});
+		
 		return viskundeDtoList;
+		
 	}	
 
 

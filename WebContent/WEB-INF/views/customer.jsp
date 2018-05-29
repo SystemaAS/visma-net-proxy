@@ -51,14 +51,14 @@
 		});
 
 
-	var viskulogTable = jq('#viskundeTable').DataTable({
+	var viskundeTable = jq('#viskundeTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 3, "desc" ] ],
+			"order" : [ [ 2, "desc" ] ],
 			"aoColumns" : [ {
 				"mData" : "kundnr"
 			}, {
@@ -175,7 +175,7 @@
 
 				<tr height="20">
 					<td class="text14">&nbsp;</td>
-					<td>&nbsp;&nbsp;Synkronisere eSpedsg Kunderegister med Visma.net Financials :&nbsp;&nbsp;
+					<td>&nbsp;&nbsp;Synkronisere Kunderegister :&nbsp;&nbsp;
 					<button class="inputFormSubmit" onclick="syncCustomer()" autofocus>Synkronisere</button></td>
 				</tr>
 
@@ -190,7 +190,7 @@
 							<tr height="20">
 								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Kunde </font>&nbsp;</td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="yyy.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="customerInvoice.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
 								</a></td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="viskulog.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde - historikk </font>&nbsp;

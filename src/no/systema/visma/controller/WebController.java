@@ -35,6 +35,8 @@ import no.systema.main.util.AppConstants;
 import no.systema.main.util.StringManager;
 import no.systema.main.validator.LoginValidator;
 import no.systema.visma.dto.PrettyPrintViskundeError;
+import no.systema.visma.dto.PrettyPrintVistranskError;
+import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
 
 @Controller
@@ -56,7 +58,10 @@ public class WebController {
 	BridfDaoService bridfDaoService;
 	
 	@Autowired
-	CustomerTransactionManager transactionManager;
+	CustomerTransactionManager customerTransactionManager;
+
+	@Autowired
+	CustomerInvoiceTransactionManager customerInvoiceTransactionManager;	
 	
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
@@ -69,7 +74,7 @@ public class WebController {
 
 		checkUser(user);
 
-		List<PrettyPrintViskundeError> errorList = transactionManager.syncronizeCustomers();
+		List<PrettyPrintViskundeError> errorList = customerTransactionManager.syncronizeCustomers();
 
 		if (errorList.isEmpty()) {
 			sb.append("syncronizeCustomers executed without errors. \n \n");
@@ -86,6 +91,36 @@ public class WebController {
 		return sb.toString();
 
 	}	
+	
+	/**
+	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomerInvoices.do?user=SYSTEMA
+	 */
+	@RequestMapping(value="syncronizeCustomerInvoices.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String syncCustomerInvoices(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("syncronizeCustomerInvoices.do...");
+
+		checkUser(user);
+
+		List<PrettyPrintVistranskError> errorList = customerInvoiceTransactionManager.syncronizeCustomerInvoices();
+
+		if (errorList.isEmpty()) {
+			sb.append("syncronizeCustomerInvoices executed without errors. \n \n");
+		} else {
+			sb.append("syncronizeCustomerInvoices executed WITH errors.  \n \n");
+		}
+
+//		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}		
+	
 	
 	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
@@ -126,6 +161,21 @@ public class WebController {
 		
 	}	
 
+	@RequestMapping(value = "customerInvoice.do", method={RequestMethod.GET})
+	public ModelAndView getCustomerInvoice(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("customer_invoice");
+		logger.info("Inside: customerinvoice.do");
+
+		if (appUser == null) {
+			return loginView;
+		} else {
+			return successView;
+		}
+	}	
+	
+	
+	
 	@RequestMapping(value = "viskulog.do", method={RequestMethod.GET})
 	public ModelAndView getViskulog(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);

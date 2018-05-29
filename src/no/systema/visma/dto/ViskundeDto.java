@@ -1,7 +1,14 @@
 package no.systema.visma.dto;
 
 import lombok.Data;
+import no.systema.jservices.common.dao.ViskundeDao;
 
+/**
+ * This dto is a  stripped version of {@linkplain ViskundeDao} for view in GUI.
+ * 
+ * @author fredrikmoller
+ *
+ */
 @Data
 public class ViskundeDto {
 
