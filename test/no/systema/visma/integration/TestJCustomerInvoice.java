@@ -85,5 +85,44 @@ public class TestJCustomerInvoice {
 		return dao;
 	}	
 	
+	@Test
+	public void testDate() {
+		//https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+		
+		
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+		
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		
+		logger.info("now, NO timezone"+LocalDateTime.now());
+
+	  LocalDateTime date = LocalDateTime.now();
+	  String text = date.format(dateTimeFormatter);
+	  LocalDateTime parsedDate = LocalDateTime.parse(text, dateTimeFormatter);
+		
+		logger.info("now, timezone"+LocalDateTime.now(ZoneId.systemDefault()));
+
+		logger.info("parsedDate "+parsedDate );
+		
+		
+		VistranskDao dao = getVistranskDao(0, 0,  0, null); 		
+		LocalDateTime value = LocalDateTime.of(dao.getKrdaar(), dao.getKrdmnd(), dao.getKrddag(), 0, 0, 0, 0);	
+		
+		logger.info("value="+value);
+		
+		
+		logger.info("value, format="+value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		
+		RFC3339DateFormat format = new RFC3339DateFormat();
+		
+		StringBuffer sb = new StringBuffer();
+		logger.info("format="+format.format(value, sb, null));
+		
+		
+		
+	}
+	
+	
 	
 }
