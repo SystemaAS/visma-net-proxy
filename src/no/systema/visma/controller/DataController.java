@@ -14,10 +14,12 @@ import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskulogDao;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VistranskDao;
+import no.systema.jservices.common.dao.VistrlogkDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
+import no.systema.jservices.common.dao.services.VistrlogkDaoService;
 import no.systema.visma.dto.ViskundeDto;
 import no.systema.visma.dto.VistranskDto;
 
@@ -26,13 +28,16 @@ public class DataController {
 	private static Logger logger = Logger.getLogger(DataController.class.getName());	
 
 	@Autowired
-	ViskulogDaoService viskulogDao;
+	ViskulogDaoService viskulogDaoService;
 	
 	@Autowired
-	ViskundeDaoService viskundeDao;
+	ViskundeDaoService viskundeDaoService;
 
 	@Autowired
 	VistranskDaoService vistranskDaoService;	
+	
+	@Autowired
+	VistrlogkDaoService vistrlogkDaoService;	
 	
 	@Autowired
 	private BridfDaoService bridfDaoService;
@@ -59,7 +64,7 @@ public class DataController {
 			qFraDato = Integer.valueOf(fraDato);
 		}		
 		
-		viskulogDaoList = viskulogDao.findAllInFirma(qKundnr, qFraDato);
+		viskulogDaoList = viskulogDaoService.findAllInFirma(qKundnr, qFraDato);
 		
 		return viskulogDaoList;
 
@@ -72,7 +77,6 @@ public class DataController {
 	 * @return
 	 */
 	@RequestMapping(path = "/viskunde", method = RequestMethod.GET)
-	@SneakyThrows
 	public List<ViskundeDto> getViskunde(@RequestParam("user") String user, @RequestParam("kundnr") String kundnr, @RequestParam("fraDato") String fraDato) {
 		logger.debug("/viskunde entered...");
 		List<ViskundeDao> viskundeDaoList;		
@@ -88,7 +92,7 @@ public class DataController {
 			qFraDato = Integer.valueOf(fraDato);
 		}			
 		
-		viskundeDaoList = viskundeDao.findAllInFirma(qKundnr, qFraDato);
+		viskundeDaoList = viskundeDaoService.findAllInFirma(qKundnr, qFraDato);
 		
 		return convertToViskundeDto(viskundeDaoList);
 
@@ -122,6 +126,34 @@ public class DataController {
 		return convertToVistranskDto(vistranskDaoList);
 
 	}	
+	
+	/**
+	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistrlogk?user=SYSTEMA&kundnr=1&fraDato=20180101
+	 * @param kundnr
+	 * @param fraDato
+	 * @return
+	 */
+	@RequestMapping(path = "/vistrlogk", method = RequestMethod.GET)
+	public List<VistrlogkDao> getVistrlogk(@RequestParam("user") String user, @RequestParam("kundnr") String kundnr, @RequestParam("fraDato") String fraDato) {
+		logger.debug("/vistrlogk entered...");
+		List<VistrlogkDao> vistrlogkDaoList;		
+		int qKundnr = 0;
+		int qFraDato = 0;
+
+		checkUser(user);
+
+		if( !kundnr.equals("ALL") ){
+			qKundnr = Integer.valueOf(kundnr);		
+		}
+		if( !fraDato.equals("ALL") ){
+			qFraDato = Integer.valueOf(fraDato);
+		}		
+		
+		vistrlogkDaoList = vistrlogkDaoService.findAllInFirma(qKundnr, qFraDato);
+		
+		return vistrlogkDaoList;
+
+	}
 	
 	private List<VistranskDto> convertToVistranskDto(List<VistranskDao> vistranskDaoList) {
 		List<VistranskDto> vistranskDtoList = new ArrayList<VistranskDto>();

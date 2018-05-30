@@ -29,18 +29,15 @@ public class LogHelper {
 	 * 
 	 * @param recnr
 	 * @param bilnr
-	 * @param posnr
 	 * @return String 
 	 */
-	public static String logPrefixCustomerInvoice(Object recnr, Object bilnr, Object posnr) {
+	public static String logPrefixCustomerInvoice(Object recnr, Object bilnr) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("::RECNR:").append(recnr).append("::BILNR::").append(bilnr).append("::POSNR::").append(posnr);
+		sb.append("::RECNR:").append(recnr).append("::BILNR::").append(bilnr);
 		
 		return sb.toString();
 		
 	}	
-	
-	
 	
 	
 }

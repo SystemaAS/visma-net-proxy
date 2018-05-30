@@ -162,8 +162,8 @@
 
 				<tr height="20">
 					<td class="text14">&nbsp;</td>
-					<td>&nbsp;&nbsp;Synkronisere eSpedsg Kunderegister med Visma.net Financials :&nbsp;&nbsp;
-					<button class="inputFormSubmit" onclick="syncCustomer()" autofocus>Synkronisere</button></td>
+					<td>&nbsp;&nbsp;Synkronisere Kunderegister :&nbsp;&nbsp;
+					<button class="inputFormSubmit" onclick="syncCustomer()">Synkronisere</button></td>
 				</tr>
 
 				<tr height="20">
@@ -179,12 +179,12 @@
 								</a></td>
 
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="xxx.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="customerInvoice.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
 								</a></td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Kunde - historikk </font>&nbsp;</td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="xxx.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - historikk </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="vistrlogk.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - historikk </font>&nbsp;
 								</a></td>
 
 								<td width="60%" class="tabFantomSpace" align="center" nowrap></td>

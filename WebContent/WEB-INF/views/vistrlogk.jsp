@@ -4,6 +4,7 @@
 <!-- ======================= header ===========================-->
 <jsp:include page="/WEB-INF/views/headerVisma.jsp" />
 <!-- =====================end header ==========================-->
+
 <style type="text/css">
 .ui-datepicker {
 	font-size: 9pt;
@@ -22,9 +23,8 @@
 	});
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
-	var baseUrl = "/visma-net-proxy/vistransk?user=${user.user}";
+	var baseUrl = "/visma-net-proxy/vistrlogk?user=${user.user}";
 	var syncCustomerInvoiceInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
-	
 	
 	function load_data() {
 
@@ -32,6 +32,7 @@
 
 		var selectedKundenr = jq('#selectKundenr').val();
 		var selectedFradato = jq('#selectFradato').val();
+		var selectedTildato = jq('#selectTildato').val();
 
 		if (selectedKundenr != "") {
 			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
@@ -43,6 +44,12 @@
 		} else {
 			runningUrl = runningUrl + "&fraDato=ALL";
 		}
+		if (selectedTildato != null && selectedTildato != "") {
+			runningUrl = runningUrl + "&tilDato=" + selectedTildato;
+		} else {
+			runningUrl = runningUrl + "&tilDato=ALL";
+
+		}
 
 		console.log("runningUrl=" + runningUrl);
 
@@ -50,38 +57,30 @@
 			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 		});
 
-
-	var vistranskTable = jq('#vistranskTable').DataTable({
+		var vistrlogkTable = jq('#vistrlogkTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 2, "desc" ] ],
-
+			"order" : [ [ 3, "desc" ] ],
 			"aoColumns" : [ {
-				"mData" : "recnr"
-			}, {
 				"mData" : "bilnr"
 			}, {
-				"mData" : "posnr"
+				"mData" : "bilaar"
 			},{
-				"mData" : "biltxt"
+				"mData" : "bilmnd"
+			},{
+				"mData" : "bildag"
+			},{
+				"mData" : "status"
 			},{
 				"mData" : "syncda"
 			}, {
+				"mData" : "synctm"
+			}, {
 				"mData" : "syerro"
-			}, {
-				"mData" : "konto"
-			}, {
-				"mData" : "ksted"
-			}, {
-				"mData" : "kbarer"
-			}, {
-				"mData" : "betbet"
-			}, {
-				"mData" : "aktkod"
 			} ],
 			"lengthMenu" : [ 75, 100 ],
 			"language" : {
@@ -89,10 +88,9 @@
 			}
 
 		});
-
+		
 		jq.unblockUI();
 
-		
 	}
 
 
@@ -117,7 +115,7 @@
 		});
 
 	}
-
+	
 	jq(document).ready(function() {
 
 	});
@@ -141,29 +139,19 @@
 			<%-- tab container component --%>
 			<table width="100%" class="text12">
 				<tr height="2">
-					<td>&nbsp;</td>
+					<td></td>
 				</tr>
 				<tr height="25">
 					<td>&nbsp;</td>
 					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Kunde</font>&nbsp;</td>
-					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-<!--  	
-					<a onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
+					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
 					</a></td>
--->	
-					<font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
-					</td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Konfigurasjon</font>&nbsp;
+					</a></td>
 
-					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-					<a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Konfigurasjon</font>&nbsp;
-					</a></td>
-	
 					<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 				</tr>
-
-
 			</table>
 		</td>
 	</tr>
@@ -185,7 +173,7 @@
 				<tr height="20">
 					<td>&nbsp;</td>
 				</tr>
-				
+
 				<tr>
 					<td>&nbsp;</td>
 					<td>
@@ -193,15 +181,20 @@
 							<tr height="20">
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="customer.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde </font>&nbsp;
 								</a></td>
+
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Faktura </font>&nbsp;
-								</td>
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="customerInvoice.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura </font>&nbsp;
+								</a></td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+
+	
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="viskulog.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde - historikk </font>&nbsp;
 								</a></td>
+	
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="vistrlogk.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - historikk </font>&nbsp;
-								</a></td>
+
+								<td width="10%" valign="bottom" class="tabSub" align="center" nowrap><font class="tabLinkMinor">&nbsp; Faktura - historikk </font>&nbsp;</td>
+		
 
 								<td width="60%" class="tabFantomSpace" align="center" nowrap></td>
 
@@ -222,16 +215,13 @@
 												<div class="container-fluid">
 													<div class="row">
 														<div class="col-md-1 text12 text-nowrap">
-															<font class="text14">Kunde:</font><br> 
-															<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
-															<a tabindex="-1"
+															<font class="text14">Kunde:</font><br> <input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"> <a tabindex="-1"
 																id="kundenrLink"> <img style="cursor: pointer; vertical-align: middle;" src="resources/images/find.png" width="14px" height="14px" border="0" />
 															</a>&nbsp;
 														</div>
 														<div class="col-md-1 text12">
 															<font class="text14">Fra dato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 														</div>
-
 														<div class="col-md-2" align="right">
 															<br>
 															<button class="inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
@@ -243,20 +233,17 @@
 													<div class="padded-row-small">&nbsp;</div>
 
 													<div class="panel-body">
-														<table width="100%" class="table table-striped table-bordered table-hover" id="vistranskTable">
+														<table width="100%" class="table table-striped table-bordered table-hover" id="vistrlogkTable">
 															<thead class="tableHeaderField">
 																<tr>
-																	<th>Kundnr</th>
 																	<th>Fakturanr</th>
-																	<th>Pos</th>
-																	<th>Text</th>
+																	<th>År</th>
+																	<th>Måned</th>
+																	<th>Dag</th>
+																	<th>Status</th>
 																	<th>Dato</th>
-																	<th>Feil(på fakt.hode)</th>
-																	<th>Konto</th>
-																	<th>Kost.sted</th>
-																	<th>Kost.barer</th>
-																	<th>Bet.beting.</th>
-																	<th>Type</th>
+																	<th>Tid</th>
+																	<th>Feil</th>
 																</tr>
 															</thead>
 														</table>
@@ -270,6 +257,7 @@
 						</table>
 					</td>
 				</tr>
+
 			</table>
 		</td>
 

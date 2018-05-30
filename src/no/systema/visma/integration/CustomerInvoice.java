@@ -74,7 +74,7 @@ public class CustomerInvoice extends Configuration {
 	 * @throws HttpClientErrorException
 	 */
 	public void syncronize(VistranskHeadDto vistranskHeadDto) throws RestClientException, HttpClientErrorException {
-		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 		logger.info("syncronize(VistranskHeadDto vistranskHeadDto)");
 
 		// For both New and Update
@@ -103,17 +103,17 @@ public class CustomerInvoice extends Configuration {
 			}
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranskHeadDto=" + vistranskHeadDto.toString());
 			logger.error("message:" + e.getMessage());
 			logger.error("status text:" + new String(e.getStatusText())); // Status text contains Response body from Visma.net
 			throw e;
 		} catch (RestClientException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranskHeadDto=" + vistranskHeadDto.toString());
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranskHeadDto=" + vistranskHeadDto.toString());
 			throw e;
 		}
@@ -180,7 +180,7 @@ public class CustomerInvoice extends Configuration {
 	 *             if an error occurs while attempting to invoke the API
 	 */
 	public void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto) throws RestClientException {
-		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); 
+		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 		logger.info("customerInvoiceCreate(CustomerInvoiceUpdateDto updateDt)");
 
 		try {
@@ -188,15 +188,15 @@ public class CustomerInvoice extends Configuration {
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null)); 
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null));
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber(), null));
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
 			throw e;
 		}
@@ -336,8 +336,8 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (vistranskHeadDto.getPosnr() == 0) {
-			String errMsg = "POSNR can not be 0";
+		if (vistranskHeadDto.getBetbet() == null || vistranskHeadDto.getBetbet().isEmpty()) {
+			String errMsg = "BETBET can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
@@ -373,10 +373,6 @@ public class CustomerInvoice extends Configuration {
 		}		
 		
 	}	
-	
-	
-	
-	
 	
 	//Sanity checks
 	private void mandatoryCheck(VistranskLineDto lineDto) {

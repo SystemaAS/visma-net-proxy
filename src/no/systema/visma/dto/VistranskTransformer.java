@@ -39,7 +39,8 @@ public class VistranskTransformer {
 			head.setFirma(daoList.get(0).getFirma());
 			head.setRecnr(daoList.get(0).getRecnr());
 			head.setBilnr(daoList.get(0).getBilnr());
-			head.setPosnr(daoList.get(0).getPosnr());
+			head.setBilmnd(daoList.get(0).getBilmnd());
+			head.setBildag(daoList.get(0).getBildag());
 			head.setKrdaar(daoList.get(0).getKrdaar());
 			head.setKrdmnd(daoList.get(0).getKrdmnd());
 			head.setKrddag(daoList.get(0).getKrddag());

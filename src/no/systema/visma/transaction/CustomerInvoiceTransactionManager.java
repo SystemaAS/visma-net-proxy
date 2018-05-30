@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import no.systema.jservices.common.dao.ViskulogDao;
-import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.VistrlogkDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
@@ -58,10 +56,6 @@ public class CustomerInvoiceTransactionManager {
 		List<VistranskDao> vistranskDaoList = vistranskDaoService.findAll(null);
 		List<VistranskHeadDto> headDtolist = VistranskTransformer.transform( vistranskDaoList );
 		
-		
-		headDtolist.forEach((headDto) -> logger.info("FRMO, headDto="+headDtolist));
-		
-		
 		headDtolist.forEach((headDto) -> {
 			try {
 
@@ -74,14 +68,14 @@ public class CustomerInvoiceTransactionManager {
 			} 
 			catch (HttpClientErrorException e) {
 				logger.error(e);
-				errorList.add(new PrettyPrintVistranskError(headDto.getRecnr(), headDto.getBilnr(), headDto.getPosnr(), LocalDateTime.now(), e.getStatusText()));
+				errorList.add(new PrettyPrintVistranskError(headDto.getRecnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
 				updateVistranskOnError(headDto, e.getStatusText());
 				createVistrlogk(headDto, e.getStatusText());
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
 				logger.error(e);
-				errorList.add(new PrettyPrintVistranskError(headDto.getRecnr(), headDto.getBilnr(), headDto.getPosnr(), LocalDateTime.now(), e.getMessage()));
+				errorList.add(new PrettyPrintVistranskError(headDto.getRecnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
 				updateVistranskOnError(headDto, e.getMessage());
 				createVistrlogk(headDto, e.getMessage());
 				//continues with next dao in list
@@ -111,26 +105,26 @@ public class CustomerInvoiceTransactionManager {
 	}	
 	
 	private void syncronizeCustomerInvoice(VistranskHeadDto vistranskHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
-		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 
 		try {
 			
 			customerInvoice.syncronize(vistranskHeadDto);
-			logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()) + " syncronized.");
+			logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()) + " syncronized.");
 
 		} 
 		catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransk, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransk="+vistranskHeadDto, e);
 			throw e;
 		}
 		catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr(), vistranskHeadDto.getPosnr()));
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransk="+vistranskHeadDto, e);
 			throw e;
 			
@@ -139,19 +133,19 @@ public class CustomerInvoiceTransactionManager {
 	}
 
 	private void deleteVistransk(VistranskHeadDto vistranskHeadDto) {
-		VistranskDao dao = getVistranskDao(vistranskHeadDto);
-		vistranskDaoService.delete(dao);
-		logger.info("VISTRANSK deleted, dto="+vistranskHeadDto);
+		vistranskDaoService.deleteAll(vistranskHeadDto.getFirma(), vistranskHeadDto.getBilnr());
+		logger.info("VISTRANSK rows deleted for headDto="+vistranskHeadDto);
 
 	}
 
 	private void updateVistranskOnError(VistranskHeadDto vistranskHeadDto, String errorText) {
-		VistranskDao dao = getVistranskDao(vistranskHeadDto);
-
 		LocalDateTime now = LocalDateTime.now();
 		String nowDate = now.format(dateFormatter);
 		int syncDa = Integer.valueOf(nowDate);		
 
+		VistranskDao dao = new VistranskDao();
+		dao.setFirma(vistranskHeadDto.getFirma());
+		dao.setRecnr(vistranskHeadDto.getRecnr());
 		dao.setSyncda(syncDa);
 		dao.setSyerro(errorText);		
 		
@@ -159,27 +153,15 @@ public class CustomerInvoiceTransactionManager {
 		
 	}	
 
-	private VistranskDao getVistranskDao(VistranskHeadDto vistranskHeadDto) {
-		VistranskDao dao = new VistranskDao();
-		dao.setFirma(vistranskHeadDto.getFirma());
-		dao.setRecnr(vistranskHeadDto.getRecnr());
-		dao.setBilnr(vistranskHeadDto.getBilnr());
-		dao.setPosnr(vistranskHeadDto.getPosnr());
-		
-		return dao;
-	}
-
-	
 	private VistrlogkDao getVistrlogkDao(VistranskHeadDto headDto, String errorText) {
 		String syerror;
 		VistrlogkDao dao = new VistrlogkDao();
-		dao.setFirma(headDto.getFirma());
 
+		dao.setFirma(headDto.getFirma());
 		dao.setBilnr(headDto.getBilnr());
-		//TODO ta reda på om det går att se vilken rad som falerar.
-		//		dao.setBilaar(headDto.getb);
-//		dao.setBilmnd(bilmnd);
-//		dao.setBildag(bildag);
+		dao.setBilaar(headDto.getBilaar());
+		dao.setBilmnd(headDto.getBilmnd());
+		dao.setBildag(headDto.getBildag());
 
 		if (errorText != null) {
 			if (errorText.length() < 200) {
@@ -205,6 +187,5 @@ public class CustomerInvoiceTransactionManager {
 		return dao;
 	}	
 	
-
 
 }

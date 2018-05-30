@@ -40,15 +40,6 @@ public class TestJCustomerInvoiceTransactionManager {
 	}	
 	
 	@Test
-	public void clean() {
-
-		vistranskDaoService.deleteAll(null);
-		
-	}	
-	
-	
-
-	@Test
 	public void testSyncCustomerValid() {
 
 		vistranskDaoService.deleteAll(null);
@@ -103,9 +94,35 @@ public class TestJCustomerInvoiceTransactionManager {
 		dao.setKsted(100);
 		dao.setKbarer(444);
 		dao.setMomsk("3");  //TEGN 1
+
+		
+		VistranskDao dao2 = new VistranskDao();		
+		
+		dao2.setFirma("SY");
+		dao2.setAktkod("A");
+		dao2.setRecnr(10);
+		dao2.setBilnr(111);
+		dao2.setPosnr(2);
+		dao2.setBilaar(2018);
+		dao2.setBilmnd(5);
+		dao2.setBildag(29);
+		dao2.setPeraar(2018);
+		dao2.setPernr(5);
+		dao2.setKrdaar(2018);
+		dao2.setKrdmnd(5);
+		dao2.setKrddag(29);
+		dao2.setFfdaar(2018);
+		dao2.setFfdmnd(5);
+		dao2.setFfddag(25);	
+		dao2.setBiltxt("Hat");
+		dao2.setBetbet("14");
+		dao2.setKonto(3000);
+		dao2.setKsted(100);
+		dao2.setKbarer(444);
+		dao2.setMomsk("3");  //TEGN 1		
 		
 		list.add(dao);		
-//		list.add(dao2);
+		list.add(dao2);
 		
 		return list;
 		

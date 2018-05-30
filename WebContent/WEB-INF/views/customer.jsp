@@ -176,7 +176,7 @@
 				<tr height="20">
 					<td class="text14">&nbsp;</td>
 					<td>&nbsp;&nbsp;Synkronisere Kunderegister :&nbsp;&nbsp;
-					<button class="inputFormSubmit" onclick="syncCustomer()" autofocus>Synkronisere</button></td>
+					<button class="inputFormSubmit" onclick="syncCustomer()">Synkronisere</button></td>
 				</tr>
 
 				<tr height="20">
@@ -196,7 +196,7 @@
 								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="viskulog.do"> <font class="tabDisabledLinkMinor">&nbsp; Kunde - historikk </font>&nbsp;
 								</a></td>
 								<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="xxx.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - historikk </font>&nbsp;
+								<td width="10%" valign="bottom" class="tabDisabledSub" align="center" nowrap><a href="vistrlogk.do"> <font class="tabDisabledLinkMinor">&nbsp; Faktura - historikk </font>&nbsp;
 								</a></td>
 
 								<td width="60%" class="tabFantomSpace" align="center" nowrap></td>
@@ -245,7 +245,7 @@
 																	<th>Kundnr</th>
 																	<th>Navn</th>
 																	<th>Dato</th>
-																	<th>Visma feilmelding</th>
+																	<th>Feil</th>
 																	<th>Postnr</th>
 																	<th>Land</th>
 																	<th>Valuta</th>

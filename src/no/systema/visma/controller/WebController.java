@@ -189,11 +189,11 @@ public class WebController {
 		}
 	}	
 	
-	@RequestMapping(value = "viskunde.do", method={RequestMethod.GET})
-	public ModelAndView getViskunde(HttpSession session, HttpServletRequest request) {
+	@RequestMapping(value = "vistrlogk.do", method={RequestMethod.GET})
+	public ModelAndView getVistrlogk(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-		ModelAndView successView = new ModelAndView("viskunde");
-		logger.info("Inside: viskunde");
+		ModelAndView successView = new ModelAndView("vistrlogk");
+		logger.info("Inside: vistrlogk");
 
 		if (appUser == null) {
 			return loginView;
@@ -201,6 +201,22 @@ public class WebController {
 			return successView;
 		}
 	}	
+	
+	
+	
+	//TODO Remove?
+//	@RequestMapping(value = "viskunde.do", method={RequestMethod.GET})
+//	public ModelAndView getViskunde(HttpSession session, HttpServletRequest request) {
+//		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+//		ModelAndView successView = new ModelAndView("viskunde");
+//		logger.info("Inside: viskunde");
+//
+//		if (appUser == null) {
+//			return loginView;
+//		} else {
+//			return successView;
+//		}
+//	}	
 	
 	
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET})

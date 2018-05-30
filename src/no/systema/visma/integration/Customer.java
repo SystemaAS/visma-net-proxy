@@ -136,7 +136,7 @@ public class Customer  extends Configuration{
      * Response Message has StatusCode NoContent if PUT operation succeed
      * <p><b>204</b> - NoContent
      * @param number Visma.net number (kundnr.:)
-     * @param viskundeDao The data to update for the customer
+     * @param viskundeDaoService The data to update for the customer
      * @throws RestClientException if an error occurs while attempting to invoke the API
      * @throws HttpClientErrorException when an HTTP 4xx is received. Typically when indata is wrong
      */
@@ -172,7 +172,7 @@ public class Customer  extends Configuration{
      * Creates a customer
      * Response Message has StatusCode Created if POST operation succeed
      * <p><b>201</b> - Created
-     * @param viskundeDao Defines the data for the customer to create
+     * @param viskundeDaoService Defines the data for the customer to create
      * @return int generated number from Visma.net
      * @throws RestClientException if an error occurs while attempting to invoke the API
      * @throws IllegalArgumentException if Location cannot be found in Response Headers

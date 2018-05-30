@@ -16,7 +16,9 @@ public class VistranskHeadDto {
 	private String firma;
 	private int recnr;
 	private int bilnr;
-	private int posnr;
+	private int bilaar;
+	private int bilmnd;
+	private int bildag;
 	private int krdaar;
 	private int krdmnd;
 	private int krddag;

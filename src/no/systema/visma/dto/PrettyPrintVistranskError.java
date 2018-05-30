@@ -16,7 +16,6 @@ public class PrettyPrintVistranskError {
 
 	private final int recnr;
 	private final int bilnr;
-	private final int posnr;
 	private final LocalDateTime syncDate;
 	private final String errorText;
 
