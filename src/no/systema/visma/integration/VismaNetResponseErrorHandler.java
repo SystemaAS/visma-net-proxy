@@ -106,7 +106,7 @@ public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
 		if (responseBody.length() < 200) {
 			return responseBody;
 		}
-		int beginIndex = responseBody.length() - 199;  //syerro is set to 200
+		int beginIndex = responseBody.length() - 799;  //syerro is set to 800
 
 		return responseBody.substring(beginIndex);
 		

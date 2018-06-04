@@ -81,19 +81,5 @@ public class VismaClientHttpRequestInterceptor implements ClientHttpRequestInter
 //        return builder.toString();
 //    }
 	
-	
-//	
-//	
-//	/* (non-Javadoc)
-//	 * @see org.springframework.http.client.ClientHttpRequestInterceptor#intercept(org.springframework.http.HttpRequest, byte[], org.springframework.http.client.ClientHttpRequestExecution)
-//	 */
-//	@Override
-//	public ClientHttpResponse intercept(HttpRequest arg0, byte[] arg1, ClientHttpRequestExecution arg2) throws IOException {
-//		
-//		logger.info("HELLO.....");
-//	
-//		
-//		return null;
-//	}
 
 }

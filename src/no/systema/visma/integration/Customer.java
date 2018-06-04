@@ -63,8 +63,7 @@ public class Customer  extends Configuration{
 	 */
 	public void syncronize(ViskundeDao viskundeDao) throws RestClientException,  HttpClientErrorException {
 		logger.info("syncronize(ViskundeDao viskundeDao)");
-		//For both New and Update
-		CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao);			
+		logger.info(LogHelper.logPrefixCustomer(viskundeDao.getKundnr()));		
 		
 		try {
 			
@@ -72,14 +71,18 @@ public class Customer  extends Configuration{
  
     		if (customerExistDto != null) {
     			logger.info("Kunde:"+viskundeDao.getKundnr()+ " exist, trying to update.");
+
+    			CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao, IUDEnum.UPDATE);			
     			customerPutBycustomerCd(String.valueOf(viskundeDao.getKundnr()), updateDto);
     			logger.info("Kunde:"+viskundeDao.getKundnr()+ " is updated.");
-    			
+
     		} else {
-    		
+
+    			logger.info("Kunde:"+viskundeDao.getKundnr()+ " does not exist, Trying to insert.");
+    			CustomerUpdateDto updateDto = convertToCustomerUpdateDto(viskundeDao, IUDEnum.INSERT);			
     			customerPost(updateDto);
-    			logger.info("Kunde:"+viskundeDao.getKundnr()+ " is created.");
-    			
+    			logger.info("Kunde:"+viskundeDao.getKundnr()+ " is inserted.");
+
     		}
     		
 			
@@ -252,10 +255,11 @@ public class Customer  extends Configuration{
 	 * 
 	 * 
 	 * @param viskunde VISKUNDE
+	 * @param status 
 	 * @return CustomerUpdateDto
 	 * @throws RuntimeException if Kundnr is 0.
 	 */
-    public CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde) {
+    public CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde, IUDEnum status) {
     	logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde)");
     	//Sanity checks
 		if (viskunde.getKundnr() == 0) {
@@ -265,7 +269,9 @@ public class Customer  extends Configuration{
 		} 
 	
 		CustomerUpdateDto dto = new CustomerUpdateDto();
-		dto.setNumber(DtoValueHelper.toDtoString(viskunde.getKundnr()));
+		if (status.equals(IUDEnum.INSERT)) {
+			dto.setNumber(DtoValueHelper.toDtoString(viskunde.getKundnr()));
+		}
 		dto.setName(DtoValueHelper.toDtoString(viskunde.getKnavn()));
 		dto.setCorporateId(DtoValueHelper.toDtoString(viskunde.getSyrg())); 
 		dto.setMainAddress(getMainAddress(viskunde));

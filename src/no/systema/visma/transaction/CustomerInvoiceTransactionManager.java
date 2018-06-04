@@ -167,7 +167,7 @@ public class CustomerInvoiceTransactionManager {
 			if (errorText.length() < 200) {
 				syerror = errorText;
 			} else {
-				int beginIndex = errorText.length() - 199;  //syerro is set to 200
+				int beginIndex = errorText.length() - 799;  //syerro is set to 800
 				syerror = errorText.substring(beginIndex);		
 			}
 			dao.setSyerro(syerror);

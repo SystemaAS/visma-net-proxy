@@ -22,7 +22,7 @@ public class TestJCustomer {
 	@Test
 	public void testGetCustomer() {
 		
-		logger.debug("dto="+customer.getGetBycustomerCd("10010"));
+		logger.debug("dto="+customer.getGetBycustomerCd("10"));
 
 	}	
 	
@@ -38,10 +38,13 @@ public class TestJCustomer {
 	
 	@Test
 	public void testCustomerSyncMedium() {
-		String name = "Kalles chokladfabrik (medium)";
-		ViskundeDao dao =getMediumDao(10, "123999" ,name);
+		String name = "Kalles chokladfabrik (123, 100)";
+		ViskundeDao dao =getMediumDao(100, "123999" ,name);
 
 		customer.syncronize(dao);
+		
+		logger.debug("dto="+customer.getGetBycustomerCd("100"));
+		
 		
 	}
 
