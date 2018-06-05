@@ -38,7 +38,7 @@ public abstract class Configuration {
 	public RestTemplate restTemplate(){
 		RestTemplate restTemplate = new RestTemplate(Arrays.asList(new MappingJackson2HttpMessageConverter(objectMapper())));
 		restTemplate.setInterceptors(Arrays.asList(new VismaClientHttpRequestInterceptor()));
-		restTemplate.setErrorHandler(new VismaNetResponseErrorHandler());
+		restTemplate.setErrorHandler(new VismaResponseErrorHandler());
 		
 		return restTemplate;  
 	}

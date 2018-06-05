@@ -25,8 +25,8 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
  * @author fredrikmoller
  *
  */
-public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
-	private static Logger logger = Logger.getLogger(VismaNetResponseErrorHandler.class);
+public class VismaResponseErrorHandler implements ResponseErrorHandler {
+	private static Logger logger = Logger.getLogger(VismaResponseErrorHandler.class);
 	
 	
 	/**
