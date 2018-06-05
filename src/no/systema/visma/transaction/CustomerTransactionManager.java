@@ -159,12 +159,7 @@ public class CustomerTransactionManager {
 		dao.setKundnr(viskundeDao.getKundnr());
 
 		if (errorText != null) {
-			if (errorText.length() < 200) {
-				syerror = errorText;
-			} else {
-				int beginIndex = errorText.length() - 199;  //syerro is set to 200
-				syerror = errorText.substring(beginIndex);		
-			}
+			syerror = LogHelper.trimToError(errorText);
 			dao.setSyerro(syerror);
 			dao.setStatus("ER");
 		} else {

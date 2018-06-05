@@ -23,7 +23,6 @@ import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
 import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto.OperationEnum;
 import no.systema.visma.v1client.model.CustomerInvoiceUpdateDto;
 import no.systema.visma.v1client.model.DtoValueString;
-import no.systema.visma.v1client.model.TaxDetailUpdateDto;
 
 /**
  * A Wrapper on {@linkplain CustomerInvoiceApi}
@@ -71,32 +70,26 @@ public class CustomerInvoice extends Configuration {
 		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getRecnr(), vistranskHeadDto.getBilnr()));
 
 		try {
-			// Sanity check
+			// Sanity check 1
 			CustomerDto customerExistDto = customer.getGetBycustomerCd(String.valueOf(vistranskHeadDto.getRecnr()));
 			if (customerExistDto == null) {
 				logger.error("Could not find Customer on number:" + vistranskHeadDto.getRecnr());
 				throw new RuntimeException("Could not find Customer on number:" + vistranskHeadDto.getRecnr());
-			} else { // do the thing
-
+			} else { // Sanity check 2
 				String referenceNumber = String.valueOf(vistranskHeadDto.getBilnr());
 				CustomerInvoiceDto customerInvoiceExistDto = getByinvoiceNumber(referenceNumber);
 
 				if (customerInvoiceExistDto != null) {
-	    			logger.info("Fakturanr:"+vistranskHeadDto.getBilnr()+ " exist, trying to update.");
-					CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto, IUDEnum.UPDATE);
-
-					customerInvoiceUpdateByinvoiceNumber(referenceNumber, updateDto);
-					logger.info("Fakturanr:" + vistranskHeadDto.getBilnr() + " is updated.");
-
-				} else {
-
-					CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto, IUDEnum.INSERT);
+					String errMsg = String.format("Fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
+					logger.error(errMsg);
+	    			throw new RuntimeException(errMsg);
+				} else {   // do the thing
+					CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
 
 					customerInvoiceCreate(updateDto);
 					logger.info("Fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
 
 				}
-				//TODO call to delete invoice
 			}
 
 		} catch (HttpClientErrorException e) {
@@ -225,7 +218,11 @@ public class CustomerInvoice extends Configuration {
      * <p><b>204</b> - NoContent
      * @param invoiceNumber Identifies the Customer Invoice to delete
      * @throws RestClientException if an error occurs while attempting to invoke the API
+     * 
+     *
      */
+	@Deprecated
+	//TODO Remove when Systema environmentr is running, for viewing of data.
     public void customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceDto updateDto) throws RestClientException {	
 		logger.info("customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceUpdateDto updateDto)");
 		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomer().getNumber(), updateDto.getReferenceNumber())); 
@@ -251,10 +248,7 @@ public class CustomerInvoice extends Configuration {
     	
     }
 	
-	
-	
-	
-	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto, IUDEnum status) {
+	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
 		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
 		
 		mandatoryCheck(vistranskHeadDto);
@@ -262,76 +256,22 @@ public class CustomerInvoice extends Configuration {
 		// Head
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();
 		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getRecnr()));
-		if (status.equals(IUDEnum.INSERT)) {
-			dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getBilnr()));
-		}
+		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
 		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main
-		
 		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
-
-		logger.info("dto.getDocumentDueDate()="+dto.getDocumentDueDate());
-		
 		// Note: same as DocumentDueDate
-//		dto.setCashDiscountDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));		
+		dto.setCashDiscountDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));		
 		//End head
 		
-		
-		//Tax lines
-//		dto.setTaxDetailLines(getTaxDetailLines(vistranskHeadDto.getLines()));
-		
-		
-		// Invoice Lines
-		if (status.equals(IUDEnum.INSERT)) {
-			dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines(), OperationEnum.INSERT));
-			
-		} else if (status.equals(IUDEnum.UPDATE)){
-			dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines(), OperationEnum.UPDATE));
-			
-		} else if (status.equals(IUDEnum.DELETE)) {
-			dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines(), OperationEnum.DELETE));
-		}
+		// Invoice Lines  
+		dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines()));
 
 		return dto;
 
 	}
 
-
-
-//	private DtoValueDateTime getDocumentDueDate(VistranskHeadDto vistranskHeadDto) {
-//		DtoValueDateTime dto = new DtoValueDateTime();
-//		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag(), 10, 10, 10);
-////		OffsetDateTime value = OffsetDateTime.of(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag(), 0, 0, 0, 0, ZoneOffset.UTC);		
-//
-//		dto.setValue(value);
-//
-//		return dto;
-//	}
-//
-//	private DtoValueDateTime getDocumentDate(VistranskHeadDto vistranskHeadDto) {
-//		DtoValueDateTime dto = new DtoValueDateTime();
-//		LocalDateTime value = LocalDateTime.of(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag(), 10, 10, 10);
-//
-////		OffsetDateTime value = OffsetDateTime.of(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag(), 0, 0, 0, 0, ZoneOffset.UTC);		
-//		
-//		logger.info("value" + value);
-//		logger.info("now=" + LocalDateTime.now());
-//
-//		value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//
-//		String text = value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//		LocalDateTime parsedDate = LocalDateTime.parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//
-//		logger.info("parsedDate" + parsedDate);
-//		
-//		dto.setValue(value);
-//
-//		return dto;
-//	}	
-	
-	
-	
 	private DtoValueString getFinancialsPeriod(VistranskHeadDto vistranskHeadDto) {
 		String year = String.valueOf(vistranskHeadDto.getPeraar());
 		String month = String.format("%02d", vistranskHeadDto.getPernr()); // pad up to 2 char, ex. 1 -> 01
@@ -339,29 +279,8 @@ public class CustomerInvoice extends Configuration {
 		return DtoValueHelper.toDtoString(year + month); // ex. 201805
 
 	}
-
-	private List<TaxDetailUpdateDto> getTaxDetailLines(List<VistranskLineDto> lineDtoList) {
-		List<TaxDetailUpdateDto> updateDtoList = new ArrayList<TaxDetailUpdateDto>();
-
-		lineDtoList.forEach(lineDto -> {
-
-			mandatoryCheck(lineDto);
-			
-			TaxDetailUpdateDto updateDto = new TaxDetailUpdateDto();
-//			updateDto.setTaxId(DtoValueHelper.toDtoString(lineDto.getMomsk())); //TODO funkar inte
-			//TODO the rest of taxLines
-			updateDtoList.add(updateDto);
-			
-		});		
-		
-		return updateDtoList;
-	}	
 	
-	
-	
-	
-	
-	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList, OperationEnum status) {
+	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList) {
 		List<CustomerInvoiceLinesUpdateDto> updateDtoList = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 
 		lineDtoList.forEach(lineDto -> {
@@ -375,9 +294,10 @@ public class CustomerInvoice extends Configuration {
 			//TODO formodlinge behövs någon form av cross-ref, Visma har 2 tegn , SYSPED 1 TEGN
 			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
+			//TODO add KBARER to subaccount
 //			updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(lineDto.getKbarer()))));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
-			updateDto.setOperation(status);
+			updateDto.setOperation(OperationEnum.INSERT);
 			
 			updateDtoList.add(updateDto);
 			

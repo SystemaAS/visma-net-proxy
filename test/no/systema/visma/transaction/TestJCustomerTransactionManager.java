@@ -141,7 +141,6 @@ public class TestJCustomerTransactionManager {
 		//TODO 1. Assert rollback
 	}	
 
-
 	private List<ViskundeDao> getInValidViskundeDaos() {
 		List<ViskundeDao> list = getValidViskundeDaos();
 		//Invalidate one

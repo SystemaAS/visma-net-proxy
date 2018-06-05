@@ -76,7 +76,7 @@ public class TestJCustomerInvoice {
 	}	
 	
 	
-	@Test
+	@Test(expected=RuntimeException.class) //Updates not allowed
 	public void testCustomerInvoiceSyncUpdate() {
 		List<VistranskHeadDto> list = VistranskTransformer.transform( getUpdateList() );
 

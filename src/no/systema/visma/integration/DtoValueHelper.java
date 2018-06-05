@@ -92,7 +92,7 @@ public class DtoValueHelper {
 		Objects.requireNonNull(mnd, "mnd is mandatory");
 		Objects.requireNonNull(aar, "dag is mandatory");
 
-		LocalDateTime value = LocalDateTime.of(aar, mnd, dag, 0, 0, 0);  //TODO verify
+		LocalDateTime value = LocalDateTime.of(aar, mnd, dag, 0, 0, 0);
 
 		dto.setValue(value);
 

@@ -1,9 +1,11 @@
 package no.systema.visma.integration;
 
+import java.util.Objects;
+
 /**
- * This helper is making prefixed logpost standardized.
+ * Helper for misc logging issues.
  * 
- * For easier tracability.
+ * For convenience.
  * 
  * @author fredrikmoller
  *
@@ -39,5 +41,21 @@ public class LogHelper {
 		
 	}	
 	
+	/**
+	 * Trim text to max 800 char
+	 * 
+	 * @param text
+	 * @return text =< 800
+	 */
+	public static String trimToError(String text) {
+		Objects.requireNonNull(text, "text can not be null");
+		if (text.length() < 800) {
+			return text;
+		}
+		int beginIndex = text.length() - 799;  //syerro is set to 800
+
+		return text.substring(beginIndex);		
+		
+	}
 	
 }

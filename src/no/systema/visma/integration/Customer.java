@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClientException;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
 import no.systema.visma.v1client.model.ContactInfoUpdateDto;
@@ -22,6 +23,7 @@ import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
 import no.systema.visma.v1client.model.DtoValueContactInfoUpdateDto;
 import no.systema.visma.v1client.model.DtoValueCustomerStatus;
+import no.systema.visma.v1client.model.DtoValueString;
 
 /**
  * A Wrapper on CustomerApi
@@ -260,7 +262,7 @@ public class Customer  extends Configuration{
 	 * @throws RuntimeException if Kundnr is 0.
 	 */
     public CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde, IUDEnum status) {
-    	logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde)");
+    	logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde, IUDEnum status)");
     	//Sanity checks
 		if (viskunde.getKundnr() == 0) {
 			String errMsg = "KUNDNR can not be 0";
@@ -277,13 +279,25 @@ public class Customer  extends Configuration{
 		dto.setMainAddress(getMainAddress(viskunde));
 		dto.setStatus(getStatus(viskunde));
 		dto.setMainContact(getMainContact(viskunde));
-		
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(viskunde.getBetbet())); 
-		
-		dto.setCustomerClassId(DtoValueHelper.toDtoString(1)); //Hardcode
+		dto.setCustomerClassId(getCustomerClassId(viskunde));
 		
 		return dto;
 	}
+
+	private DtoValueString getCustomerClassId(ViskundeDao viskunde) {
+		String kundeProfilId;
+
+		if (!StringUtils.hasValue(viskunde.getSyland()) || viskunde.getSyland() == "NO") {
+			kundeProfilId = "1";
+		} else {
+			kundeProfilId = "2";
+		}
+
+		return DtoValueHelper.toDtoString(kundeProfilId);
+
+	}
+
 
 	private DtoValueContactInfoUpdateDto getMainContact(ViskundeDao viskunde) {
 		DtoValueContactInfoUpdateDto dtoValue = new DtoValueContactInfoUpdateDto();
@@ -338,23 +352,4 @@ public class Customer  extends Configuration{
 		return dtoValueDto;
 	}
 
-    /**
-     * Get Customer Classes
-     * 
-     * Kundeprofil:
-     * 
-     * <p><b>200</b> - OK
-     * @return List&lt;CustomerClassDto&gt;
-     * @throws RestClientException if an error occurs while attempting to invoke the API
-     */
-    public List<CustomerClassDto> customerGetCustomerClasses() throws RestClientException {
-    	List<CustomerClassDto> dtoList;
-		try {
-			dtoList = customerApi.customerGetCustomerClasses();
-		} catch (RestClientException e) {
-			throw e;
-		}
-		return dtoList;
-	}	
-	
 }

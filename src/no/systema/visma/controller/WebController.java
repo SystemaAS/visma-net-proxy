@@ -133,7 +133,7 @@ public class WebController {
 			return loginView;
 		} else {
 
-			if (request.getMethod().equals(RequestMethod.POST.toString())){ //TODO new
+			if (request.getMethod().equals(RequestMethod.POST.toString())){ //TODO new på firmvis?
 				firmvisDaoService.update(firmvis);
 			} 
 			
@@ -201,23 +201,6 @@ public class WebController {
 			return successView;
 		}
 	}	
-	
-	
-	
-	//TODO Remove?
-//	@RequestMapping(value = "viskunde.do", method={RequestMethod.GET})
-//	public ModelAndView getViskunde(HttpSession session, HttpServletRequest request) {
-//		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("viskunde");
-//		logger.info("Inside: viskunde");
-//
-//		if (appUser == null) {
-//			return loginView;
-//		} else {
-//			return successView;
-//		}
-//	}	
-	
 	
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET})
 	public ModelAndView doSupplier(HttpSession session, HttpServletRequest request) {

@@ -18,7 +18,7 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 /**
  * This errorHandler replaces the DefaultResponseErrorHandler
- * Used to specify Visma.net response body inte Status Text.
+ * Used to specify Visma.net response body into Status Text.
  * 
  * RestTemplate is set when creating the ApiClient.
  * 
@@ -86,13 +86,13 @@ public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
 				logger.error("CLIENT_ERROR:, response body="+responseBody);
 //				throw new HttpClientErrorException(statusCode, response.getStatusText(),
 //						response.getHeaders(), getResponseBody(response), getCharset(response));
-				throw new HttpClientErrorException(statusCode, getTrimmedResponseBody(responseBody));
+				throw new HttpClientErrorException(statusCode, LogHelper.trimToError(responseBody));
 			case SERVER_ERROR:
 				responseBody =  new String(getResponseBody(response), getCharset(response));
 				logger.error("SERVER_ERROR:, response body="+responseBody);
 //				throw new HttpServerErrorException(statusCode, response.getStatusText(),
 //						response.getHeaders(), getResponseBody(response), getCharset(response));
-				throw new HttpClientErrorException(statusCode,  getTrimmedResponseBody(responseBody));
+				throw new HttpClientErrorException(statusCode, LogHelper.trimToError(responseBody));
 			default:
 				responseBody =  new String(getResponseBody(response), getCharset(response));
 				logger.error("default:, response body="+responseBody);				
@@ -100,17 +100,6 @@ public class VismaNetResponseErrorHandler implements ResponseErrorHandler {
 						response.getHeaders(), getResponseBody(response), getCharset(response));
 		}
 	}	
-	
-
-	private String getTrimmedResponseBody(String responseBody) {
-		if (responseBody.length() < 200) {
-			return responseBody;
-		}
-		int beginIndex = responseBody.length() - 799;  //syerro is set to 800
-
-		return responseBody.substring(beginIndex);
-		
-	}
 	
 	/**
 	 * Read the body of the given response (for inclusion in a status exception).

@@ -164,12 +164,7 @@ public class CustomerInvoiceTransactionManager {
 		dao.setBildag(headDto.getBildag());
 
 		if (errorText != null) {
-			if (errorText.length() < 200) {
-				syerror = errorText;
-			} else {
-				int beginIndex = errorText.length() - 799;  //syerro is set to 800
-				syerror = errorText.substring(beginIndex);		
-			}
+			syerror = LogHelper.trimToError(errorText);
 			dao.setSyerro(syerror);
 			dao.setStatus("ER");
 		} else {
@@ -186,6 +181,5 @@ public class CustomerInvoiceTransactionManager {
 		
 		return dao;
 	}	
-	
 
 }

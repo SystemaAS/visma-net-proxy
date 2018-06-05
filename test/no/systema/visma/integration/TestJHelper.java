@@ -3,9 +3,12 @@ package no.systema.visma.integration;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -72,7 +75,20 @@ public class TestJHelper {
 		logger.info("format=" + format.format(value, sb, null));
 
 	}
+	
+	@Test(expected=DateTimeException.class)  //For Oscars Date testing
+	public final void testIllegalDate() {
+		String dateString = "11:30:59 02/31/2015";
+		String dateFormat = "HH:mm:ss MM/dd/uuuu";
 
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter
+				.ofPattern(dateFormat, Locale.getDefault())
+				.withResolverStyle(ResolverStyle.STRICT);
+
+		LocalDateTime dateTime = LocalDateTime.parse(dateString, dateTimeFormatter);	
+		
+	}
+	
 	private VistranskDao getVistranskDao(int recnr, int bilnr, int posnr, String biltxt) {
 		VistranskDao dao = new VistranskDao();
 		dao.setRecnr(recnr);
@@ -86,8 +102,6 @@ public class TestJHelper {
 		dao.setFfdaar(2018);
 		dao.setFfdmnd(5);
 		dao.setFfddag(25);
-		// vatCategoryId: 32
-		// description: Utgående mva, middels sats - rå fisk
 		dao.setMomsk("32");
 		dao.setKonto(3000);
 		dao.setKbarer(1000);
