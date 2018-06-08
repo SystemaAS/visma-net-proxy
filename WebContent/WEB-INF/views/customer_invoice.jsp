@@ -23,8 +23,6 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/vistransk?user=${user.user}";
-// 	var syncCustomerInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
-	
 	
 	function load_data() {
 
@@ -154,7 +152,7 @@
 	<tr>
 		<!-- Second tab row... -->
 		<td>
-			<table width="100%" class="tabThinBorderWhite" border="1">
+			<table width="100%" class="tabThinBorderWhite">
 				<tr height="20">
 					<td>&nbsp;</td>
 					<td>

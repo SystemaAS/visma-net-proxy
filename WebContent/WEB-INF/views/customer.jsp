@@ -23,8 +23,6 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/viskunde?user=${user.user}";
-// 	var syncCustomerUrl = "syncronizeCustomers.do?user=${user.user}";
-	
 	
 	function load_data() {
 

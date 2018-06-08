@@ -24,7 +24,6 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/vistrlogk?user=${user.user}";
-// 	var syncCustomerInvoiceInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
 	
 	function load_data() {
 
@@ -93,28 +92,6 @@
 
 	}
 
-
-// 	function syncCustomerInvoice() {
-// 		jq.blockUI({
-// 			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
-// 		});
-		
-// 		jq.ajax({
-// 			url : syncCustomerInvoiceInvoiceUrl,
-// 			method : "POST", //to avoid invalidate session
-// 		}).done(function() {
-// 			alert("Synkronisering er ferdig.");
-// 			var formatTime = d3.timeFormat("%Y%m%d");
-// 			jq('#selectFradato').val(formatTime(new Date) - 1);
-// 			load_data();
-// 		}).fail(function(data) {
-// 			console.log("Error", data);
-// 			alert("Synkronisering gikk feil.", data);
-// 		}).always(function() {
-// 			jq.unblockUI();
-// 		});
-
-// 	}
 	
 	jq(document).ready(function() {
 
@@ -158,7 +135,6 @@
 
 	<tr>
 		<!-- Second tab row... -->
-		<td>&nbsp;</td>
 		<td>
 			<table width="100%" class="tabThinBorderWhite">
 				<tr height="20">
