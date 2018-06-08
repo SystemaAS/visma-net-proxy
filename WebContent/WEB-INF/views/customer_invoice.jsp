@@ -23,7 +23,7 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/vistransk?user=${user.user}";
-	var syncCustomerInvoiceInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
+	var syncCustomerInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
 	
 	
 	function load_data() {
@@ -31,12 +31,18 @@
 		var runningUrl = baseUrl;
 
 		var selectedKundenr = jq('#selectKundenr').val();
+		var selectedBilnr = jq('#selectBilnr').val();	
 		var selectedFradato = jq('#selectFradato').val();
 
 		if (selectedKundenr != "") {
 			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
 		} else {
 			runningUrl = runningUrl + "&kundnr=ALL";
+		}
+		if (selectedBilnr != "") {
+			runningUrl = runningUrl + "&bilnr=" + selectedBilnr;
+		} else {
+			runningUrl = runningUrl + "&bilnr=ALL";
 		}
 		if (selectedFradato != null && selectedFradato != "") {
 			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
@@ -58,7 +64,7 @@
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 2, "desc" ] ],
+			"order" : [ [ 4, "desc" ] ],
 
 			"aoColumns" : [ {
 				"mData" : "recnr"
@@ -102,7 +108,7 @@
 		});
 		
 		jq.ajax({
-			url : syncCustomerInvoiceInvoiceUrl,
+			url : syncCustomerInvoiceUrl,
 			method : "POST", //to avoid invalidate session
 		}).done(function() {
 			alert("Synkronisering er ferdig.");
@@ -171,15 +177,31 @@
 	<tr>
 		<!-- Second tab row... -->
 		<td>
-			<table width="100%" class="tabThinBorderWhite">
+			<table width="100%" class="tabThinBorderWhite" border="0">
 				<tr height="20">
 					<td>&nbsp;</td>
-				</tr>
+					<td>
+						<div class="container-fluid">
+							<div class="padded-row-small">&nbsp;</div>
+							<div class="row">
+								<div class="col-md-2">
+									<font class="text14">Overfør Kunderegister :&nbsp;&nbsp;</font>
+									<button class="inputFormSubmit" onclick="syncCustomer()">Overfør</button>
+								</div>
 
-				<tr height="20">
-					<td class="text14">&nbsp;</td>
-					<td>&nbsp;&nbsp;Synkronisere Kundefaktura :&nbsp;&nbsp;
-					<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Synkronisere</button></td>
+								<div class="col-md-2">
+									<font class="text14">Overfør Kundefaktura :&nbsp;&nbsp;</font>
+									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								</div>
+
+								<div class="col-md-2">
+									<font class="text14">Overfør SubAccount :&nbsp;&nbsp;</font>
+									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								</div>
+							</div>						
+							<div class="padded-row-small">&nbsp;</div>
+						</div>
+					</td>
 				</tr>
 
 				<tr height="20">
@@ -229,7 +251,11 @@
 															</a>&nbsp;
 														</div>
 														<div class="col-md-1 text12">
-															<font class="text14">Fra dato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
+															<font class="text14">Fakturanr:</font><br> <input type="text" class="inputText" name="selectBilnr" id="selectBilnr" size="8" maxlength="7">
+														</div>
+
+														<div class="col-md-1 text12">
+															<font class="text14">Fra feildato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 														</div>
 
 														<div class="col-md-2" align="right">
@@ -250,8 +276,8 @@
 																	<th>Fakturanr</th>
 																	<th>Pos</th>
 																	<th>Text</th>
-																	<th>Dato</th>
-																	<th>Feil(på fakt.hode)</th>
+																	<th>Feildato</th>
+																	<th>Feil (på faktura hode)</th>
 																	<th>Konto</th>
 																	<th>Kost.sted</th>
 																	<th>Kost.barer</th>
@@ -261,7 +287,7 @@
 															</thead>
 														</table>
 													</div>
-												</div>
+												</div>  <!--  contqiner-fluid -->
 											</td>
 										</tr>
 									</table>

@@ -171,12 +171,29 @@
 			<table width="100%" class="tabThinBorderWhite">
 				<tr height="20">
 					<td>&nbsp;</td>
-				</tr>
+					<td>
+						<div class="container-fluid">
+							<div class="padded-row-small">&nbsp;</div>
+							<div class="row">
+								<div class="col-md-2">
+									<font class="text14">Overfør Kunderegister :&nbsp;&nbsp;</font>
+									<button class="inputFormSubmit" onclick="syncCustomer()">Overfør</button>
+								</div>
 
-				<tr height="20">
-					<td class="text14">&nbsp;</td>
-					<td>&nbsp;&nbsp;Synkronisere Kunderegister :&nbsp;&nbsp;
-					<button class="inputFormSubmit" onclick="syncCustomer()">Synkronisere</button></td>
+								<div class="col-md-2">
+									<font class="text14">Overfør Kundefaktura :&nbsp;&nbsp;</font>
+									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								</div>
+
+								<div class="col-md-2">
+									<font class="text14">Overfør SubAccount :&nbsp;&nbsp;</font>
+									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								</div>
+							</div>						
+							<div class="padded-row-small">&nbsp;</div>
+						</div>
+					</td>	
+	
 				</tr>
 
 				<tr height="20">
@@ -225,7 +242,7 @@
 															</a>&nbsp;
 														</div>
 														<div class="col-md-1 text12">
-															<font class="text14">Fra dato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
+															<font class="text14">Fra feildato:</font><br> <input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 														</div>
 
 														<div class="col-md-2" align="right">
@@ -244,7 +261,7 @@
 																<tr>
 																	<th>Kundnr</th>
 																	<th>Navn</th>
-																	<th>Dato</th>
+																	<th>Feildato</th>
 																	<th>Feil</th>
 																	<th>Postnr</th>
 																	<th>Land</th>

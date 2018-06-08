@@ -78,13 +78,13 @@ public class TestJHelper {
 	
 	@Test(expected=DateTimeException.class)  //For Oscars Date testing
 	public final void testIllegalDate() {
-		String dateString = "11:30:59 02/31/2015";
-		String dateFormat = "HH:mm:ss MM/dd/uuuu";
-
+		String dateString = "20180231";
+		String dateFormat = "uuuuMMdd";
+		
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter
-				.ofPattern(dateFormat, Locale.getDefault())
+				.ofPattern(dateFormat)
 				.withResolverStyle(ResolverStyle.STRICT);
-
+		
 		LocalDateTime dateTime = LocalDateTime.parse(dateString, dateTimeFormatter);	
 		
 	}

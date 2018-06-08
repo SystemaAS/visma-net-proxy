@@ -2,6 +2,11 @@
 var jq = jQuery.noConflict();
 var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 
+var syncCustomerUrl = "syncronizeCustomers.do?user=${user.user}";
+var syncCustomerInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
+
+
+
 function setBlockUI(element){
   jq.blockUI({ message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
 }

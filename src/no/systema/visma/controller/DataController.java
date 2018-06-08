@@ -106,10 +106,11 @@ public class DataController {
 	 */
 	@RequestMapping(path = "/vistransk", method = RequestMethod.GET)
 	@SneakyThrows
-	public List<VistranskDto> getVistransk(@RequestParam("user") String user, @RequestParam("kundnr") String kundnr, @RequestParam("fraDato") String fraDato) {
+	public List<VistranskDto> getVistransk(@RequestParam("user") String user, @RequestParam("kundnr") String kundnr, @RequestParam("bilnr") String bilnr,@RequestParam("fraDato") String fraDato) {
 		logger.debug("/vistransk entered...");
 		List<VistranskDao> vistranskDaoList;		
 		int qKundnr = 0;
+		int qBilnr = 0;
 		int qFraDato = 0;
 
 		checkUser(user);
@@ -117,11 +118,14 @@ public class DataController {
 		if( !kundnr.equals("ALL") ){
 			qKundnr = Integer.valueOf(kundnr);		
 		}
+		if( !bilnr.equals("ALL") ){
+			qBilnr = Integer.valueOf(bilnr);		
+		}
 		if( !fraDato.equals("ALL") ){
 			qFraDato = Integer.valueOf(fraDato);
 		}			
 		
-		vistranskDaoList = vistranskDaoService.findAllInFirma(qKundnr, qFraDato);
+		vistranskDaoList = vistranskDaoService.findAllInFirma(qKundnr, qBilnr, qFraDato);
 		
 		return convertToVistranskDto(vistranskDaoList);
 

@@ -146,6 +146,7 @@ public class CustomerInvoiceTransactionManager {
 		VistranskDao dao = new VistranskDao();
 		dao.setFirma(vistranskHeadDto.getFirma());
 		dao.setRecnr(vistranskHeadDto.getRecnr());
+		dao.setBilnr(vistranskHeadDto.getBilnr());
 		dao.setSyncda(syncDa);
 		dao.setSyerro(errorText);		
 		
