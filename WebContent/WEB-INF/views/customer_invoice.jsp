@@ -23,7 +23,7 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/vistransk?user=${user.user}";
-	var syncCustomerInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
+// 	var syncCustomerInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
 	
 	
 	function load_data() {
@@ -101,29 +101,6 @@
 		
 	}
 
-
-	function syncCustomerInvoice() {
-		jq.blockUI({
-			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
-		});
-		
-		jq.ajax({
-			url : syncCustomerInvoiceUrl,
-			method : "POST", //to avoid invalidate session
-		}).done(function() {
-			alert("Synkronisering er ferdig.");
-			var formatTime = d3.timeFormat("%Y%m%d");
-			jq('#selectFradato').val(formatTime(new Date) - 1);
-			load_data();
-		}).fail(function(data) {
-			console.log("Error", data);
-			alert("Synkronisering gikk feil.", data);
-		}).always(function() {
-			jq.unblockUI();
-		});
-
-	}
-
 	jq(document).ready(function() {
 
 	});
@@ -177,26 +154,26 @@
 	<tr>
 		<!-- Second tab row... -->
 		<td>
-			<table width="100%" class="tabThinBorderWhite" border="0">
+			<table width="100%" class="tabThinBorderWhite" border="1">
 				<tr height="20">
 					<td>&nbsp;</td>
 					<td>
 						<div class="container-fluid">
 							<div class="padded-row-small">&nbsp;</div>
 							<div class="row">
-								<div class="col-md-2">
-									<font class="text14">Overfør Kunderegister :&nbsp;&nbsp;</font>
-									<button class="inputFormSubmit" onclick="syncCustomer()">Overfør</button>
+								<div class="col-md-2 text14">
+									 Overfør Kunderegister :&nbsp;&nbsp;
+									<button class="inputFormSubmit" onclick="syncCustomer('${user.user}')">Overfør</button>
 								</div>
 
-								<div class="col-md-2">
-									<font class="text14">Overfør Kundefaktura :&nbsp;&nbsp;</font>
-									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								<div class="col-md-2 text14">
+									 Overfør Kundefaktura :&nbsp;&nbsp;
+									<button class="inputFormSubmit" onclick="syncCustomerInvoice('${user.user}')">Overfør</button>
 								</div>
 
-								<div class="col-md-2">
-									<font class="text14">Overfør SubAccount :&nbsp;&nbsp;</font>
-									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								<div class="col-md-2 text14">
+									 Overfør SubAccount :&nbsp;&nbsp;
+									<button class="inputFormSubmit" onclick="syncCustomerXXX('${user.user}')">Overfør</button>
 								</div>
 							</div>						
 							<div class="padded-row-small">&nbsp;</div>

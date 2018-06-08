@@ -23,7 +23,7 @@
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/viskunde?user=${user.user}";
-	var syncCustomerUrl = "syncronizeCustomers.do?user=${user.user}";
+// 	var syncCustomerUrl = "syncronizeCustomers.do?user=${user.user}";
 	
 	
 	function load_data() {
@@ -93,28 +93,6 @@
 	}
 
 
-	function syncCustomer() {
-		jq.blockUI({
-			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
-		});
-		
-		jq.ajax({
-			url : syncCustomerUrl,
-			method : "POST", //to avoid invalidate session
-		}).done(function() {
-			alert("Synkronisering er ferdig.");
-			var formatTime = d3.timeFormat("%Y%m%d");
-			jq('#selectFradato').val(formatTime(new Date) - 1);
-			load_data();
-		}).fail(function(data) {
-			console.log("Error", data);
-			alert("Synkronisering gikk feil.", data);
-		}).always(function() {
-			jq.unblockUI();
-		});
-
-	}
-
 	jq(document).ready(function() {
 
 	});
@@ -129,14 +107,14 @@
 	});
 </script>
 
-<table width="100%" class="text12">
+<table width="100%" class="text14">
 	<tr height="15">
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
 		<td>
 			<%-- tab container component --%>
-			<table width="100%" class="text12">
+			<table width="100%" class="text14">
 				<tr height="2">
 					<td>&nbsp;</td>
 				</tr>
@@ -145,10 +123,7 @@
 					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Kunde</font>&nbsp;</td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-<!--  	
-					<a onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
-					</a></td>
--->	
+
 					<font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
 					</td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
@@ -175,19 +150,19 @@
 						<div class="container-fluid">
 							<div class="padded-row-small">&nbsp;</div>
 							<div class="row">
-								<div class="col-md-2">
-									<font class="text14">Overfør Kunderegister :&nbsp;&nbsp;</font>
-									<button class="inputFormSubmit" onclick="syncCustomer()">Overfør</button>
+								<div class="col-md-2 text14">
+									Overfør Kunderegister :&nbsp;&nbsp;
+									<button class="inputFormSubmit" onclick="syncCustomer('${user.user}')">Overfør</button>
 								</div>
 
-								<div class="col-md-2">
-									<font class="text14">Overfør Kundefaktura :&nbsp;&nbsp;</font>
-									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								<div class="col-md-2 text14">
+									Overfør Kundefaktura :&nbsp;&nbsp;
+									<button class="inputFormSubmit" onclick="syncCustomerInvoice('${user.user}')">Overfør</button>
 								</div>
 
-								<div class="col-md-2">
-									<font class="text14">Overfør SubAccount :&nbsp;&nbsp;</font>
-									<button class="inputFormSubmit" onclick="syncCustomerInvoice()">Overfør</button>
+								<div class="col-md-2 text14">
+									Overfør SubAccount :&nbsp;&nbsp;
+									<button class="inputFormSubmit" onclick="syncCustomerXXX('${user.user}')">Overfør</button>
 								</div>
 							</div>						
 							<div class="padded-row-small">&nbsp;</div>
