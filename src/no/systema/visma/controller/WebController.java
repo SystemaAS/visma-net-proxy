@@ -38,6 +38,7 @@ import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
+import no.systema.visma.transaction.SubaccountTransactionManager;
 
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
@@ -62,6 +63,9 @@ public class WebController {
 
 	@Autowired
 	CustomerInvoiceTransactionManager customerInvoiceTransactionManager;	
+
+	@Autowired
+	SubaccountTransactionManager subaccountTransactionManager;		
 	
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
@@ -120,6 +124,37 @@ public class WebController {
 		return sb.toString();
 
 	}		
+
+	/**
+	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomerInvoices.do?user=SYSTEMA
+	 */
+	@RequestMapping(value="syncronizeSubaccounts.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String syncSubaccounts(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("syncronizeSubaccounts.do...");
+
+		checkUser(user);
+
+//		List<PrettyPrintVistranskError> errorList = subaccountTransactionManager.syncronizeSubaccounts(); //TODO create PrettyPrint...
+
+//		if (errorList.isEmpty()) {
+//			sb.append("syncronizeCustomerInvoices executed without errors. \n \n");
+//		} else {
+//			sb.append("syncronizeCustomerInvoices executed WITH errors.  \n \n");
+//		}
+
+//		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}	
+	
+	
 	
 	
 	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})
@@ -151,6 +186,8 @@ public class WebController {
 	public ModelAndView doCustomer(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
 		ModelAndView successView = new ModelAndView("customer");
+//		ModelAndView successView = new ModelAndView("customer_bs");
+
 		logger.info("Inside: customer");
 
 		if (appUser == null) {

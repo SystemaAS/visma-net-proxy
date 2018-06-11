@@ -5,10 +5,13 @@
 
 	<bean id="customer" class="no.systema.visma.integration.Customer"/>
 	<bean id="customerInvoice" class="no.systema.visma.integration.CustomerInvoice"/>
-	<bean id="vatCategory" class="no.systema.visma.integration.VatCategory"/>
 	<bean id="customerApi" class="no.systema.visma.v1client.api.CustomerApi"/>
 	<bean id="customerInvoiceApi" class="no.systema.visma.v1client.api.CustomerInvoiceApi"/>
+	<bean id="vatCategory" class="no.systema.visma.integration.VatCategory"/>
 	<bean id="vatCategoryApi" class="no.systema.visma.v1client.api.VatCategoryApi"/>
+	<bean id="subAccount" class="no.systema.visma.integration.Subaccount"/>
+	<bean id="subAccountApi" class="no.systema.visma.v1client.api.SubaccountApi"/>
+
 	
 	<bean id="customerTransactionManager" class="no.systema.visma.transaction.CustomerTransactionManager"/>
 	<bean id="customerInvoiceTransactionManager" class="no.systema.visma.transaction.CustomerInvoiceTransactionManager"/>

@@ -27,6 +27,22 @@ public class LogHelper {
 	}
 	
 	/**
+	 * Standardized logformat for VISxyz.
+	 * 
+	 * @param xyznr
+	 * @return String 
+	 */
+	public static String logPrefixSubaccount(Object xyznr) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("::xyz:").append(xyznr);
+		
+		return sb.toString();
+		
+	}	
+	
+	
+	
+	/**
 	 * Standardized logformat for VISTRANSK.
 	 * 
 	 * @param recnr

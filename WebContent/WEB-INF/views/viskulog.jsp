@@ -150,7 +150,7 @@
 
 								<div class="col-md-2 text14">
 									 Overfør SubAccount :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncCustomerXXX('${user.user}')">Overfør</button>
+									<button class="inputFormSubmit" onclick="syncSubaccount('${user.user}')">Overfør</button>
 								</div>
 							</div>						
 							<div class="padded-row-small">&nbsp;</div>

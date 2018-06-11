@@ -70,3 +70,27 @@ function syncCustomerInvoice(user) {
 
 }
 
+function syncSubaccount(user) {
+	var syncSubaccountUrl = "syncronizeSubaccounts.do?user="+user;
+
+	jq.blockUI({
+		message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
+	});
+	
+	jq.ajax({
+		url : syncSubaccountUrl,
+		method : "POST", //to avoid invalidate session
+	}).done(function() {
+		alert("Synkronisering er ferdig.");
+		var formatTime = d3.timeFormat("%Y%m%d");
+		jq('#selectFradato').val(formatTime(new Date) - 1);
+		//load_data();
+	}).fail(function(data) {
+		console.log("Error", data);
+		alert("Synkronisering gikk feil.", data);
+	}).always(function() {
+		jq.unblockUI();
+	});
+
+}
+
