@@ -2,6 +2,7 @@ package no.systema.visma.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import no.systema.jservices.common.dao.CundfDao;
 import no.systema.jservices.common.dao.FirmvisDao;
@@ -34,6 +39,8 @@ import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.StringManager;
 import no.systema.main.validator.LoginValidator;
+import no.systema.visma.authorization.Authorization;
+import no.systema.visma.authorization.TokenRequestDto;
 import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
@@ -65,7 +72,11 @@ public class WebController {
 	CustomerInvoiceTransactionManager customerInvoiceTransactionManager;	
 
 	@Autowired
-	SubaccountTransactionManager subaccountTransactionManager;		
+	SubaccountTransactionManager subaccountTransactionManager;	
+	
+	@Autowired
+	Authorization authorization;			
+	
 	
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
@@ -154,21 +165,122 @@ public class WebController {
 
 	}	
 	
-	
-	
-	
+    @GetMapping("/loginVisma.do")
+    public RedirectView redirectToVismaLogin(RedirectAttributes attributes) {
+
+    	//http://www.baeldung.com/spring-redirect-and-forward  	
+    	
+		String authPath = "https://integration.visma.net/API/resources/oauth/authorize";
+		String response_type = "code";		
+		String client_id = "systema_as_test_hf6sjf9";
+		String redirect_uri = "http://gw.systema.no:8080/visma-net-proxy/configuration.do";
+		String scope = "financialstasks";
+		String state = "kalle";  	
+		
+        attributes.addAttribute("response_type", response_type);
+        attributes.addAttribute("client_id", client_id);
+        attributes.addAttribute("redirect_uri", redirect_uri);
+        attributes.addAttribute("scope", scope);
+        attributes.addAttribute("state", state);
+        
+        return new RedirectView(authPath);
+    }	
+
+	@RequestMapping(value = "vismaCallback.do", method={RequestMethod.GET})
+	public ModelAndView doCallback(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("redirect:configuration.do");
+
+		logger.info("INSIDE: vismaCallback.do");
+
+		String generatedAuthorizationCode = request.getParameter("code");
+		logger.info("code="+generatedAuthorizationCode);
+		
+		if (generatedAuthorizationCode == null) {
+			String errMsg = "parameter code must be delivered from Visma.net."; 
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		
+//		updateFirmvis(authorizationCode);
+		
+		TokenRequestDto requestDto = getTokenRequestDto(generatedAuthorizationCode);
+		logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
+		
+		Object obj = authorization.accessTokenRequestPost(requestDto);
+		logger.info("obj="+ReflectionToStringBuilder.toString(obj));
+		
+		if (appUser == null) {
+			return loginView;
+		} else {
+			return successView;
+		}
+		
+	}    
+    
+	private TokenRequestDto getTokenRequestDto(String generatedAuthorizationCode) {
+		FirmvisDao firmvisDao = firmvisDaoService.get();
+		TokenRequestDto dto = new TokenRequestDto();
+		
+		dto.setCode(generatedAuthorizationCode);
+		dto.setGrantType("authorization_code");
+		dto.setClientId(firmvisDao.getViclid());
+		dto.setClientSecret(firmvisDao.getViclse());
+		//TODO remove hardcode of redirect uri
+		String redirect_uri = "http://gw.systema.no:8080/visma-net-proxy/configuration.do";
+		dto.setRedirectUri(redirect_uri);
+		
+		return dto;
+		
+	}
+
+	private void updateFirmvis(String authorizationCode) {
+		 FirmvisDao firmvisDao = firmvisDaoService.get();
+		 firmvisDao.setViauco(authorizationCode);
+		 
+		 firmvisDaoService.update(firmvisDao);
+		 
+	}
+
 	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
 		ModelAndView successView = new ModelAndView("visma_configuration"); 
 		Map model = new HashMap();
-		logger.info("Inside: configuration");
+		logger.info("INSIDE: configuration");
+		
+		Enumeration<String> paramsEnums = request.getParameterNames();
+		while(paramsEnums.hasMoreElements()){
+		    String name = paramsEnums.nextElement();
+		    logger.debug("req.param.name="+name);
+		    logger.debug("req.param.value="+request.getParameter(name));
+		}	
+	
+		//Clipped in from callback, for testing
+		String generatedAuthorizationCode = request.getParameter("code");
+		logger.info("code="+generatedAuthorizationCode);
+		
+//		if (generatedAuthorizationCode == null) {
+//			String errMsg = "parameter code must be delivered from Visma.net."; 
+//			logger.error(errMsg);
+//			throw new RuntimeException(errMsg);
+//		}
+		
+		if (generatedAuthorizationCode != null) {  //do the thing
+			TokenRequestDto requestDto = getTokenRequestDto(generatedAuthorizationCode);
+			logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
+			
+			Object obj = authorization.accessTokenRequestPost(requestDto);
+			logger.info("obj="+ReflectionToStringBuilder.toString(obj));		
+		}
+		
+		//
 		
 		if (appUser == null) {
 			return loginView;
 		} else {
 
-			if (request.getMethod().equals(RequestMethod.POST.toString())){ //TODO new på firmvis?
+			if (request.getMethod().equals(RequestMethod.POST.toString())){ 
 				firmvisDaoService.update(firmvis);
 			} 
 			
@@ -349,7 +461,7 @@ public class WebController {
 	@RequestMapping(value = "showHistory.do", method = { RequestMethod.GET })
 	@ResponseBody
 	public String showHistory(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
-		logger.info("showHistory.do...");
+		logger.info("INSIDE: showHistory.do...");
 		StringBuilder logResult = new StringBuilder();
 
 		checkUser(user);

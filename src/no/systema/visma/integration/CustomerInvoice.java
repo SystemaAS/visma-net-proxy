@@ -50,7 +50,8 @@ public class CustomerInvoice extends Configuration {
 
 		customerInvoiceApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
 		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
+		//TODO unmark!
+//		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		customerInvoiceApi.getApiClient().setAccessToken(firmvis.getViacto().trim());
 
 //		customerInvoiceApi.getApiClient().setDebugging(true); //Warning...debugging in VismaClientHttpRequestInceptor

@@ -2,11 +2,6 @@
 var jq = jQuery.noConflict();
 var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 
-//var syncCustomerUrl = "syncronizeCustomers.do?user=${user.user}";
-//var syncCustomerInvoiceUrl = "syncronizeCustomerInvoices.do?user=${user.user}";
-
-
-
 function setBlockUI(element){
   jq.blockUI({ message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
 }
@@ -18,6 +13,9 @@ jq(function() {
 		window.open('childwindow_codes.do?caller=selectKundenr', "codeWin", "top=300px,left=500px,height=600px,width=800px,scrollbars=no,status=no,location=no");
 	});  
 
+  	jq('#generateButton').click(function() {
+  		window.open('loginVisma.do', 'Genere sikkerhetsnokkle','top=120px,left=100px,height=600px,width=900px,scrollbars=no,status=no,location=no');
+  	});
 
 });
 

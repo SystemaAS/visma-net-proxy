@@ -48,7 +48,8 @@ public class Customer  extends Configuration{
 
 		customerApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
 		customerApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		customerApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
+		//TODO unmark!
+//		customerApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		customerApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
 		
 		//customerApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaClientHttpRequestInterceptor	

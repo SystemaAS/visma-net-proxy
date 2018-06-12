@@ -39,7 +39,8 @@ public class Subaccount extends Configuration{
 
 		subaccountApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
 		subaccountApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		subaccountApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
+		//TODO unmark!
+//		subaccountApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		subaccountApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
 		
 		//subaccountApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaClientHttpRequestInterceptor	
