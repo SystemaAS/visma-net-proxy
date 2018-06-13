@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import no.systema.visma.authorization.HttpBasicAuthApiClient;
 import no.systema.visma.v1client.ApiClient;
 
 public abstract class Configuration {
@@ -19,6 +20,11 @@ public abstract class Configuration {
 	public ApiClient apiClient(){
 		return new ApiClient(restTemplate());
 	}
+
+	@Bean
+	public HttpBasicAuthApiClient httpBasicAuthApiClient(){
+		return new HttpBasicAuthApiClient(restTemplateDefault());
+	}	
 	
 	/**
 	 * Explicit settings of Jackson ObjectMapper to support Java 8 LocalDateTime.
@@ -42,4 +48,17 @@ public abstract class Configuration {
 		
 		return restTemplate;  
 	}
+
+	@Bean
+	public RestTemplate restTemplateDefault(){
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setInterceptors(Arrays.asList(new VismaClientHttpRequestInterceptor()));
+		restTemplate.setErrorHandler(new VismaResponseErrorHandler());
+		
+		return restTemplate;  
+	}	
+	
+	
+	
+	
 }

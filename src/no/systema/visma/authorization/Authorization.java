@@ -17,8 +17,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.visma.authorization.HttpBasicAuthApiClient.CollectionFormat;
 import no.systema.visma.integration.Configuration;
-import no.systema.visma.v1client.ApiClient;
 
 @Service
 public class Authorization extends Configuration {
@@ -32,41 +32,53 @@ public class Authorization extends Configuration {
      * 
      * Response Message has StatusCode Created if POST operation succeed
      * <p><b>201</b> - Created
-     * @param tokenRequest Defines the data top get the generated accesstoken
-     * @return Object
+     * @param tokenRequest Defines the data to get the generated accesstoken
+     * @return TokenResponseDto the response, including the accesstoken
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public Object accessTokenRequestPost(TokenRequestDto tokenRequest) throws RestClientException {
-    	logger.info("accessTokenRequestPost(TokenRequestDto tokenRequest)");
+    public TokenResponseDto accessTokenRequestPost(TokenRequestDto tokenRequest, String client_id, String client_secret) throws RestClientException {
+    	logger.info("accessTokenRequestPost(TokenRequestDto tokenRequest, String client_id, String client_secret)");
     	
-    	ApiClient apiClient = apiClient(); 
-    	apiClient.setBasePath("https://integration.visma.net/API");
+    	HttpBasicAuthApiClient httpBasicAuthapiClient = httpBasicAuthApiClient(); 
+    	httpBasicAuthapiClient.setBasePath("https://integration.visma.net/API");
+    	httpBasicAuthapiClient.setUsername(client_id);
+    	httpBasicAuthapiClient.setPassword(client_secret);
     	
-    	Object postBody = tokenRequest;
+    	Object postBody = null;  //Not in use
         
         if (tokenRequest == null) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'tokenRequest' when calling customerPost");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'tokenRequest' when calling accessTokenRequestPost");
         }
+        if (client_id == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'client_id' when calling accessTokenRequestPost");
+        }  
+        if (client_secret == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'client_secret' when calling accessTokenRequestPost");
+        }        
         
         String path = UriComponentsBuilder.fromPath("/security/api/v2/token").build().toUriString();
         
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
         final HttpHeaders headerParams = new HttpHeaders();
         final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
- 
+              
+        formParams.putAll(httpBasicAuthapiClient.parameterToMultiObjectValueMap(CollectionFormat.MULTI, "code", tokenRequest.getCode()));       
+        formParams.putAll(httpBasicAuthapiClient.parameterToMultiObjectValueMap(CollectionFormat.MULTI, "grant_type", tokenRequest.getGrantType()));       
+        formParams.putAll(httpBasicAuthapiClient.parameterToMultiObjectValueMap(CollectionFormat.MULTI, "redirect_uri", tokenRequest.getRedirectUri()));       
+        
         final String[] accepts = { 
             "application/json", "text/json"
         };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
+        final List<MediaType> accept = httpBasicAuthapiClient.selectHeaderAccept(accepts);
         final String[] contentTypes = { 
-            "application/json", "text/json", "application/xml", "text/xml", "application/x-www-form-urlencoded"
+        	"application/x-www-form-urlencoded"
         };
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
+        final MediaType contentType = httpBasicAuthapiClient.selectHeaderContentType(contentTypes);
 
-        String[] authNames = new String[] { "ipp-application-type", "ipp-company-id", "vna_oauth" };
+        String[] authNames = new String[] { "vna_oauth" };
 
-        ParameterizedTypeReference<Object> returnType = new ParameterizedTypeReference<Object>() {};
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+        ParameterizedTypeReference<TokenResponseDto> returnType = new ParameterizedTypeReference<TokenResponseDto>() {};
+        return httpBasicAuthapiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     }	
 	
 }

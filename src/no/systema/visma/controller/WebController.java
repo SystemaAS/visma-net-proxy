@@ -41,6 +41,7 @@ import no.systema.main.util.StringManager;
 import no.systema.main.validator.LoginValidator;
 import no.systema.visma.authorization.Authorization;
 import no.systema.visma.authorization.TokenRequestDto;
+import no.systema.visma.authorization.TokenResponseDto;
 import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
@@ -207,7 +208,8 @@ public class WebController {
 		TokenRequestDto requestDto = getTokenRequestDto(generatedAuthorizationCode);
 		logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
 		
-		Object obj = authorization.accessTokenRequestPost(requestDto);
+		FirmvisDao firmvisDao = firmvisDaoService.get();
+		Object obj = authorization.accessTokenRequestPost(requestDto,firmvisDao.getViclid(), firmvisDao.getViclse());
 		logger.info("obj="+ReflectionToStringBuilder.toString(obj));
 		
 		if (appUser == null) {
@@ -219,13 +221,13 @@ public class WebController {
 	}    
     
 	private TokenRequestDto getTokenRequestDto(String generatedAuthorizationCode) {
-		FirmvisDao firmvisDao = firmvisDaoService.get();
+//		FirmvisDao firmvisDao = firmvisDaoService.get();
 		TokenRequestDto dto = new TokenRequestDto();
 		
 		dto.setCode(generatedAuthorizationCode);
 		dto.setGrantType("authorization_code");
-		dto.setClientId(firmvisDao.getViclid());
-		dto.setClientSecret(firmvisDao.getViclse());
+//		dto.setClientId(firmvisDao.getViclid());
+//		dto.setClientSecret(firmvisDao.getViclse());
 		//TODO remove hardcode of redirect uri
 		String redirect_uri = "http://gw.systema.no:8080/visma-net-proxy/configuration.do";
 		dto.setRedirectUri(redirect_uri);
@@ -270,8 +272,10 @@ public class WebController {
 			TokenRequestDto requestDto = getTokenRequestDto(generatedAuthorizationCode);
 			logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
 			
-			Object obj = authorization.accessTokenRequestPost(requestDto);
-			logger.info("obj="+ReflectionToStringBuilder.toString(obj));		
+			FirmvisDao firmvisDao = firmvisDaoService.get();
+			TokenResponseDto accessToken = authorization.accessTokenRequestPost(requestDto,firmvisDao.getViclid(), firmvisDao.getViclse());
+
+			logger.info("accessToken="+accessToken);		
 		}
 		
 		//
