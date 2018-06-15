@@ -26,8 +26,7 @@ public class Authorization extends Configuration {
 	
 	/**  */
 	//TODO to be replace with db-call
-//	public static String REDIRECT_URI = "https://gw.systema.no:8443/visma-net-proxy/vismaCallback.do";
-	public static String REDIRECT_URI = "http://gw.systema.no:8080/visma-net-proxy/configuration.do";
+	public static String REDIRECT_URI = "https://gw.systema.no:8443/visma-net-proxy/vismaCallback.do";
 	/** code */
 	public static String RESPONSE_TYPE = "code";
 	/** /resources/oauth/authorize */

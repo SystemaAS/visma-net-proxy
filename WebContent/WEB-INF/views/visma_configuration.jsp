@@ -59,7 +59,13 @@
 									</td>
 									<td><input type="text" required oninvalid="this.setCustomValidity('Obligatoriskt')" onchange="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="vifirm" id="vifirm"
 										size="3" maxlength="2" value='${model.firmvis.vifirm}'></td>
+								</tr>
 
+								<tr>
+									<td class="text14" title="kundnr">&nbsp;<font class="text14RedBold">*</font> Visma.net id:
+									</td>
+									<td><input type="text" required oninvalid="this.setCustomValidity('Obligatoriskt')" onchange="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="vicoid" id="vicoid"
+										size="12" maxlength="10" value='${model.firmvis.vicoid}'></td>
 								</tr>
 
 								<tr>
@@ -94,7 +100,7 @@
 									<td>&nbsp;</td>
 									<td align="right"><input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre' /></td>
 									<td>&nbsp;&nbsp;
-								 	  <button name="generateButton" id="generateButton" class="buttonGrayWithGreenFrame" type="button" >Generere sikkerhetsnøkkel</button>
+								 	  <button name="generateButton" id="generateButton" class="buttonGrayWithGreenFrame" type="button" >Generere sikkerhetsnøkler</button>
 									</td>
 
 								</tr>

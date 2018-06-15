@@ -2,6 +2,8 @@
 var jq = jQuery.noConflict();
 var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 
+var callbackWindow;
+
 function setBlockUI(element){
   jq.blockUI({ message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
 }
@@ -14,9 +16,13 @@ jq(function() {
 	});  
 
   	jq('#generateButton').click(function() {
-  		window.open('loginVisma.do', 'Genere sikkerhetsnokkle','top=120px,left=100px,height=600px,width=900px,scrollbars=no,status=no,location=no');
+  		window.open('loginVisma.do', 'Sikkerhetsnøkler','top=150px,left=600px,height=550px,width=700px');
   	});
-
+  	jq('#closeButton').click(function() {
+  		window.close();
+  	});  
+  	
+  	
 });
 
 

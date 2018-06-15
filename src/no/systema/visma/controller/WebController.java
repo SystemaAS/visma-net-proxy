@@ -190,10 +190,11 @@ public class WebController {
         return new RedirectView(authPath.toString());
     }	
 
-	@RequestMapping(value = "vismaCallback.do", method={RequestMethod.GET})
+    
+    @RequestMapping(value = "vismaCallback.do", method={RequestMethod.GET})
 	public ModelAndView doCallback(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-		ModelAndView successView = new ModelAndView("redirect:configuration.do");
+		ModelAndView successView = new ModelAndView("visma_callback");
 
 		logger.info("INSIDE: vismaCallback.do");
 
@@ -206,16 +207,16 @@ public class WebController {
 			throw new RuntimeException(errMsg);
 		}
 		
-//		updateFirmvis(authorizationCode);
-
 		FirmvisDao firmvisDao = firmvisDaoService.get();
 		
 		TokenRequestDto requestDto = createTokenRequestDto(generatedAuthorizationCode, Authorization.REDIRECT_URI);
 		logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
 		
 		TokenResponseDto accessToken = authorization.accessTokenRequestPost(requestDto, firmvisDao.getViclid(), firmvisDao.getViclse(), firmvisDao.getVibapa());
-
 		logger.info("accessToken="+accessToken);	
+
+		//TODO update FIRMVIS with generated values
+		
 		
 		if (appUser == null) {
 			return loginView;
@@ -250,36 +251,6 @@ public class WebController {
 		ModelAndView successView = new ModelAndView("visma_configuration"); 
 		Map model = new HashMap();
 		logger.info("INSIDE: configuration");
-		
-		Enumeration<String> paramsEnums = request.getParameterNames();
-		while(paramsEnums.hasMoreElements()){
-		    String name = paramsEnums.nextElement();
-		    logger.debug("req.param.name="+name);
-		    logger.debug("req.param.value="+request.getParameter(name));
-		}	
-	
-		//Clipped in from callback, for testing
-		String generatedAuthorizationCode = request.getParameter("code");
-		logger.info("code="+generatedAuthorizationCode);
-		
-//		if (generatedAuthorizationCode == null) {
-//			String errMsg = "parameter code must be delivered from Visma.net."; 
-//			logger.error(errMsg);
-//			throw new RuntimeException(errMsg);
-//		}
-		
-		if (generatedAuthorizationCode != null) {  //do the thing
-			TokenRequestDto requestDto = createTokenRequestDto(generatedAuthorizationCode, Authorization.REDIRECT_URI);
-			logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
-			
-			FirmvisDao firmvisDao = firmvisDaoService.get();
-			
-			TokenResponseDto accessToken = authorization.accessTokenRequestPost(requestDto,firmvisDao.getViclid(), firmvisDao.getViclse(), firmvisDao.getVibapa());
-
-			logger.info("accessToken="+accessToken);		
-		}
-		
-		//
 		
 		if (appUser == null) {
 			return loginView;
@@ -492,8 +463,5 @@ public class WebController {
 			throw new RuntimeException("ERROR: parameter, user, is not valid!");
 		}		
 	}
-	
-	
-	
 	
 }
