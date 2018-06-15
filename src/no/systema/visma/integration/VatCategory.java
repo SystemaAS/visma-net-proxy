@@ -29,8 +29,7 @@ public class VatCategory extends Configuration{
 
 		vatCategoryApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
 		vatCategoryApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		//TODO unmark
-//		vatCategoryApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
+		vatCategoryApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		vatCategoryApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
 		
 		//customerApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaClientHttpRequestInterceptor	

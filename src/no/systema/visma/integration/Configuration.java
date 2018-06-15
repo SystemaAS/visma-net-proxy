@@ -16,11 +16,21 @@ import no.systema.visma.v1client.ApiClient;
 
 public abstract class Configuration {
 
+	/**
+	 * Used for entering the API
+	 * 
+	 * @return
+	 */
 	@Bean
 	public ApiClient apiClient(){
 		return new ApiClient(restTemplate());
 	}
 
+	/**
+	 * Used for retrieving token.
+	 * 
+	 * @return
+	 */
 	@Bean
 	public HttpBasicAuthApiClient httpBasicAuthApiClient(){
 		return new HttpBasicAuthApiClient(restTemplateDefault());
@@ -40,7 +50,13 @@ public abstract class Configuration {
 	            .build();
     }	
 	
-	@Bean
+	/**
+	 * Initialize  {@linkplain RestTemplate} with {@linkplain MappingJackson2HttpMessageConverter} and <br>
+	 * a Interceptor, {@linkplain VismaClientHttpRequestInterceptor}
+	 * 
+	 * @return RestTemplate
+	 */
+    @Bean
 	public RestTemplate restTemplate(){
 		RestTemplate restTemplate = new RestTemplate(Arrays.asList(new MappingJackson2HttpMessageConverter(objectMapper())));
 		restTemplate.setInterceptors(Arrays.asList(new VismaClientHttpRequestInterceptor()));
@@ -49,7 +65,13 @@ public abstract class Configuration {
 		return restTemplate;  
 	}
 
-	@Bean
+	/**
+	 * Initialize  {@linkplain RestTemplate} with default {@linkplain HttpMessageConverter} and <br>
+	 * a Interceptor, {@linkplain VismaClientHttpRequestInterceptor}
+	 * 
+	 * @return RestTemplate
+	 */
+    @Bean
 	public RestTemplate restTemplateDefault(){
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setInterceptors(Arrays.asList(new VismaClientHttpRequestInterceptor()));
@@ -57,8 +79,5 @@ public abstract class Configuration {
 		
 		return restTemplate;  
 	}	
-	
-	
-	
 	
 }

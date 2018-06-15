@@ -24,6 +24,21 @@ import no.systema.visma.integration.Configuration;
 public class Authorization extends Configuration {
 	private static Logger logger = Logger.getLogger(Authorization.class);
 	
+	/**  */
+	//TODO to be replace with db-call
+//	public static String REDIRECT_URI = "https://gw.systema.no:8443/visma-net-proxy/vismaCallback.do";
+	public static String REDIRECT_URI = "http://gw.systema.no:8080/visma-net-proxy/configuration.do";
+	/** code */
+	public static String RESPONSE_TYPE = "code";
+	/** /resources/oauth/authorize */
+	public static String AUTHORIZE_URI = "/resources/oauth/authorize";
+	/** financialstasks */
+	public static String SCOPE = "financialstasks";
+	/** kalle*/
+	public static String STATE = "kalle";
+	/** authorization_code */
+	public static String AUTHORIZATION_CODE  = "authorization_code";
+
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;		
 	
@@ -33,14 +48,15 @@ public class Authorization extends Configuration {
      * Response Message has StatusCode Created if POST operation succeed
      * <p><b>201</b> - Created
      * @param tokenRequest Defines the data to get the generated accesstoken
+	 * @param basePath the API uri
      * @return TokenResponseDto the response, including the accesstoken
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public TokenResponseDto accessTokenRequestPost(TokenRequestDto tokenRequest, String client_id, String client_secret) throws RestClientException {
-    	logger.info("accessTokenRequestPost(TokenRequestDto tokenRequest, String client_id, String client_secret)");
+    public TokenResponseDto accessTokenRequestPost(TokenRequestDto tokenRequest, String client_id, String client_secret, String basePath) throws RestClientException {
+    	logger.info("accessTokenRequestPost(TokenRequestDto tokenRequest, String client_id, String client_secret, String basePath)");
     	
     	HttpBasicAuthApiClient httpBasicAuthapiClient = httpBasicAuthApiClient(); 
-    	httpBasicAuthapiClient.setBasePath("https://integration.visma.net/API");
+    	httpBasicAuthapiClient.setBasePath(basePath);
     	httpBasicAuthapiClient.setUsername(client_id);
     	httpBasicAuthapiClient.setPassword(client_secret);
     	
