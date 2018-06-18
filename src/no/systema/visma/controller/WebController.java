@@ -2,7 +2,6 @@ package no.systema.visma.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,7 +198,6 @@ public class WebController {
 		logger.info("INSIDE: vismaCallback.do");
 
 		String generatedAuthorizationCode = request.getParameter(Authorization.RESPONSE_TYPE);
-		logger.info("code="+generatedAuthorizationCode);
 		
 		if (generatedAuthorizationCode == null) {
 			String errMsg = "parameter code must be delivered from Visma.net."; 
@@ -210,13 +208,9 @@ public class WebController {
 		FirmvisDao firmvisDao = firmvisDaoService.get();
 		
 		TokenRequestDto requestDto = createTokenRequestDto(generatedAuthorizationCode, Authorization.REDIRECT_URI);
-		logger.info("requestDto="+ReflectionToStringBuilder.toString(requestDto));
-		
 		TokenResponseDto accessToken = authorization.accessTokenRequestPost(requestDto, firmvisDao.getViclid(), firmvisDao.getViclse(), firmvisDao.getVibapa());
-		logger.info("accessToken="+accessToken);	
 
-		//TODO update FIRMVIS with generated values
-		
+		updateFirmvis(generatedAuthorizationCode, accessToken.getToken());
 		
 		if (appUser == null) {
 			return loginView;
@@ -237,9 +231,11 @@ public class WebController {
 		
 	}
 
-	private void updateFirmvis(String authorizationCode) {
+	private void updateFirmvis(String authorizationCode, String token) {
 		 FirmvisDao firmvisDao = firmvisDaoService.get();
+
 		 firmvisDao.setViauco(authorizationCode);
+		 firmvisDao.setViacto(token);
 		 
 		 firmvisDaoService.update(firmvisDao);
 		 
@@ -251,15 +247,11 @@ public class WebController {
 		ModelAndView successView = new ModelAndView("visma_configuration"); 
 		Map model = new HashMap();
 		logger.info("INSIDE: configuration");
-		
+	
 		if (appUser == null) {
 			return loginView;
 		} else {
 
-			if (request.getMethod().equals(RequestMethod.POST.toString())){ 
-				firmvisDaoService.update(firmvis);
-			} 
-			
 			firmvis = firmvisDaoService.get();
 
 			model.put("firmvis", firmvis);

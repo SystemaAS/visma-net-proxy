@@ -11,6 +11,8 @@
 	<bean id="vatCategoryApi" class="no.systema.visma.v1client.api.VatCategoryApi"/>
 	<bean id="subAccount" class="no.systema.visma.integration.Subaccount"/>
 	<bean id="subAccountApi" class="no.systema.visma.v1client.api.SubaccountApi"/>
+	<bean id="security" class="no.systema.visma.integration.Security"/>
+	<bean id="securityApi" class="no.systema.visma.v1client.api.SecurityApi"/>
 
 	
 	<bean id="customerTransactionManager" class="no.systema.visma.transaction.CustomerTransactionManager"/>
