@@ -51,13 +51,13 @@ public class TestJCustomer {
 	
 	@Test
 	public void testCustomerSync() {
-		int kundnr = 100; 
-		String name = "Kalles chokladfabrik"+now;
+		int kundnr = 10; 
+		String name = "Kalles chokladfabrik; "+now;
 		ViskundeDao dao =getValidDao(kundnr, "123999" ,name);
 
 		customer.syncronize(dao);
 		
-		CustomerDto dto = customer.getGetBycustomerCd("100");
+		CustomerDto dto = customer.getGetBycustomerCd(String.valueOf(kundnr));
 		
 		assertNotNull(dto);
 		assertEquals("", name, dto.getName());

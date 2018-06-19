@@ -11,7 +11,6 @@ import org.springframework.web.client.RestClientException;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.visma.v1client.api.VatCategoryApi;
-import no.systema.visma.v1client.model.CustomerClassDto;
 import no.systema.visma.v1client.model.VatCategoryDto;
 
 @Service

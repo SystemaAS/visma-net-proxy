@@ -23,6 +23,7 @@ import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
 import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto.OperationEnum;
 import no.systema.visma.v1client.model.CustomerInvoiceUpdateDto;
 import no.systema.visma.v1client.model.DtoValueString;
+import no.systema.visma.v1client.model.SegmentUpdateDto;
 
 /**
  * A Wrapper on {@linkplain CustomerInvoiceApi}
@@ -259,7 +260,7 @@ public class CustomerInvoice extends Configuration {
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
-		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main
+//		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main, behövs den?
 		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
 		// Note: same as DocumentDueDate
 		dto.setCashDiscountDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));		
@@ -294,8 +295,7 @@ public class CustomerInvoice extends Configuration {
 			//TODO formodlinge behövs någon form av cross-ref, Visma har 2 tegn , SYSPED 1 TEGN
 			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
-			//TODO add KBARER to subaccount
-//			updateDto.setSubaccount(Arrays.asList(new SegmentUpdateDto().segmentValue(String.valueOf(lineDto.getKbarer()))));
+			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setOperation(OperationEnum.INSERT);
 			
@@ -305,6 +305,27 @@ public class CustomerInvoice extends Configuration {
 		
 		return updateDtoList;
 		
+	}
+
+	private List<SegmentUpdateDto> getSubaccount(VistranskLineDto lineDto) {
+		List<SegmentUpdateDto> dtoList = new ArrayList<SegmentUpdateDto>();
+		int AVDELING = 1; //Ref in Visma.net
+		int PROJEKT = 2;  //Ref in Visma.net
+		
+		//Avdeling
+		SegmentUpdateDto updateAvdDto = new SegmentUpdateDto();
+		updateAvdDto.setSegmentId(AVDELING);
+		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKbarer()));
+		dtoList.add(updateAvdDto);
+		
+		//Projekt
+		SegmentUpdateDto updateProjDto = new SegmentUpdateDto();
+		updateProjDto.setSegmentId(PROJEKT);
+		updateProjDto.setSegmentValue(String.valueOf(lineDto.getProsnr()));
+		
+		dtoList.add(updateProjDto);
+		
+		return dtoList;
 	}
 
 	// Sanity checks

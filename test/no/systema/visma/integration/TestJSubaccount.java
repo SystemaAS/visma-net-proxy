@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import no.systema.visma.v1client.model.DtoValueBoolean;
 import no.systema.visma.v1client.model.SubAccountDto;
+import no.systema.visma.v1client.model.SubAccountUpdateDto;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
@@ -32,13 +34,27 @@ public class TestJSubaccount {
 	@Test
 	public void testGetSubaccountById() {
 
-		
-		//TODO verify that get by id works, now it seems not to
-		 SubAccountDto dto = subaccount.subaccountGetSubaccountBysubAccountId("25");
+		//USE Dimension
+		 SubAccountDto dto = subaccount.subaccountGetSubaccountBysubAccountId("0000");
 		
 		logger.debug("dto="+dto);
 
 	}	
+	
+	@Test
+	public void testSubaccountPost() {
+
+		SubAccountUpdateDto  subAccountUpdateDto = new SubAccountUpdateDto();
+		subAccountUpdateDto.setDescription(DtoValueHelper.toDtoString("beskrivning"));
+		subAccountUpdateDto.setSubaccountCd(DtoValueHelper.toDtoString("1")); //Avdeling
+		subAccountUpdateDto.setSubaccountId(DtoValueHelper.toDtoString("0002")); //löpande under...
+		
+		
+		subaccount.subaccountPost(subAccountUpdateDto);
+
+
+	}	
+	
 	
 	
 	

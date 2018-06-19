@@ -114,11 +114,12 @@ public class TestJCustomerInvoice {
 		dao.setFfddag(25);	
 		dao.setMomsk("32");
 		dao.setKonto(3000);		
-		dao.setKbarer(1000);
+		dao.setKbarer(3);  //Kostnadsbarer avd
+		dao.setProsnr(55); //Kostnadsbarer projekt
 		dao.setBetbet("14");
 		dao.setBbelop(new BigDecimal(15.0));
 		dao.setPeraar(2018);
-		dao.setPernr(5);
+		dao.setPernr(8);
 		
 		return dao;
 	}	

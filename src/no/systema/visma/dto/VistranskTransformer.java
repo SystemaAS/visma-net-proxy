@@ -60,6 +60,7 @@ public class VistranskTransformer {
 				line.setKsted(dao.getKsted());
 				line.setKbarer(dao.getKbarer());
 				line.setBiltxt(dao.getBiltxt());
+				line.setProsnr(dao.getProsnr());
 
 				vistranskLineDtoList.add(line);
 				

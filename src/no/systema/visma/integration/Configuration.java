@@ -4,8 +4,10 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jca.endpoint.GenericMessageEndpointFactory.InternalResourceException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +16,17 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import no.systema.visma.authorization.HttpBasicAuthApiClient;
 import no.systema.visma.v1client.ApiClient;
 
+/**
+ * This class is used in every integration class. <br>
+ * 
+ * Responsible for: <br>
+ * <li>Setting up http clients; {@linkplain ApiClient} and {@linkplain HttpBasicAuthApiClient}
+ * <li>Configuration for {@linkplain ObjectMapper} to support Java 8 LocalDateTime
+ * <li>Initializating {@linkplain RestTemplate} with {@linkplain HttpMessageConverter} and {@linkplain ClientHttpRequestInterceptor}
+ * 
+ * @author fredrikmoller
+ *
+ */
 public abstract class Configuration {
 
 	/**

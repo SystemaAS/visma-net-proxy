@@ -17,7 +17,6 @@ import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.v1client.api.CustomerApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
 import no.systema.visma.v1client.model.ContactInfoUpdateDto;
-import no.systema.visma.v1client.model.CustomerClassDto;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
@@ -90,19 +89,19 @@ public class Customer  extends Configuration{
 			
     	} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomer(viskundeDao.getKundnr()));
-			logger.error(e.getClass()+" On  syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
+			logger.error(e.getClass()+" On  syncronize.  viskundeDao="+viskundeDao.toString());
 			logger.error("message:"+e.getMessage());
 			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
 			throw e;
 		}
     	catch (RestClientException e) {
     		logger.error(LogHelper.logPrefixCustomer(viskundeDao.getKundnr()));
-			logger.error(e.getClass()+" On syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
+			logger.error(e.getClass()+" On syncronize.  viskundeDao="+viskundeDao.toString());
 			throw e;
 		}
     	catch (Exception e) {
     		logger.error(LogHelper.logPrefixCustomer(viskundeDao.getKundnr()));
-			logger.error(e.getClass()+" On syncronizeCustomer.  viskundeDao="+viskundeDao.toString());
+			logger.error(e.getClass()+" On syncronize.  viskundeDao="+viskundeDao.toString());
 			throw e;
 		} 
 		
@@ -261,7 +260,7 @@ public class Customer  extends Configuration{
 	 * @return CustomerUpdateDto
 	 * @throws RuntimeException if Kundnr is 0.
 	 */
-    public CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde, IUDEnum status) {
+    private CustomerUpdateDto convertToCustomerUpdateDto(ViskundeDao viskunde, IUDEnum status) {
     	logger.info("convertToCustomerUpdateDto(ViskundeDao viskunde, IUDEnum status)");
     	//Sanity checks
 		if (viskunde.getKundnr() == 0) {

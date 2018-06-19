@@ -13,7 +13,6 @@ import lombok.Data;
 @Data
 public class VistranskLineDto {
 
-	//radnr ?
 	private BigDecimal bbelop = new BigDecimal(0);
 	private String momsk;
 	private int konto;
@@ -21,5 +20,6 @@ public class VistranskLineDto {
 	private int kbarer;	
 	private String biltxt;	
 	private int posnr;
+	private int prosnr;
 	
 }

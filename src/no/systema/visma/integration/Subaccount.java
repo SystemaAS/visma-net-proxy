@@ -11,10 +11,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.FirmvisDao;
+import no.systema.jservices.common.dao.VisavdDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.visma.v1client.api.SubaccountApi;
-import no.systema.visma.v1client.model.CustomerDto;
+import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.SubAccountDto;
+import no.systema.visma.v1client.model.SubAccountUpdateDto;
 
 /**
  * A Wrapper on SubaccountApi
@@ -99,6 +101,63 @@ public class Subaccount extends Configuration{
 		
 	}
 
+	//TODO ?? full insert saknas i SubAccountUpdateDto
+	  private SubAccountUpdateDto convertToSubAccountUpdateDto(VisavdDao visavd) {
+	    	logger.info("SubAccountUpdateDto(ViskundeDao viskunde, IUDEnum status)");
+	    	//Sanity checks
+			if (visavd.getSyavd() == 0) {
+				String errMsg = "SYAVD can not be 0";
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			} 
+		
+			SubAccountUpdateDto dto = new SubAccountUpdateDto();
+/*			alla som finns...?
+			dto.setActive(active);
+			dto.setDescription(description);
+			dto.setSubaccountCd(subaccountCd);
+			dto.setSubaccountId(subaccountId);
+*/			
+			
+			return dto;
+		}	
+	
+	
+	
+	
+	
+	/**
+     * Create a Subaccount
+     * Response Message has StatusCode Created if POST operation succeed
+     * <p><b>201</b> - Created
+     * @param subAccountUpdateDto Defines the data for Subaccount to create
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    public void subaccountPost(SubAccountUpdateDto subAccountUpdateDto) throws RestClientException {	
+	
+		try {
+
+			subaccountApi.subaccountPost(subAccountUpdateDto);
+
+		} catch (HttpClientErrorException e) {
+//			logger.error(LogHelper.logPrefixSubaccount(subAccountUpdateDto));		
+			logger.error(e.getClass() + " On  subaccountApi.subaccountPost call, subAccountUpdateDto=" + subAccountUpdateDto.toString());
+			logger.error("message:" + e.getMessage());
+			logger.error("status text:" + new String(e.getStatusText())); //Status text contains Response body from Visma.net
+			throw e;
+		} catch (RestClientException e) {
+//			logger.error(LogHelper.logPrefixSubaccount(subAccountUpdateDto));	
+			logger.error(e.getClass() + " On subaccountApi.subaccountPost, subAccountUpdateDto=" + subAccountUpdateDto.toString());
+			throw e;
+		} catch (Exception e) {
+//			logger.error(LogHelper.logPrefixSubaccount(subAccountUpdateDto));	
+			logger.error(e.getClass() + " subaccountApi.subaccountPost, subAccountUpdateDto=" + subAccountUpdateDto.toString());
+			throw e;
+		}
+    
+   }
+	
+	
 	
     /**
      * Get all SubAccounts

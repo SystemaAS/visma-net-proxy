@@ -73,5 +73,12 @@ public class LogHelper {
 		return text.substring(beginIndex);		
 		
 	}
+
+	public static Object logPrefixSupplier(Object levnr) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("::LEVNR:").append(levnr);
+		
+		return sb.toString();
+	}
 	
 }
