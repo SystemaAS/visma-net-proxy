@@ -41,9 +41,6 @@ public class CustomerInvoiceTransactionManager {
 	@Autowired
 	VistrlogkDaoService VistrlogkDaoService;	
 	
-	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
-	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
-	
 	/**
 	 * Syncronize all VISTRANSK with CustomerInvoice in Visma.net <br>
 	 * 
@@ -139,15 +136,13 @@ public class CustomerInvoiceTransactionManager {
 	}
 
 	private void updateVistranskOnError(VistranskHeadDto vistranskHeadDto, String errorText) {
-		LocalDateTime now = LocalDateTime.now();
-		String nowDate = now.format(dateFormatter);
-		int syncDa = Integer.valueOf(nowDate);		
-
 		VistranskDao dao = new VistranskDao();
 		dao.setFirma(vistranskHeadDto.getFirma());
 		dao.setRecnr(vistranskHeadDto.getRecnr());
 		dao.setBilnr(vistranskHeadDto.getBilnr());
-		dao.setSyncda(syncDa);
+
+		int[] dato = LogHelper.getNowDato();			
+		dao.setSyncda(dato[0]);
 		dao.setSyerro(errorText);		
 		
 		vistranskDaoService.updateOnError(dao);
@@ -172,13 +167,9 @@ public class CustomerInvoiceTransactionManager {
 			dao.setStatus("OK");			
 		}
 
-		LocalDateTime now = LocalDateTime.now();
-		String nowDate = now.format(dateFormatter);
-		String nowTime = now.format(timeFormatter);
-		int syncDa = Integer.valueOf(nowDate);
-		int synctm = Integer.valueOf(nowTime);	
-		dao.setSyncda(syncDa);
-		dao.setSynctm(synctm);
+		int[] dato = LogHelper.getNowDato();	
+		dao.setSyncda(dato[0]);
+		dao.setSynctm(dato[1]);
 		
 		return dao;
 	}	

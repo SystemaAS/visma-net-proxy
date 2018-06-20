@@ -1,6 +1,7 @@
 package no.systema.visma.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -43,6 +43,7 @@ import no.systema.visma.authorization.TokenRequestDto;
 import no.systema.visma.authorization.TokenResponseDto;
 import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
+import no.systema.visma.integration.LogHelper;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
 import no.systema.visma.transaction.SubaccountTransactionManager;
@@ -176,7 +177,7 @@ public class WebController {
     	
     	String response_type = Authorization.RESPONSE_TYPE;		
 		String client_id = firmvisDao.getViclid();
-		String redirect_uri = Authorization.REDIRECT_URI;
+		String redirect_uri = firmvisDao.getVireur();
 		String scope = Authorization.SCOPE;
 		String state = Authorization.STATE;  	
 	
@@ -207,7 +208,7 @@ public class WebController {
 		
 		FirmvisDao firmvisDao = firmvisDaoService.get();
 		
-		TokenRequestDto requestDto = createTokenRequestDto(generatedAuthorizationCode, Authorization.REDIRECT_URI);
+		TokenRequestDto requestDto = createTokenRequestDto(generatedAuthorizationCode, firmvisDao.getVireur());
 		TokenResponseDto accessToken = authorization.accessTokenRequestPost(requestDto, firmvisDao.getViclid(), firmvisDao.getViclse(), firmvisDao.getVibapa());
 
 		updateFirmvis(generatedAuthorizationCode, accessToken.getToken());
@@ -225,20 +226,24 @@ public class WebController {
 		
 		dto.setCode(generatedAuthorizationCode);
 		dto.setGrantType(Authorization.AUTHORIZATION_CODE);
-		dto.setRedirectUri(redirectUri);  //TODO replace with db-value
+		dto.setRedirectUri(redirectUri);  
 		
 		return dto;
 		
 	}
 
 	private void updateFirmvis(String authorizationCode, String token) {
-		 FirmvisDao firmvisDao = firmvisDaoService.get();
+		int[] dato = LogHelper.getNowDato();
+		FirmvisDao firmvisDao = firmvisDaoService.get();
 
-		 firmvisDao.setViauco(authorizationCode);
-		 firmvisDao.setViacto(token);
-		 
-		 firmvisDaoService.update(firmvisDao);
-		 
+		firmvisDao.setViauco(authorizationCode);
+		firmvisDao.setViacto(token);
+
+		firmvisDao.setVincda(dato[0]);
+		firmvisDao.setVinctm(dato[1]);
+
+		firmvisDaoService.update(firmvisDao);
+
 	}
 
 	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})

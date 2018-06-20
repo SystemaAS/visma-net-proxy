@@ -24,9 +24,6 @@ import no.systema.visma.integration.Configuration;
 public class Authorization extends Configuration {
 	private static Logger logger = Logger.getLogger(Authorization.class);
 	
-	/**  */
-	//TODO to be replace with db-call
-	public static String REDIRECT_URI = "https://gw.systema.no:8443/visma-net-proxy/vismaCallback.do";
 	/** code */
 	public static String RESPONSE_TYPE = "code";
 	/** /resources/oauth/authorize */

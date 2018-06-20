@@ -39,9 +39,6 @@ public class CustomerTransactionManager {
 	@Autowired
 	ViskulogDaoService viskulogDaoService;
 
-	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
-	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
-	
 	/**
 	 * Syncronize all VISKUNDE with Customer in Visma.net <br>
 	 * 
@@ -111,11 +108,8 @@ public class CustomerTransactionManager {
 
 	private void setError(ViskundeDao dao, String errorText) {
 		logger.info("Inside setError, errorText="+errorText);
-		
-		LocalDateTime now = LocalDateTime.now();
-		String nowDate = now.format(dateFormatter);
-		int syncDa = Integer.valueOf(nowDate);
-		dao.setSyncda(syncDa);
+		int[] dato = LogHelper.getNowDato();		
+		dao.setSyncda(dato[0]);
 		dao.setSyerro(errorText);
 		
 	}
@@ -166,13 +160,9 @@ public class CustomerTransactionManager {
 			dao.setStatus("OK");			
 		}
 
-		LocalDateTime now = LocalDateTime.now();
-		String nowDate = now.format(dateFormatter);
-		String nowTime = now.format(timeFormatter);
-		int syncDa = Integer.valueOf(nowDate);
-		int synctm = Integer.valueOf(nowTime);	
-		dao.setSyncda(syncDa);
-		dao.setSynctm(synctm);
+		int[] dato = LogHelper.getNowDato();		
+		dao.setSyncda(dato[0]);
+		dao.setSynctm(dato[1]);
 		
 		return dao;
 	}

@@ -1,5 +1,7 @@
 package no.systema.visma.integration;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -74,11 +76,49 @@ public class LogHelper {
 		
 	}
 
-	public static Object logPrefixSupplier(Object levnr) {
+	/**
+	 * Standardized logformat for SUPPLIER.
+	 * 
+	 * @param levnr
+	 * @return String 
+	 */
+	public static String logPrefixSupplier(Object levnr) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("::LEVNR:").append(levnr);
 		
 		return sb.toString();
 	}
+
+	/**
+	 * Creates date bases on {@linkplain LocalDateTime}.now() <br>
+	 * and puts date in int[0] and time in int[1] <br><br>
+	 * 
+	 * Date Pattern: DateTimeFormatter.ofPattern("yyyyMMdd") <br>
+	 * Time Pattern: DateTimeFormatter.ofPattern("HHmmss")
+	 * 
+	 * @return int array with date in first position and time in second position.
+	 */
+	public static int[] getNowDato() {
+		int[] dato = new int[2];
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd"); 		
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");		
+		LocalDateTime now = LocalDateTime.now();
+
+		String nowDate = now.format(dateFormatter);
+		String nowTime = now.format(timeFormatter);
+
+		int syncDa = Integer.valueOf(nowDate);
+		int synctm = Integer.valueOf(nowTime);	
+		
+		dato[0] = syncDa;
+		dato[1] = synctm;
+		
+		return dato;
+		
+		
+	}
+	
+	
+	
 	
 }

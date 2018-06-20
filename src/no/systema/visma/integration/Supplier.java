@@ -142,6 +142,7 @@ public class Supplier extends Configuration {
 	 * @return SupplierDto return null if not found.
 	 */
 	SupplierDto getGetBysupplierCd(String number) {
+		logger.info(LogHelper.logPrefixSupplier(number));
 		logger.info("getGetBysupplierCd(String number)");
 		SupplierDto supplierExistDto;
 
@@ -209,10 +210,6 @@ public class Supplier extends Configuration {
 		return dtoValue;
 	}    
     
-    
-    
-    
-    
 	private DtoValueSupplierStatus getStatus(VisleveDao visleve) {
 		//sanity check
 		if (visleve.getAktkod() == null) {
@@ -235,9 +232,6 @@ public class Supplier extends Configuration {
 		return dtoValue;
 	}   
     
-    
-    
-    
 	private DtoValueAddressUpdateDto getMainAddress(VisleveDao visleve) {
 		DtoValueAddressUpdateDto dtoValueDto = new DtoValueAddressUpdateDto();
 
@@ -253,8 +247,5 @@ public class Supplier extends Configuration {
 
 		return dtoValueDto;
 	}	
-	
-	
-	
 	
 }
