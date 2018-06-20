@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
 import no.systema.jservices.common.dao.VisleveDao;
+import no.systema.visma.v1client.api.SupplierApi;
 import no.systema.visma.v1client.model.SupplierDto;
 
 @RunWith(SpringRunner.class)
@@ -27,7 +28,7 @@ public class TestJSupplier {
 	
 	@Autowired 
 	Supplier supplier;
-
+	
 	@Before
 	public void setUp() throws Exception {
 		now = LocalDateTime.now();
@@ -40,6 +41,16 @@ public class TestJSupplier {
 		logger.debug("dto="+supplier.getGetBysupplierCd("10"));
 
 	}	
+	
+	
+	@Test
+	public void testGetAllSupplier() {
+		
+		logger.debug("all="+supplier.supplierGetAll());
+
+	}	
+	
+	
 
 	@Test(expected=HttpClientErrorException.class)  //Postcode value
 	public void testSupplierSyncSmall() {

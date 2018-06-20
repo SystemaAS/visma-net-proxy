@@ -1,5 +1,7 @@
 package no.systema.visma.integration;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
@@ -36,13 +38,13 @@ public class Supplier extends Configuration {
 	private static Logger logger = Logger.getLogger(Customer.class);
 	
 	@Autowired
-	public FirmvisDaoService firmvisDaoService;	
+	FirmvisDaoService firmvisDaoService;	
 	
 	@Autowired
-	public SupplierApi supplierApi = new SupplierApi(apiClient());
+	SupplierApi supplierApi = new SupplierApi(apiClient());
 
 	@PostConstruct
-	public void post_construct() {
+	void post_construct() {
 		FirmvisDao firmvis = firmvisDaoService.get();
 
 		supplierApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
@@ -61,7 +63,6 @@ public class Supplier extends Configuration {
 	 * @throws RestClientException
 	 * @throws HttpClientErrorException
 	 */
-	//TODO ongoing
 	public void syncronize(VisleveDao visleveDao) throws RestClientException,  HttpClientErrorException {
 		logger.info("syncronize(VisleveDao visleveDao)");
 		logger.info(LogHelper.logPrefixSupplier(visleveDao.getLevnr()));		
@@ -74,7 +75,7 @@ public class Supplier extends Configuration {
     			logger.info("Leverandor:"+visleveDao.getLevnr()+ " exist, trying to update.");
 
     			SupplierUpdateDto updateDto = convertToSupplierUpdateDto(visleveDao, IUDEnum.UPDATE);			
-//    			customerPutBycustomerCd(String.valueOf(visleveDao.getLevnr()), updateDto);
+    			supplierPutBysupplierCd(String.valueOf(visleveDao.getLevnr()), updateDto);
     			logger.info("Leverandor:"+visleveDao.getLevnr()+ " is updated.");
     		} else {
 
@@ -106,6 +107,53 @@ public class Supplier extends Configuration {
 		
 	}
 
+	
+	/**
+     * Updates a specific supplier
+     * 
+     * 
+     * Response Message has StatusCode NoContent if PUT operation succeed
+     * <p><b>204</b> - NoContent
+     * @param number Visma.net number (levnr.:)
+     * @param supplierUpdateDto The data to update for the supplier
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     * @throws HttpClientErrorException when an HTTP 4xx is received. Typically when indata is wrong
+     */
+    private void supplierPutBysupplierCd(String number, SupplierUpdateDto supplierUpdateDto) throws RestClientException, HttpClientErrorException {
+    	logger.info(LogHelper.logPrefixSupplier(number));
+    	logger.info("supplierPutBysupplierCd(String number, SupplierUpdateDto supplierUpdateDt)"); 
+    	
+    	try {
+
+    		supplierApi.supplierPutBysupplierCd(number, supplierUpdateDto);
+
+    	} catch (HttpClientErrorException e) {
+			logger.error(LogHelper.logPrefixSupplier(number));
+			logger.error(e.getClass()+" On  supplierApi.supplierPutBysupplierCd call. number="+number+", supplierUpdateDto="+supplierUpdateDto.toString());
+			logger.error("message:"+e.getMessage());
+			logger.error("status text:"+new String(e.getStatusText()));  //Status text contains Response body from Visma.net
+			throw e;
+		}
+    	catch (RestClientException e) {
+    		logger.error(LogHelper.logPrefixSupplier(number));
+			logger.error(e.getClass()+" On supplierApi.supplierPutBysupplierCd call. number="+number+", customesupplierUpdateDtorUpdateDto="+supplierUpdateDto.toString());
+			throw e;
+		}
+    	catch (Exception e) {
+    		logger.error(LogHelper.logPrefixSupplier(number));
+			logger.error(e.getClass()+" On supplierApi.supplierPutBysupplierCd call. number="+number+", supplierUpdateDto="+supplierUpdateDto.toString());
+			throw e;
+		} 
+    	
+    }	
+	
+    /**
+     * Create a supplier
+     * Response Message has StatusCode Created if POST operation succeed
+     * <p><b>201</b> - Created
+     * @param supplier Define the data for the supplier to create
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
     private void supplierPost(SupplierUpdateDto updateDto) throws RestClientException,IllegalArgumentException, IndexOutOfBoundsException {
     	logger.info(LogHelper.logPrefixSupplier(updateDto.getNumber()));
     	logger.info("supplierPost(SupplierUpdateDto updateDto)"); 
@@ -135,7 +183,7 @@ public class Supplier extends Configuration {
     	
     }
 	
-	/**
+    /**
 	 * Get a specific Supplier
 	 * 
 	 * @param number
@@ -159,6 +207,22 @@ public class Supplier extends Configuration {
 		return supplierExistDto;
 
 	}	
+
+	List<SupplierDto> supplierGetAll() {
+		String greaterThanValue = null;
+		Integer numberToRead = null;
+		Integer skipRecords = null;
+		String orderBy = null;
+		String lastModifiedDateTime = null;
+		String lastModifiedDateTimeCondition = null;
+		String name = null;
+		String status = null;
+		String vatRegistrationId = null;
+		String corporateId = null;
+		String attributes = null;
+		return supplierApi.supplierGetAll(greaterThanValue, numberToRead, skipRecords, orderBy, lastModifiedDateTime, lastModifiedDateTimeCondition, name, status, vatRegistrationId, corporateId,
+				attributes);
+	}
 	
 	/**
 	 * 
