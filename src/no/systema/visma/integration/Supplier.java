@@ -6,21 +6,19 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.FirmvisDao;
-import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.v1client.api.SupplierApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
 import no.systema.visma.v1client.model.ContactInfoUpdateDto;
-import no.systema.visma.v1client.model.CustomerUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
 import no.systema.visma.v1client.model.DtoValueContactInfoUpdateDto;
-import no.systema.visma.v1client.model.DtoValueCustomerStatus;
 import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.DtoValueSupplierStatus;
 import no.systema.visma.v1client.model.SupplierDto;
@@ -33,6 +31,7 @@ import no.systema.visma.v1client.model.SupplierUpdateDto;
  * 
  * @author fredrikmoller
  */
+@Service
 public class Supplier extends Configuration {
 
 	private static Logger logger = Logger.getLogger(Customer.class);
@@ -257,10 +256,24 @@ public class Supplier extends Configuration {
 		dto.setStatus(getStatus(visleve));
 		dto.setMainContact(getMainContact(visleve));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(visleve.getBetbet())); 
+		dto.setSupplierClassId(getSupplierClassId(visleve));
 		
 		return dto;
 	}
 
+	private DtoValueString getSupplierClassId(VisleveDao visleve) {
+		String leveProfilId;
+
+		if (!StringUtils.hasValue(visleve.getLand()) || visleve.getLand() == "NO") {
+			leveProfilId = "1";
+		} else {
+			leveProfilId = "2";
+		}
+
+		return DtoValueHelper.toDtoString(leveProfilId);
+
+	}    
+    
 	private DtoValueContactInfoUpdateDto getMainContact(VisleveDao visleve) {
 		DtoValueContactInfoUpdateDto dtoValue = new DtoValueContactInfoUpdateDto();
 		

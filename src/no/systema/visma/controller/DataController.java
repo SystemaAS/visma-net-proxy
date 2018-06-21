@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskulogDao;
 import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.dao.VislelogDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.VistrlogkDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
+import no.systema.jservices.common.dao.services.VislelogDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.dao.services.VistrlogkDaoService;
 import no.systema.visma.dto.ViskundeDto;
@@ -29,6 +31,9 @@ public class DataController {
 
 	@Autowired
 	ViskulogDaoService viskulogDaoService;
+
+	@Autowired
+	VislelogDaoService vislelogDaoService;	
 	
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
@@ -69,6 +74,35 @@ public class DataController {
 		return viskulogDaoList;
 
 	}
+
+	/**
+	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vislelog?user=SYSTEMA&levnr=1&fraDato=20180101
+	 * @param kundnr
+	 * @param fraDato
+	 * @return
+	 */
+	@RequestMapping(path = "/vislelog", method = RequestMethod.GET)
+	public List<VislelogDao> getVislelog(@RequestParam("user") String user, @RequestParam("levnr") String levnr, @RequestParam("fraDato") String fraDato) {
+		logger.debug("/vislelog entered...");
+		List<VislelogDao> vislelogDaoList;		
+		int qKundnr = 0;
+		int qFraDato = 0;
+
+		checkUser(user);
+
+		if( !levnr.equals("ALL") ){
+			qKundnr = Integer.valueOf(levnr);		
+		}
+		if( !fraDato.equals("ALL") ){
+			qFraDato = Integer.valueOf(fraDato);
+		}		
+		
+		vislelogDaoList = vislelogDaoService.findAllInFirma(qKundnr, qFraDato);
+		
+		return vislelogDaoList;
+
+	}	
+	
 	
 	/**
 	 * Example :  http://gw.systema.no:8080/visma-net-proxy/viskunde?user=SYSTEMA&kundnr=1&fraDato=20180101

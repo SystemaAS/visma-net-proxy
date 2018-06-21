@@ -23,20 +23,20 @@
 	});
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
-	var baseUrl = "/visma-net-proxy/viskulog?user=${user.user}";
+	var baseUrl = "/visma-net-proxy/vislelog?user=${user.user}";
 	
 	function load_data() {
 
 		var runningUrl = baseUrl;
 
-		var selectedKundenr = jq('#selectKundenr').val();
+		var selectedLevnr = jq('#selectLevnr').val();
 		var selectedFradato = jq('#selectFradato').val();
 		var selectedTildato = jq('#selectTildato').val();
 
-		if (selectedKundenr != "") {
-			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
+		if (selectedLevnr != "") {
+			runningUrl = runningUrl + "&levnr=" + selectedLevnr;
 		} else {
-			runningUrl = runningUrl + "&kundnr=ALL";
+			runningUrl = runningUrl + "&levnr=ALL";
 		}
 		if (selectedFradato != null && selectedFradato != "") {
 			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
@@ -56,7 +56,7 @@
 			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 		});
 
-		var viskulogTable = jq('#viskulogTable').DataTable({
+		var viskulogTable = jq('#vislelogTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
@@ -65,9 +65,9 @@
 			"sAjaxDataProp" : "",
 			"order" : [ [ 3, "desc" ] ],
 			"aoColumns" : [ {
-				"mData" : "kundnr"
+				"mData" : "levnr"
 			}, {
-				"mData" : "knavn"
+				"mData" : "lnavn"
 			}, {
 				"mData" : "status"
 			}, {
@@ -77,7 +77,7 @@
 			}, {
 				"mData" : "syerro"
 			} ],
-			"lengthMenu" : [ 25, 75, 100 ],
+			"lengthMenu" : [ 75, 100 ],
 			"language" : {
 				"url" : getLanguage('NO')
 			}

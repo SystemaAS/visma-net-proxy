@@ -4,6 +4,7 @@
 
 <html>
 	<head>
+	
 		<link href="resources/${user.cssEspedsg}?ver=${user.versionEspedsg}" rel="stylesheet" type="text/css"/>
 		<link rel="stylesheet" type="text/css" href="resources/selectlist/css/selectlist.css"/>
 		<link type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css" rel="stylesheet"/>
@@ -24,6 +25,8 @@
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		
 		<title>Systema - eSpedsg</title>
 
 	</head>
@@ -33,12 +36,6 @@
 	<script type="text/javascript" src="resources/js/jquery.blockUI.js"></script>
 	<script type="text/javascript" src="resources/js/systemaWebGlobal.js?ver=${user.versionEspedsg}"></script>
 	<script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-	<!-- using dc.js as the driver of upgrading of d3 and crossfilter, hence the https://dc-js.github.io/dc.js/js, NO! They are using latest/createt! Specify d3 version-->
-	<!--script type="text/javascript" src="https://dc-js.github.io/dc.js/js/d3.js"></script-->
-	<!--  script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script-->
-	<!--  script type="text/javascript" src="https://d3js.org/d3-queue.v3.min.js"></script-->
-	<!--  script type="text/javascript" src="https://dc-js.github.io/dc.js/js/crossfilter.js"></script-->
-	<!--  script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script-->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>

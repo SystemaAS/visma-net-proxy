@@ -78,7 +78,7 @@
 			} ,{
 				"mData" : "aktkod"
 			} ],
-			"lengthMenu" : [ 75, 100 ],
+			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
 				"url" : getLanguage('NO')
 			}
@@ -106,73 +106,40 @@
 </script>
 
 <table width="100%" class="text14">
-	<tr height="15">
-		<td>&nbsp;</td>
-	</tr>
+	<tr height="15"><td>&nbsp;</td></tr>
 	<tr>
 		<td>
-			<%-- tab container component --%>
+			<%-- tab container component ø --%>
 			<table width="100%" class="text14">
-				<tr height="2">
-					<td>&nbsp;</td>
-				</tr>
+				<tr height="2"><td></td></tr>
 				<tr height="25">
 					<td>&nbsp;</td>
 					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Kunde</font>&nbsp;</td>
-					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-					<td width="15%" valign="bottom" class="tabDisabled" align="center">
 
-					<font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
-					</td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 
 					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-					<a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Konfigurasjon</font>&nbsp;
+					<a onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverandør</font>&nbsp;
+					</a></td>
+
+					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+
+					<td width="15%" valign="bottom" class="tabDisabled" align="center">
+					<a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Administrasjon</font>&nbsp;
 					</a></td>
 	
 					<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 				</tr>
-
-
 			</table>
 		</td>
 	</tr>
-
 	<tr>
 		<!-- Second tab row... -->
 		<td>
 			<table width="100%" class="tabThinBorderWhite">
 				<tr height="20">
 					<td>&nbsp;</td>
-					<td>
-						<div class="container-fluid">
-							<div class="padded-row-small">&nbsp;</div>
-							<div class="row">
-								<div class="col-md-2 text14">
-									Overfør Kunderegister :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncCustomer('${user.user}')">Overfør</button>
-								</div>
-
-								<div class="col-md-2 text14">
-									Overfør Kundefaktura :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncCustomerInvoice('${user.user}')">Overfør</button>
-								</div>
-
-								<div class="col-md-2 text14">
-									Overfør SubAccount :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncSubaccount('${user.user}')">Overfør</button>
-								</div>
-							</div>						
-							<div class="padded-row-small">&nbsp;</div>
-						</div>
-					</td>	
-	
 				</tr>
-
-				<tr height="20">
-					<td>&nbsp;</td>
-				</tr>
-				
 				<tr>
 					<td>&nbsp;</td>
 					<td>

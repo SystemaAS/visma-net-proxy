@@ -249,7 +249,9 @@ public class WebController {
 	@RequestMapping(value = "configuration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-		ModelAndView successView = new ModelAndView("visma_configuration"); 
+//		ModelAndView successView = new ModelAndView("visma_configuration"); 
+		ModelAndView successView = new ModelAndView("administration"); 
+
 		Map model = new HashMap();
 		logger.info("INSIDE: configuration");
 	

@@ -87,7 +87,7 @@
 			}, {
 				"mData" : "aktkod"
 			} ],
-			"lengthMenu" : [ 75, 100 ],
+			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
 				"url" : getLanguage('NO')
 			}
@@ -153,32 +153,6 @@
 		<!-- Second tab row... -->
 		<td>
 			<table width="100%" class="tabThinBorderWhite">
-				<tr height="20">
-					<td>&nbsp;</td>
-					<td>
-						<div class="container-fluid">
-							<div class="padded-row-small">&nbsp;</div>
-							<div class="row">
-								<div class="col-md-2 text14">
-									 Overfør Kunderegister :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncCustomer('${user.user}')">Overfør</button>
-								</div>
-
-								<div class="col-md-2 text14">
-									 Overfør Kundefaktura :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncCustomerInvoice('${user.user}')">Overfør</button>
-								</div>
-
-								<div class="col-md-2 text14">
-									 Overfør SubAccount :&nbsp;&nbsp;
-									<button class="inputFormSubmit" onclick="syncSubaccount('${user.user}')">Overfør</button>
-								</div>
-							</div>						
-							<div class="padded-row-small">&nbsp;</div>
-						</div>
-					</td>
-				</tr>
-
 				<tr height="20">
 					<td>&nbsp;</td>
 				</tr>

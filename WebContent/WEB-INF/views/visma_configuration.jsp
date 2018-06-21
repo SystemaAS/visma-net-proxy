@@ -31,11 +31,11 @@
 					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a id="customer" onClick="setBlockUI(this);" href="customer.do"> <font class="tabDisabledLink">&nbsp;Kunde</font>&nbsp;
 					</a></td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a id="supplier" onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverantør</font>&nbsp;
+					<td width="15%" valign="bottom" class="tabDisabled" align="center"><a id="supplier" onClick="setBlockUI(this);" href="supplier.do"> <font class="tabDisabledLink">&nbsp;Leverandør</font>&nbsp;
 					</a></td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 	
-					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Konfigurasjon</font>&nbsp;</td>
+					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Administrasjon</font>&nbsp;</td>
 
 					<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 				</tr>
@@ -52,65 +52,17 @@
 					<td width="5%">&nbsp;</td>
 					<td width="95%">&nbsp;
 						<form action="configuration.do" name="formRecord" id="formRecord" method="POST">
-
-							<table border="0">
-								<tr>
-									<td class="text14" title="kundnr">&nbsp;<font class="text14RedBold">*</font> SYSPED Firma:
-									</td>
-									<td><input type="text"  class="inputTextReadOnly" name="vifirm" id="vifirm"
-										size="3" maxlength="2" value='${model.firmvis.vifirm}'></td>
-								</tr>
-
-								<tr>
-									<td class="text14" title="kundnr">&nbsp;<font class="text14RedBold">*</font> Visma.net id:
-									</td>
-									<td><input type="text"  class="inputTextReadOnly" name="vicoid" id="vicoid"
-										size="12" maxlength="10" value='${model.firmvis.vicoid}'></td>
-								</tr>
-
-								<tr>
-									<td class="text14" title="knavn">&nbsp;<font class="text14RedBold">*</font> Visma URL:
-									</td>
-									<td><input type="text" class="inputTextReadOnly" name="vibapa" id="vibapa"
-										size="52" maxlength="50" value='${model.firmvis.vibapa}'></td>
-								</tr>
-
-								<tr>
-									<td class="text14" title="knavn">&nbsp;<font class="text14RedBold">*</font> Applikasjons type:
-									</td>
-									<td><input type="text" class="inputTextReadOnly" name="viapty" id="viapty"
-										size="32" maxlength="30" value='${model.firmvis.viapty}'></td>
-								</tr>
-
-								<tr>
-									<td class="text14" title="knavn">&nbsp;<font class="text14RedBold">*</font> Authentication code:
-									</td>
-									<td><input type="text"  class="inputTextReadOnly" name="viauco" id="viauco"
-										size="52" maxlength="50" value='${model.firmvis.viauco}'></td>
-								</tr>
-
-								<tr>
-									<td class="text14" title="knavn">&nbsp;<font class="text14RedBold">*</font> Access token:
-									</td>
-									<td><input type="text"  class="inputTextReadOnly" name="viacto" id="viacto"
-										size="52" maxlength="50" value='${model.firmvis.viacto}'></td>
-								</tr>
-
+							<table>
 								<tr>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
 									<td>&nbsp;&nbsp;
 								 	  <button name="generateButton" id="generateButton" class="buttonGrayWithGreenFrame" type="button" >Generere sikkerhetsnøkler</button>
 									</td>
-
 								</tr>
-
 							</table>
 						</form>
 					</td>
-
-
-
 				</tr>
 				<tr height="20">
 					<td>&nbsp;</td>

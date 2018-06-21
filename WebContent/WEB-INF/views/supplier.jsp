@@ -13,29 +13,29 @@
 	</style>
 
 
-<table width="100%" class="text12" cellspacing="0" border="0" cellpadding="0">
+<table width="100%" class="text14">
 	<tr height="15"><td>&nbsp;</td></tr>
 	<tr>
 		<td>
-		<%-- tab container component --%>
-			<table width="100%" class="text12" cellspacing="0" border="0" cellpadding="0">
+		<%-- tab container component ø --%>
+			<table width="100%" class="text14">
 				<tr height="2"><td></td></tr>
-				<tr height="25"> 
+				<tr height="25">
+					<td>&nbsp;</td>
+
 					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-						<a onClick="setBlockUI(this);" href="configuration.do">
-							<font class="tabDisabledLink">&nbsp;Konfigurasjon</font>&nbsp;						
-						</a>
-					</td>
+					<a onClick="setBlockUI(this);" href="customer.do"> <font class="tabDisabledLink">&nbsp;Kunde</font>&nbsp;
+					</a></td>
 					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+
+					<td width="15%" valign="bottom" class="tab" align="center"><font class="tabLink">&nbsp;Leverandør</font>&nbsp;</td>
+
+					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+
 					<td width="15%" valign="bottom" class="tabDisabled" align="center">
-						<a onClick="setBlockUI(this);" href="customer.do">
-							<font class="tabDisabledLink">&nbsp;Kunde</font>&nbsp;						
-						</a>
-					</td>
-					<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-					<td width="15%" valign="bottom" class="tab" align="center">
-						<font class="tabLink">&nbsp;Leverantør</font>&nbsp;
-					</td>
+					<a onClick="setBlockUI(this);" href="configuration.do"> <font class="tabDisabledLink">&nbsp;Administrasjon</font>&nbsp;
+					</a></td>
+	
 					<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 				</tr>
 				
@@ -46,7 +46,7 @@
 	
  	<tr> <!-- Second tab row... -->
 		<td>
-	 		<table width="100%" class="tabThinBorderWhite" border="0" cellspacing="0" cellpadding="0">
+	 		<table width="100%" class="tabThinBorderWhite">
 	 	    <tr height="20"><td>&nbsp;</td></tr>
 			
  	   	 	<tr> 
@@ -122,12 +122,6 @@
 		
 				</td>
 			</tr>
- 
- 
- 
- 
- 
- 
  
  
  	   	 	</table>
