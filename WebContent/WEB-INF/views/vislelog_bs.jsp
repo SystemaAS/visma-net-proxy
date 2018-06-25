@@ -23,20 +23,20 @@
 	});
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
-	var baseUrl = "/visma-net-proxy/vistrlogk?user=${user.user}";
+	var baseUrl = "/visma-net-proxy/vislelog?user=${user.user}";
 	
 	function load_data() {
 
 		var runningUrl = baseUrl;
 
-		var selectedKundenr = jq('#selectKundenr').val();
+		var selectedLevnr = jq('#selectLevnr').val();
 		var selectedFradato = jq('#selectFradato').val();
 		var selectedTildato = jq('#selectTildato').val();
 
-		if (selectedKundenr != "") {
-			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
+		if (selectedLevnr != "") {
+			runningUrl = runningUrl + "&levnr=" + selectedLevnr;
 		} else {
-			runningUrl = runningUrl + "&kundnr=ALL";
+			runningUrl = runningUrl + "&levnr=ALL";
 		}
 		if (selectedFradato != null && selectedFradato != "") {
 			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
@@ -56,25 +56,21 @@
 			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 		});
 
-		var vistrlogkTable = jq('#vistrlogkTable').DataTable({
+		var viskulogTable = jq('#vislelogTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 5, "desc" ] ],
+			"order" : [ [ 3, "desc" ] ],
 			"aoColumns" : [ {
-				"mData" : "bilnr"
+				"mData" : "levnr"
 			}, {
-				"mData" : "bilaar"
-			},{
-				"mData" : "bilmnd"
-			},{
-				"mData" : "bildag"
-			},{
+				"mData" : "lnavn"
+			}, {
 				"mData" : "status"
-			},{
+			}, {
 				"mData" : "syncda"
 			}, {
 				"mData" : "synctm"
@@ -87,12 +83,11 @@
 			}
 
 		});
-		
+
 		jq.unblockUI();
 
 	}
 
-	
 	jq(document).ready(function() {
 
 	});
@@ -113,8 +108,8 @@
 
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link active" onClick="setBlockUI(this);" href="customer.do" >Kunde</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do" >Kunde</a>
+		<a class="nav-item nav-link active" href="supplier.do">Leverandør</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="administration.do" role="tab">Administrasjon</a>
 	  </div>
 	</nav>
@@ -124,10 +119,10 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Leverandør</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="viskulog.do">Kunde - historikk</a>
-	    <a class="nav-item nav-link active"  href="vistrlogk.do">Faktura - historikk</a>
+		<a class="nav-item nav-link active" href="viskulog.do">Leverandør - historikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
 	  </div>
 	</nav>
 	
@@ -135,8 +130,8 @@
 		
 	<div class="row">
 		<div class="col-1">
-			<label for="selectKundenr">Kunde:&nbsp;</label>
-			<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
+			<label for="selectLevnr">Leverandør:&nbsp;</label>
+			<input type="text" class="inputText" name="selectLevnr" id="selectLevnr" size="9" maxlength="8"/> 
 			<a tabindex="-1"
 				id="kundenrLink"> <img style="cursor: pointer; vertical-align: middle;" src="resources/images/find.png" width="14px" height="14px" border="0" />
 			</a>&nbsp;
@@ -154,13 +149,11 @@
 	<div class="padded-row-small">&nbsp;</div>
 	
 	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover" id="vistrlogkTable">
+		<table class="table table-striped table-bordered table-hover" id="vislelogTable">
 			<thead class="tableHeaderField">
 				<tr>
-					<th>Fakturanr</th>
-					<th>År</th>
-					<th>Måned</th>
-					<th>Dag</th>
+					<th>Levnr</th>
+					<th>Navn</th>
 					<th>Status</th>
 					<th>Dato</th>
 					<th>Tid</th>
@@ -171,7 +164,6 @@
 	</div>
   
 </div>
-
 
 <!-- ======================= footer ===========================-->
 <jsp:include page="/WEB-INF/views/footer.jsp" />

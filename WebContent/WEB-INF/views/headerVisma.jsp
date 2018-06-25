@@ -41,9 +41,17 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
  	<script type="text/javascript" src="resources/selectlist/js/jquery.selectlist.min.js"></script>
 	<script type="text/javascript" src="resources/js/headerReports.js?ver=${user.versionEspedsg}"></script>	
+
+	<script type="text/javascript">
+		var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
+	</script>	
 	
-	<script src="https://d3js.org/d3-time.v1.min.js"></script>
-	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+	<style type="text/css">
+		.ui-datepicker {
+			font-size: 9pt;
+		}
+	</style>	
+	
 	
     <table class="noBg" width="100%" border="0" cellspacing="0" cellpadding="0">
 		<%--Banner --%>

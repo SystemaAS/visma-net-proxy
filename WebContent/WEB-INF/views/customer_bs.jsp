@@ -4,11 +4,6 @@
 <!-- ======================= header ===========================-->
 <jsp:include page="/WEB-INF/views/headerVisma.jsp" />
 <!-- =====================end header ==========================-->
-<style type="text/css">
-.ui-datepicker {
-	font-size: 9pt;
-}
-</style>
 
 <script type="text/javascript">
 	"use strict";
@@ -21,7 +16,7 @@
 		});
 	});
 	var jq = jQuery.noConflict();
-	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
+	//var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/viskunde?user=${user.user}";
 	
 	function load_data() {

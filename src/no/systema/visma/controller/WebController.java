@@ -221,30 +221,6 @@ public class WebController {
 		
 	}    
     
-	private TokenRequestDto createTokenRequestDto(String generatedAuthorizationCode, String redirectUri) {
-		TokenRequestDto dto = new TokenRequestDto();
-		
-		dto.setCode(generatedAuthorizationCode);
-		dto.setGrantType(Authorization.AUTHORIZATION_CODE);
-		dto.setRedirectUri(redirectUri);  
-		
-		return dto;
-		
-	}
-
-	private void updateFirmvis(String authorizationCode, String token) {
-		int[] dato = LogHelper.getNowDato();
-		FirmvisDao firmvisDao = firmvisDaoService.get();
-
-		firmvisDao.setViauco(authorizationCode);
-		firmvisDao.setViacto(token);
-
-		firmvisDao.setVincda(dato[0]);
-		firmvisDao.setVinctm(dato[1]);
-
-		firmvisDaoService.update(firmvisDao);
-
-	}
 
 	@RequestMapping(value = "administration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
@@ -315,6 +291,22 @@ public class WebController {
 		}
 	}	
 	
+	@RequestMapping(value = "vislelog.do", method={RequestMethod.GET})
+	public ModelAndView getVislelog(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+//		ModelAndView successView = new ModelAndView("viskulog");
+		ModelAndView successView = new ModelAndView("vislelog_bs");
+		logger.info("Inside: viskulog");
+
+		if (appUser == null) {
+			return loginView;
+		} else {
+			return successView;
+		}
+	}	
+	
+	
+	
 	@RequestMapping(value = "vistrlogk.do", method={RequestMethod.GET})
 	public ModelAndView getVistrlogk(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
@@ -332,7 +324,8 @@ public class WebController {
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET})
 	public ModelAndView doSupplier(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-		ModelAndView successView = new ModelAndView("supplier");
+//		ModelAndView successView = new ModelAndView("supplier");
+		ModelAndView successView = new ModelAndView("supplier_bs");
 		logger.info("Inside: supplier");
 
 		if (appUser == null) {
@@ -460,6 +453,35 @@ public class WebController {
 
 	}	
 
+	private TokenRequestDto createTokenRequestDto(String generatedAuthorizationCode, String redirectUri) {
+		TokenRequestDto dto = new TokenRequestDto();
+		
+		dto.setCode(generatedAuthorizationCode);
+		dto.setGrantType(Authorization.AUTHORIZATION_CODE);
+		dto.setRedirectUri(redirectUri);  
+		
+		return dto;
+		
+	}
+
+	private void updateFirmvis(String authorizationCode, String token) {
+		int[] dato = LogHelper.getNowDato();
+		FirmvisDao firmvisDao = firmvisDaoService.get();
+
+		firmvisDao.setViauco(authorizationCode);
+		firmvisDao.setViacto(token);
+
+		firmvisDao.setVincda(dato[0]);
+		firmvisDao.setVinctm(dato[1]);
+
+		firmvisDaoService.update(firmvisDao);
+
+	}
+	
+	
+	
+	
+	
 	private void checkUser(String user) {
 		if (bridfDaoService.getUserName(user) == null) {
 			throw new RuntimeException("ERROR: parameter, user, is not valid!");

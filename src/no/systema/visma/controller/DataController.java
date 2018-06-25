@@ -14,15 +14,18 @@ import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskulogDao;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VislelogDao;
+import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.VistrlogkDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VislelogDaoService;
+import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.dao.services.VistrlogkDaoService;
 import no.systema.visma.dto.ViskundeDto;
+import no.systema.visma.dto.VisleveDto;
 import no.systema.visma.dto.VistranskDto;
 
 @RestController
@@ -38,6 +41,9 @@ public class DataController {
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
 
+	@Autowired
+	VisleveDaoService visleveDaoService;	
+	
 	@Autowired
 	VistranskDaoService vistranskDaoService;	
 	
@@ -132,6 +138,35 @@ public class DataController {
 
 	}
 
+	/**
+	 * Example :  https://gw.systema.no:8443/visma-net-proxy/visleve?user=SYSTEMA&levnr=1&fraDato=20180101
+	 * @param kundnr
+	 * @param fraDato
+	 * @return
+	 */
+	@RequestMapping(path = "/visleve", method = RequestMethod.GET)
+	public List<VisleveDto> getVisleve(@RequestParam("user") String user, @RequestParam("levnr") String levnr, @RequestParam("fraDato") String fraDato) {
+		logger.debug("/visleve entered...");
+		List<VisleveDao> visleveDaoList;		
+		int qLevnr = 0;
+		int qFraDato = 0;
+
+		checkUser(user);
+
+		if( !levnr.equals("ALL") ){
+			qLevnr = Integer.valueOf(levnr);		
+		}
+		if( !fraDato.equals("ALL") ){
+			qFraDato = Integer.valueOf(fraDato);
+		}			
+		
+		visleveDaoList = visleveDaoService.findAllInFirma(qLevnr, qFraDato);
+		
+		return convertToVisleveDto(visleveDaoList);
+
+	}	
+	
+	
 	/**
 	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistransk?user=SYSTEMA&kundnr=1&fraDato=20180101
 	 * @param kundnr
@@ -243,7 +278,31 @@ public class DataController {
 		
 	}	
 
+	private List<VisleveDto> convertToVisleveDto(List<VisleveDao> visleveDaoList) {
+		List<VisleveDto> visleveDtoList = new ArrayList<VisleveDto>();
 
+		visleveDaoList.forEach(dao -> {
+			VisleveDto dto = new VisleveDto();
+			dto.setAktkod(dao.getAktkod());
+			dto.setFirma(dao.getFirma());
+			dto.setLevnr(dao.getLevnr());
+			dto.setLnavn(dao.getLnavn());
+			dto.setPostnr(dao.getPostnr());
+			dto.setValkod(dao.getValkod());
+			dto.setSpraak(dao.getSpraak());
+			dto.setBetbet(dao.getBetbet());
+			dto.setLand(dao.getLand());
+			dto.setSyncda(dao.getSyncda());
+			dto.setSyerro(dao.getSyerro());
+			
+			visleveDtoList.add(dto);
+
+		});
+		
+		return visleveDtoList;
+		
+	}	
+	
 	private void checkUser(String user) {
 		if (bridfDaoService.getUserName(user) == null) {
 			throw new RuntimeException("ERROR: parameter, user, is not valid!");
