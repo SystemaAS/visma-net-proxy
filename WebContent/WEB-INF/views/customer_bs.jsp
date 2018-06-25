@@ -73,7 +73,7 @@
 			} ,{
 				"mData" : "aktkod"
 			} ],
-			"lengthMenu" : [ 75, 100 ],
+			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
 				"url" : getLanguage('NO')
 			}
