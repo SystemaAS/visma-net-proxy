@@ -22,19 +22,25 @@
 	});
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
-	var baseUrl = "/visma-net-proxy/viskunde?user=${user.user}";
+	var baseUrl = "/visma-net-proxy/vistransk?user=${user.user}";
 	
 	function load_data() {
 
 		var runningUrl = baseUrl;
 
 		var selectedKundenr = jq('#selectKundenr').val();
+		var selectedBilnr = jq('#selectBilnr').val();	
 		var selectedFradato = jq('#selectFradato').val();
 
 		if (selectedKundenr != "") {
 			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
 		} else {
 			runningUrl = runningUrl + "&kundnr=ALL";
+		}
+		if (selectedBilnr != "") {
+			runningUrl = runningUrl + "&bilnr=" + selectedBilnr;
+		} else {
+			runningUrl = runningUrl + "&bilnr=ALL";
 		}
 		if (selectedFradato != null && selectedFradato != "") {
 			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
@@ -49,36 +55,39 @@
 		});
 
 
-	var viskundeTable = jq('#viskundeTable').DataTable({
+	var vistranskTable = jq('#vistranskTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 2, "desc" ] ],
+			"order" : [ [ 4, "desc" ] ],
+
 			"aoColumns" : [ {
-				"mData" : "kundnr"
+				"mData" : "recnr"
 			}, {
-				"mData" : "knavn"
+				"mData" : "bilnr"
 			}, {
+				"mData" : "posnr"
+			},{
+				"mData" : "biltxt"
+			},{
 				"mData" : "syncda"
 			}, {
 				"mData" : "syerro"
 			}, {
-				"mData" : "postnr"
+				"mData" : "konto"
 			}, {
-				"mData" : "syland"
+				"mData" : "ksted"
 			}, {
-				"mData" : "valkod"
+				"mData" : "kbarer"
 			}, {
 				"mData" : "betbet"
 			}, {
-				"mData" : "spraak"
-			} ,{
 				"mData" : "aktkod"
 			} ],
-			"lengthMenu" : [ 75, 100 ],
+			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
 				"url" : getLanguage('NO')
 			}
@@ -89,7 +98,6 @@
 
 		
 	}
-
 
 	jq(document).ready(function() {
 
@@ -104,8 +112,6 @@
 
 	});
 </script>
-
-<!-- https://getbootstrap.com/docs/4.0/components/navs/   -->
 
 <div class="container-fluid">
 
@@ -124,8 +130,8 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link active" href="customer.do">Kunde</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
+	    <a class="nav-item nav-link"  onClick="setBlockUI(this);" href="customer.do">Kunde</a>
+		<a class="nav-item nav-link active" href="customerInvoice.do">Faktura</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="viskulog.do">Kunde - historikk</a>
 	    <a class="nav-item nav-link " onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
 	  </div>
@@ -141,10 +147,13 @@
 			</a>&nbsp;
 		</div>
 		<div class="col-1">
+			Fakturanr:&nbsp;<input type="text" class="inputText" name="selectBilnr" id="selectBilnr" size="8" maxlength="7">
+		</div>		
+		<div class="col-1">
 			Fra feildato:&nbsp;<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
 		<div class="col-1">
-			<br>
+		 	<br>
 			<button class="inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
 		</div>
 	</div>
@@ -152,25 +161,29 @@
 	<div class="padded-row-small">&nbsp;</div>
 	
 	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover" id="viskundeTable">
+		<table class="table table-striped table-bordered table-hover" id="vistranskTable">
 			<thead class="tableHeaderField">
 				<tr>
 					<th>Kundnr</th>
-					<th>Navn</th>
+					<th>Fakturanr</th>
+					<th>Pos</th>
+					<th>Text</th>
 					<th>Feildato</th>
-					<th>Feil</th>
-					<th>Postnr</th>
-					<th>Land</th>
-					<th>Valuta</th>
-					<th>Språk</th>
+					<th>Feil (på faktura hode)</th>
+					<th>Konto</th>
+					<th>Kost.sted</th>
+					<th>Kost.barer</th>
 					<th>Bet.beting.</th>
 					<th>Type</th>
 				</tr>
 			</thead>
 		</table>
-	</div>	
+	</div>
   
 </div>
+
+
+
 
 <!-- ======================= footer ===========================-->
 <jsp:include page="/WEB-INF/views/footer.jsp" />

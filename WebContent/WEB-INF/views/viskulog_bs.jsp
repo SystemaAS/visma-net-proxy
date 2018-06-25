@@ -4,6 +4,7 @@
 <!-- ======================= header ===========================-->
 <jsp:include page="/WEB-INF/views/headerVisma.jsp" />
 <!-- =====================end header ==========================-->
+
 <style type="text/css">
 .ui-datepicker {
 	font-size: 9pt;
@@ -22,7 +23,7 @@
 	});
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
-	var baseUrl = "/visma-net-proxy/viskunde?user=${user.user}";
+	var baseUrl = "/visma-net-proxy/viskulog?user=${user.user}";
 	
 	function load_data() {
 
@@ -30,6 +31,7 @@
 
 		var selectedKundenr = jq('#selectKundenr').val();
 		var selectedFradato = jq('#selectFradato').val();
+		var selectedTildato = jq('#selectTildato').val();
 
 		if (selectedKundenr != "") {
 			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
@@ -41,6 +43,12 @@
 		} else {
 			runningUrl = runningUrl + "&fraDato=ALL";
 		}
+		if (selectedTildato != null && selectedTildato != "") {
+			runningUrl = runningUrl + "&tilDato=" + selectedTildato;
+		} else {
+			runningUrl = runningUrl + "&tilDato=ALL";
+
+		}
 
 		console.log("runningUrl=" + runningUrl);
 
@@ -48,37 +56,28 @@
 			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 		});
 
-
-	var viskundeTable = jq('#viskundeTable').DataTable({
+		var viskulogTable = jq('#viskulogTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 2, "desc" ] ],
+			"order" : [ [ 3, "desc" ] ],
 			"aoColumns" : [ {
 				"mData" : "kundnr"
 			}, {
 				"mData" : "knavn"
 			}, {
+				"mData" : "status"
+			}, {
 				"mData" : "syncda"
 			}, {
+				"mData" : "synctm"
+			}, {
 				"mData" : "syerro"
-			}, {
-				"mData" : "postnr"
-			}, {
-				"mData" : "syland"
-			}, {
-				"mData" : "valkod"
-			}, {
-				"mData" : "betbet"
-			}, {
-				"mData" : "spraak"
-			} ,{
-				"mData" : "aktkod"
 			} ],
-			"lengthMenu" : [ 75, 100 ],
+			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
 				"url" : getLanguage('NO')
 			}
@@ -87,9 +86,7 @@
 
 		jq.unblockUI();
 
-		
 	}
-
 
 	jq(document).ready(function() {
 
@@ -104,8 +101,6 @@
 
 	});
 </script>
-
-<!-- https://getbootstrap.com/docs/4.0/components/navs/   -->
 
 <div class="container-fluid">
 
@@ -124,10 +119,10 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link active" href="customer.do">Kunde</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="viskulog.do">Kunde - historikk</a>
-	    <a class="nav-item nav-link " onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
+		<a class="nav-item nav-link active" href="viskulog.do">Kunde - historikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
 	  </div>
 	</nav>
 	
@@ -152,25 +147,22 @@
 	<div class="padded-row-small">&nbsp;</div>
 	
 	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover" id="viskundeTable">
+		<table class="table table-striped table-bordered table-hover" id="viskulogTable">
 			<thead class="tableHeaderField">
 				<tr>
 					<th>Kundnr</th>
 					<th>Navn</th>
-					<th>Feildato</th>
+					<th>Status</th>
+					<th>Dato</th>
+					<th>Tid</th>
 					<th>Feil</th>
-					<th>Postnr</th>
-					<th>Land</th>
-					<th>Valuta</th>
-					<th>Språk</th>
-					<th>Bet.beting.</th>
-					<th>Type</th>
 				</tr>
 			</thead>
 		</table>
-	</div>	
+	</div>
   
 </div>
+
 
 <!-- ======================= footer ===========================-->
 <jsp:include page="/WEB-INF/views/footer.jsp" />

@@ -5,13 +5,15 @@
 <jsp:include page="/WEB-INF/views/headerVisma.jsp" />
 <!-- =====================end header ==========================-->
 
+<!-- 
 <style type="text/css">
 	.container-fluid {
 		  max-width:1000px;
 		  margin:auto;
 	  }
 </style>
-
+ -->
+<!--  
 <table width="100%" class="text14">
 	<tr height="15"><td></td></tr>
 	<tr height="25">
@@ -34,8 +36,19 @@
 		<td width="55%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 	</tr>
 </table>
+-->
 
 <div class="container-fluid text14">
+
+	<div class="padded-row-small">&nbsp;</div>	
+
+	<nav>
+	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do" >Kunde</a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør</a>
+	    <a class="nav-item nav-link active" href="administration.do" role="tab">Administrasjon</a>
+	  </div>
+	</nav>
 
 	<div class="padded-row">&nbsp;</div>		
 
