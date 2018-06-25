@@ -119,10 +119,10 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Leverandør</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
-		<a class="nav-item nav-link active" href="viskulog.do">Leverandør - historikk</a>
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør</a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do">Faktura</a>
+		<a class="nav-item nav-link active" href="vislelog.do">Leverandør - historikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogl.do">Faktura - historikk</a>
 	  </div>
 	</nav>
 	
