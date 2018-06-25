@@ -135,17 +135,19 @@
 		
 	<div class="row">
 		<div class="col-1">
-			Kunde:&nbsp;<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
+			<label for="selectKundenr">Kunde:&nbsp;</label>
+			<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
 			<a tabindex="-1"
 				id="kundenrLink"> <img style="cursor: pointer; vertical-align: middle;" src="resources/images/find.png" width="14px" height="14px" border="0" />
 			</a>&nbsp;
 		</div>
 		<div class="col-1">
-			Fra feildato:&nbsp;<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
+			<label for="selectFradato">Fra feildato:&nbsp;</label>
+			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
 		<div class="col-1">
 			<br>
-			<button class="inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
+			<button class="btn inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
 		</div>
 	</div>
 
