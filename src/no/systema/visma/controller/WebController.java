@@ -243,6 +243,7 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);	
 			return successView;
 		}
 	}
@@ -352,6 +353,7 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);	
 			return successView;
 		}
 	}
@@ -507,6 +509,10 @@ public class WebController {
 		int customerInvoiceErrorCount = vistranskDaoService.countAll();
 		if (customerInvoiceErrorCount > 0) {
 			successView.addObject("customer_invoice_error", customerInvoiceErrorCount);
+		}
+		int customerAllErrorCount = customerErrorCount + customerInvoiceErrorCount;
+		if (customerAllErrorCount > 0) {
+			successView.addObject("customer_all_error", customerAllErrorCount);
 		}
 	}	
 	
