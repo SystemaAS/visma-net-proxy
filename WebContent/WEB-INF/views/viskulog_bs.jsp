@@ -119,8 +119,16 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde
+			<c:if test="${not empty customer_error}">
+			    <span class="badge badge-danger">${customer_error}</span>
+			</c:if>	    
+	    </a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura
+			<c:if test="${not empty customer_invoice_error}">
+			    <span class="badge badge-danger">${customer_invoice_error}</span>
+			</c:if>			
+		</a>
 		<a class="nav-item nav-link active" href="viskulog.do">Kunde - historikk</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
 	  </div>

@@ -24,7 +24,7 @@
 			Overfør Kunderegister
 		</div>
 		<div class="col-3">
-			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncCustomer('${user.user}')">Overfør</button>
+			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncCustomers('${user.user}')">Overfør</button>
 		</div>		
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
@@ -54,7 +54,7 @@
 			Overfør Leverandørregister
 		</div>
 		<div class="col-3">
-			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncSupplier('${user.user}')">Overfør</button>
+			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncSuppliers('${user.user}')">Overfør</button>
 		</div>		
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">

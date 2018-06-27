@@ -29,14 +29,14 @@
 
 		var runningUrl = baseUrl;
 
-		var selectedKundenr = jq('#selectKundenr').val();
+		var selectedBilnr = jq('#selectBilnr').val();
 		var selectedFradato = jq('#selectFradato').val();
 		var selectedTildato = jq('#selectTildato').val();
 
-		if (selectedKundenr != "") {
-			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
+		if (selectedBilnr != "") {
+			runningUrl = runningUrl + "&bilnr=" + selectedBilnr;
 		} else {
-			runningUrl = runningUrl + "&kundnr=ALL";
+			runningUrl = runningUrl + "&bilnr=ALL";
 		}
 		if (selectedFradato != null && selectedFradato != "") {
 			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
@@ -124,8 +124,16 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde
+			<c:if test="${not empty customer_error}">
+			    <span class="badge badge-danger">${customer_error}</span>
+			</c:if>	    
+	    </a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura
+			<c:if test="${not empty customer_invoice_error}">
+			    <span class="badge badge-danger">${customer_invoice_error}</span>
+			</c:if>			
+		</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="viskulog.do">Kunde - historikk</a>
 	    <a class="nav-item nav-link active"  href="vistrlogk.do">Faktura - historikk</a>
 	  </div>
@@ -135,14 +143,11 @@
 		
 	<div class="row">
 		<div class="col-1">
-			<label for="selectKundenr">Kunde:&nbsp;</label>
-			<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
-			<a tabindex="-1"
-				id="kundenrLink"> <img style="cursor: pointer; vertical-align: middle;" src="resources/images/find.png" width="14px" height="14px" border="0" />
-			</a>&nbsp;
+			<label for="selectKundenr">Fakturanr:&nbsp;</label>
+			<input type="text" class="inputText" name="selectBilnr" id="selectBilnr" size="9" maxlength="8"/> 
 		</div>
 		<div class="col-1">
-			<label for="selectFradato">Fra feildato:&nbsp;</label>
+			<label for="selectFradato">Fra&nbsp;feildato:&nbsp;</label>
 			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
 		<div class="col-1">

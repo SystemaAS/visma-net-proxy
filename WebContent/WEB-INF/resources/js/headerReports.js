@@ -26,15 +26,15 @@ jq(function() {
 });
 
 
-function syncCustomer(user) {
-	var syncCustomerUrl = "syncronizeCustomers.do?user="+user;
+function syncCustomers(user) {
+	var syncCustomersUrl = "syncronizeCustomers.do?user="+user;
 	
 	jq.blockUI({
 		message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 	});
 	
 	jq.ajax({
-		url : syncCustomerUrl,
+		url : syncCustomersUrl,
 		method : "POST", //to avoid invalidate session
 	}).done(function() {
 		alert("Synkronisering er ferdig.");
@@ -76,15 +76,15 @@ function syncCustomerInvoice(user) {
 
 }
 
-function syncSubaccount(user) {
-	var syncSubaccountUrl = "syncronizeSubaccounts.do?user="+user;
+function syncSuppliers(user) {
+	var syncSuppliersUrl = "syncronizeSuppliers.do?user="+user;
 
 	jq.blockUI({
 		message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 	});
 	
 	jq.ajax({
-		url : syncSubaccountUrl,
+		url : syncSuppliersUrl,
 		method : "POST", //to avoid invalidate session
 	}).done(function() {
 		alert("Synkronisering er ferdig.");

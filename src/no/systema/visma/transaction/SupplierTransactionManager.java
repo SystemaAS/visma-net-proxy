@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
+import no.systema.jservices.common.dao.ViskulogDao;
+import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.dao.VislelogDao;
 import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
-import no.systema.jservices.common.dao.services.ViskulogDaoService;
+import no.systema.jservices.common.dao.services.VislelogDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.visma.dto.PrettyPrintVisleveError;
 import no.systema.visma.integration.LogHelper;
@@ -34,8 +37,8 @@ public class SupplierTransactionManager {
 	@Autowired
 	FirmDaoService firmDaoService;
 	
-//	@Autowired
-//	ViskulogDaoService viskulogDaoService;
+	@Autowired
+	VislelogDaoService vislelogDaoService;
 
 	/**
 	 * Syncronize all VISLEVE with Supplier in Visma.net <br>
@@ -55,8 +58,7 @@ public class SupplierTransactionManager {
 				
 				deleteVisleve(dao);
 
-				//TODO loggtabell
-//				createVisXXX(dao);
+				createVislelog(dao);
 
 			} 
 			catch (HttpClientErrorException e) {
@@ -64,8 +66,7 @@ public class SupplierTransactionManager {
 				errorList.add(new PrettyPrintVisleveError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
 				setError(dao, e.getStatusText());
 				visleveDaoService.updateOnError(dao);
-				//TODO loggtabell
-//				createVisXXX(dao,  e.getMessage());				
+				createVislelog(dao,  e.getMessage());				
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
@@ -73,8 +74,7 @@ public class SupplierTransactionManager {
 				errorList.add(new PrettyPrintVisleveError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
 				setError(dao, e.getMessage());
 				visleveDaoService.updateOnError(dao);		
-				//TODO loggtabell
-//				createVisXXX(dao,  e.getMessage());	
+				createVislelog(dao,  e.getMessage());	
 				//continues with next dao in list
 			}
 
@@ -87,18 +87,18 @@ public class SupplierTransactionManager {
 		
 	}
 	
-//	private void createViskulog(ViskundeDao dao) {
-//		ViskulogDao viskulogDao = getViskulogDao(dao, null);
-//		viskulogDaoService.create(viskulogDao);
-//		logger.info("VISKULOG created, dao="+viskulogDao);	
-//	}
+	private void createVislelog(VisleveDao dao) {
+		VislelogDao vislelogDao = getVislelogDao(dao, null);
+		vislelogDaoService.create(vislelogDao);
+		logger.info("VISLELOG created, dao="+vislelogDao);	
+	}
 
 	
-//	private void createViskulog(ViskundeDao dao, String errorText) {
-//		ViskulogDao viskulogDao = getViskulogDao(dao, errorText);
-//		viskulogDaoService.create(viskulogDao);
-//		logger.info("VISKULOG created(with error), dao="+viskulogDao);	
-//	}	
+	private void createVislelog(VisleveDao dao, String errorText) {
+		VislelogDao vislelogDao = getVislelogDao(dao, errorText);
+		vislelogDaoService.create(vislelogDao);
+		logger.info("VISLELOG created(with error), dao="+vislelogDao);	
+	}	
 	
 	
 	private void deleteVisleve(VisleveDao dao) {
@@ -146,27 +146,27 @@ public class SupplierTransactionManager {
 	}
 
 	
-//	private ViskulogDao getViskulogDao(ViskundeDao viskundeDao, String errorText) {
-//		String syerror;
-//		ViskulogDao dao = new ViskulogDao();
-//		dao.setFirma(viskundeDao.getFirma());
-//		dao.setKnavn(viskundeDao.getKnavn());
-//		dao.setKundnr(viskundeDao.getKundnr());
-//
-//		if (errorText != null) {
-//			syerror = LogHelper.trimToError(errorText);
-//			dao.setSyerro(syerror);
-//			dao.setStatus("ER");
-//		} else {
-//			dao.setStatus("OK");			
-//		}
-//
-//		int[] dato = LogHelper.getNowDato();		
-//		dao.setSyncda(dato[0]);
-//		dao.setSynctm(dato[1]);
-//		
-//		return dao;
-//	}
+	private VislelogDao getVislelogDao(VisleveDao visleveDao, String errorText) {
+		String syerror;
+		VislelogDao dao = new VislelogDao();
+		dao.setFirma(visleveDao.getFirma());
+		dao.setLnavn(visleveDao.getLnavn());
+		dao.setLevnr(visleveDao.getLevnr());
+
+		if (errorText != null) {
+			syerror = LogHelper.trimToError(errorText);
+			dao.setSyerro(syerror);
+			dao.setStatus("ER");
+		} else {
+			dao.setStatus("OK");			
+		}
+
+		int[] dato = LogHelper.getNowDato();		
+		dao.setSyncda(dato[0]);
+		dao.setSynctm(dato[1]);
+		
+		return dao;
+	}
 
 	/**
 	 * For test and debugging purpose. Just sync one VISLEVE to Supplier

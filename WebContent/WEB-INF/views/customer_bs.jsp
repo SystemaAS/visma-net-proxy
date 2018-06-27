@@ -119,28 +119,36 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link active" href="customer.do">Kunde</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura</a>
+	    <a class="nav-item nav-link active" href="customer.do">Kunde
+			<c:if test="${not empty customer_error}">
+			    <span class="badge badge-danger">${customer_error}</span>
+			</c:if>
+	    </a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura
+			<c:if test="${not empty customer_invoice_error}">
+			    <span class="badge badge-danger">${customer_invoice_error}</span>
+			</c:if>		
+		</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="viskulog.do">Kunde - historikk</a>
-	    <a class="nav-item nav-link " onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
 	  </div>
 	</nav>
 	
 	<div class="padded-row-small">&nbsp;</div>	
 		
 	<div class="row">
-		<div class="col-1">
+		<div class="col-md-1">
 			<label for="selectKundenr">Kunde:&nbsp;</label>
-			<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/> 
+			<input type="text" class="inputText" name="selectKundenr" id="selectKundenr" size="9" maxlength="8"/>
 			<a tabindex="-1"
 				id="kundenrLink"> <img style="cursor: pointer; vertical-align: middle;" src="resources/images/find.png" width="14px" height="14px" border="0" />
 			</a>
 		</div>
-		<div class="col-1">
-			<label for="selectFradato">Fra feildato:&nbsp;</label>
+		<div class="col-md-1">
+			<label for="selectFradato">Fra&nbsp;feildato:&nbsp;</label>
 			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
-		<div class="col-1">
+		<div class="col-md-1">
 			<br>
 			<button class="btn inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
 		</div>

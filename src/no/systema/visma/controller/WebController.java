@@ -1,7 +1,6 @@
 package no.systema.visma.controller;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +26,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.jakewharton.fliptables.FlipTableConverters;
+
 import no.systema.jservices.common.dao.CundfDao;
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.CundfDaoService;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.jservices.common.dao.services.ViskundeDaoService;
+import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.main.model.SystemaWebUser;
@@ -42,11 +45,12 @@ import no.systema.visma.authorization.Authorization;
 import no.systema.visma.authorization.TokenRequestDto;
 import no.systema.visma.authorization.TokenResponseDto;
 import no.systema.visma.dto.PrettyPrintViskundeError;
+import no.systema.visma.dto.PrettyPrintVisleveError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.integration.LogHelper;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
-import no.systema.visma.transaction.SubaccountTransactionManager;
+import no.systema.visma.transaction.SupplierTransactionManager;
 
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
@@ -73,10 +77,16 @@ public class WebController {
 	CustomerInvoiceTransactionManager customerInvoiceTransactionManager;	
 
 	@Autowired
-	SubaccountTransactionManager subaccountTransactionManager;	
+	SupplierTransactionManager supplierTransactionManager;	
 	
 	@Autowired
-	Authorization authorization;			
+	Authorization authorization;		
+	
+	@Autowired
+	ViskundeDaoService viskundeDaoService;
+	
+	@Autowired
+	VistranskDaoService vistranskDaoService;
 	
 	
 	/**
@@ -98,7 +108,7 @@ public class WebController {
 			sb.append("syncronizeCustomers executed WITH errors.  \n \n");
 		}
 
-//		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
 
 		if (request.getMethod().equals(RequestMethod.GET.toString())) {
 			session.invalidate();
@@ -127,7 +137,7 @@ public class WebController {
 			sb.append("syncronizeCustomerInvoices executed WITH errors.  \n \n");
 		}
 
-//		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranskError.class));
 
 		if (request.getMethod().equals(RequestMethod.GET.toString())) {
 			session.invalidate();
@@ -138,25 +148,25 @@ public class WebController {
 	}		
 
 	/**
-	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomerInvoices.do?user=SYSTEMA
+	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeSuppliers.do?user=SYSTEMA
 	 */
-	@RequestMapping(value="syncronizeSubaccounts.do", method={RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value="syncronizeSuppliers.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public String syncSubaccounts(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+	public String syncSuppliers(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
 		StringBuilder sb = new StringBuilder();
-		logger.info("syncronizeSubaccounts.do...");
+		logger.info("syncronizeSuppliers.do...");
 
 		checkUser(user);
 
-//		List<PrettyPrintVistranskError> errorList = subaccountTransactionManager.syncronizeSubaccounts(); //TODO create PrettyPrint...
+		List<PrettyPrintVisleveError> errorList = supplierTransactionManager.syncronizeSuppliers();
 
-//		if (errorList.isEmpty()) {
-//			sb.append("syncronizeCustomerInvoices executed without errors. \n \n");
-//		} else {
-//			sb.append("syncronizeCustomerInvoices executed WITH errors.  \n \n");
-//		}
+		if (errorList.isEmpty()) {
+			sb.append("syncronizeCustomers executed without errors. \n \n");
+		} else {
+			sb.append("syncronizeCustomers executed WITH errors.  \n \n");
+		}
 
-//		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintViskundeError.class));
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVisleveError.class));
 
 		if (request.getMethod().equals(RequestMethod.GET.toString())) {
 			session.invalidate();
@@ -165,6 +175,7 @@ public class WebController {
 		return sb.toString();
 
 	}	
+	
 	
     @GetMapping("/loginVisma.do")
     public RedirectView redirectToVismaLogin(RedirectAttributes attributes) {
@@ -221,27 +232,18 @@ public class WebController {
 		
 	}    
     
-
 	@RequestMapping(value = "administration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
 //		ModelAndView successView = new ModelAndView("visma_configuration"); 
 		ModelAndView successView = new ModelAndView("administration"); 
 
-		Map model = new HashMap();
 		logger.info("INSIDE: administration");
 	
 		if (appUser == null) {
 			return loginView;
 		} else {
-
-			firmvis = firmvisDaoService.get();
-
-			model.put("firmvis", firmvis);
-			successView.addObject("model", model);
-
 			return successView;
-		
 		}
 	}
 
@@ -256,6 +258,7 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);			
 			return successView;
 		}
 		
@@ -271,11 +274,11 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);
 			return successView;
 		}
-	}	
-	
-	
+	}
+
 	
 	@RequestMapping(value = "viskulog.do", method={RequestMethod.GET})
 	public ModelAndView getViskulog(HttpSession session, HttpServletRequest request) {
@@ -287,6 +290,7 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);			
 			return successView;
 		}
 	}	
@@ -301,6 +305,7 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);			
 			return successView;
 		}
 	}	
@@ -317,6 +322,7 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);			
 			return successView;
 		}
 	}	
@@ -331,11 +337,10 @@ public class WebController {
 		if (appUser == null) {
 			return loginView;
 		} else {
+			setErrorCounts(successView);			
 			return successView;
 		}
 	}	
-	
-	
 	
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET})
 	public ModelAndView doSupplier(HttpSession session, HttpServletRequest request) {
@@ -494,9 +499,16 @@ public class WebController {
 
 	}
 	
-	
-	
-	
+	private void setErrorCounts(ModelAndView successView) {
+		int customerErrorCount = viskundeDaoService.countAll();
+		if (customerErrorCount > 0) {
+			successView.addObject("customer_error", customerErrorCount);
+		}
+		int customerInvoiceErrorCount = vistranskDaoService.countAll();
+		if (customerInvoiceErrorCount > 0) {
+			successView.addObject("customer_invoice_error", customerInvoiceErrorCount);
+		}
+	}	
 	
 	private void checkUser(String user) {
 		if (bridfDaoService.getUserName(user) == null) {
