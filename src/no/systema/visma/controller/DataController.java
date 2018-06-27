@@ -17,6 +17,7 @@ import no.systema.jservices.common.dao.VislelogDao;
 import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.VistrlogkDao;
+import no.systema.jservices.common.dao.VistrloglDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.ViskulogDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
@@ -24,6 +25,7 @@ import no.systema.jservices.common.dao.services.VislelogDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.dao.services.VistrlogkDaoService;
+import no.systema.jservices.common.dao.services.VistrloglDaoService;
 import no.systema.visma.dto.ViskundeDto;
 import no.systema.visma.dto.VisleveDto;
 import no.systema.visma.dto.VistranskDto;
@@ -49,6 +51,9 @@ public class DataController {
 	
 	@Autowired
 	VistrlogkDaoService vistrlogkDaoService;	
+
+	@Autowired
+	VistrloglDaoService vistrloglDaoService;		
 	
 	@Autowired
 	private BridfDaoService bridfDaoService;
@@ -201,32 +206,60 @@ public class DataController {
 	}	
 	
 	/**
-	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistrlogk?user=SYSTEMA&kundnr=1&fraDato=20180101
+	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistrlogk?user=SYSTEMA&bilnr=1&fraDato=20180101
 	 * @param kundnr
 	 * @param fraDato
 	 * @return
 	 */
 	@RequestMapping(path = "/vistrlogk", method = RequestMethod.GET)
-	public List<VistrlogkDao> getVistrlogk(@RequestParam("user") String user, @RequestParam("kundnr") String kundnr, @RequestParam("fraDato") String fraDato) {
+	public List<VistrlogkDao> getVistrlogk(@RequestParam("user") String user, @RequestParam("bilnr") String bilnr, @RequestParam("fraDato") String fraDato) {
 		logger.debug("/vistrlogk entered...");
 		List<VistrlogkDao> vistrlogkDaoList;		
-		int qKundnr = 0;
+		int qBilnr = 0;
 		int qFraDato = 0;
 
 		checkUser(user);
 
-		if( !kundnr.equals("ALL") ){
-			qKundnr = Integer.valueOf(kundnr);		
+		if( !bilnr.equals("ALL") ){
+			qBilnr = Integer.valueOf(bilnr);		
 		}
 		if( !fraDato.equals("ALL") ){
 			qFraDato = Integer.valueOf(fraDato);
 		}		
 		
-		vistrlogkDaoList = vistrlogkDaoService.findAllInFirma(qKundnr, qFraDato);
+		vistrlogkDaoList = vistrlogkDaoService.findAllInFirma(qBilnr, qFraDato);
 		
 		return vistrlogkDaoList;
 
 	}
+
+	/**
+	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistrlogl?user=SYSTEMA&bilnr=1&fraDato=20180101
+	 * @param kundnr
+	 * @param fraDato
+	 * @return
+	 */
+	@RequestMapping(path = "/vistrlogl", method = RequestMethod.GET)
+	public List<VistrloglDao> getVistrlogl(@RequestParam("user") String user, @RequestParam("bilnr") String bilnr, @RequestParam("fraDato") String fraDato) {
+		logger.debug("/vistrlogl entered...");
+		List<VistrloglDao> vistrloglDaoList;		
+		int qBilnr = 0;
+		int qFraDato = 0;
+
+		checkUser(user);
+
+		if( !bilnr.equals("ALL") ){
+			qBilnr = Integer.valueOf(bilnr);		
+		}
+		if( !fraDato.equals("ALL") ){
+			qFraDato = Integer.valueOf(fraDato);
+		}		
+		
+		vistrloglDaoList = vistrloglDaoService.findAllInFirma(qBilnr, qFraDato);
+		
+		return vistrloglDaoList;
+
+	}	
 	
 	private List<VistranskDto> convertToVistranskDto(List<VistranskDao> vistranskDaoList) {
 		List<VistranskDto> vistranskDtoList = new ArrayList<VistranskDto>();

@@ -320,6 +320,22 @@ public class WebController {
 			return successView;
 		}
 	}	
+
+	@RequestMapping(value = "vistrlogl.do", method={RequestMethod.GET})
+	public ModelAndView getVistrlogl(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+//		ModelAndView successView = new ModelAndView("vistrlogl");
+		ModelAndView successView = new ModelAndView("vistrlogl_bs");
+		logger.info("Inside: vistrlogl");
+
+		if (appUser == null) {
+			return loginView;
+		} else {
+			return successView;
+		}
+	}	
+	
+	
 	
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET})
 	public ModelAndView doSupplier(HttpSession session, HttpServletRequest request) {
