@@ -36,6 +36,7 @@ import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
+import no.systema.jservices.common.dao.services.VistranslDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.main.model.SystemaWebUser;
@@ -48,9 +49,11 @@ import no.systema.visma.authorization.TokenResponseDto;
 import no.systema.visma.dto.PrettyPrintViskundeError;
 import no.systema.visma.dto.PrettyPrintVisleveError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
+import no.systema.visma.dto.PrettyPrintVistranslError;
 import no.systema.visma.integration.LogHelper;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
+import no.systema.visma.transaction.SupplierInvoiceTransactionManager;
 import no.systema.visma.transaction.SupplierTransactionManager;
 
 @Controller
@@ -79,6 +82,9 @@ public class WebController {
 
 	@Autowired
 	SupplierTransactionManager supplierTransactionManager;	
+
+	@Autowired
+	SupplierInvoiceTransactionManager supplierInvoiceTransactionManager;		
 	
 	@Autowired
 	Authorization authorization;		
@@ -92,7 +98,8 @@ public class WebController {
 	@Autowired
 	VisleveDaoService visleveDaoService;	
 	
-	
+	@Autowired
+	VistranslDaoService vistranslDaoService;	
 	
 	/**
 	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
@@ -181,6 +188,34 @@ public class WebController {
 
 	}	
 	
+	/**
+	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeSupplierInvoices.do?user=SYSTEMA
+	 */
+	@RequestMapping(value="syncronizeSupplierInvoices.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String syncSupplierInvoices(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("syncronizeSupplierInvoices.do...");
+
+		checkUser(user);
+
+		List<PrettyPrintVistranslError> errorList = supplierInvoiceTransactionManager.syncronizeSupplierInvoices();
+
+		if (errorList.isEmpty()) {
+			sb.append("syncronizeCustomerInvoices executed without errors. \n \n");
+		} else {
+			sb.append("syncronizeCustomerInvoices executed WITH errors.  \n \n");
+		}
+
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}	
 	
     @GetMapping("/loginVisma.do")
     public RedirectView redirectToVismaLogin(RedirectAttributes attributes) {
@@ -363,6 +398,22 @@ public class WebController {
 		}
 	}
 
+	@RequestMapping(value = "supplierInvoice.do", method={RequestMethod.GET})
+	public ModelAndView getSupplierInvoice(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+//		ModelAndView successView = new ModelAndView("customer_invoice");
+		ModelAndView successView = new ModelAndView("supplier_invoice_bs");	
+		logger.info("Inside: supplierInvoice.do");
+
+		if (appUser == null) {
+			return loginView;
+		} else {
+			setErrorCounts(successView);
+			return successView;
+		}
+	}	
+	
+	
 	/**
 	 * This method serve as data populater for all child windows.
 	 * 
@@ -525,11 +576,11 @@ public class WebController {
 		if (supplierErrorCount > 0) {
 			successView.addObject("supplier_error", supplierErrorCount);
 		}		
-		
-
-		//TODO add invoice error count
-//		int supplierAllErrorCount = supplierErrorCount + supplierInvoiceErrorCount;
-		int supplierAllErrorCount = supplierErrorCount;
+		int supplierInvoiceErrorCount = vistranslDaoService.countAll();
+		if (supplierInvoiceErrorCount > 0) {
+			successView.addObject("supplier_invoice_error", supplierInvoiceErrorCount);
+		}		
+		int supplierAllErrorCount = supplierErrorCount + supplierInvoiceErrorCount;
 		if (supplierAllErrorCount > 0) {
 			successView.addObject("supplier_all_error", supplierAllErrorCount);
 		}		

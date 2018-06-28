@@ -1,6 +1,7 @@
 package no.systema.visma.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,41 +15,41 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jakewharton.fliptables.FlipTableConverters;
 
-import no.systema.jservices.common.dao.VistranskDao;
-import no.systema.jservices.common.dao.services.VistranskDaoService;
-import no.systema.visma.dto.PrettyPrintVistranskError;
+import no.systema.jservices.common.dao.VistranslDao;
+import no.systema.jservices.common.dao.services.VistranslDaoService;
+import no.systema.visma.dto.PrettyPrintVistranslError;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
-public class TestJCustomerInvoiceTransactionManager {
+public class TestJSupplierInvoiceTransactionManager {
 
 	private static Logger logger = Logger.getLogger(CustomerTransactionManager.class);	
 	
 	@Autowired
-	CustomerInvoiceTransactionManager transactionManager;
+	SupplierInvoiceTransactionManager transactionManager;
 	
 	@Autowired
-	VistranskDaoService vistranskDaoService;
+	VistranslDaoService vistranslDaoService;
 
 	
 	@Test
-	public void testSyncCustomerInvoiceFromDB() {
+	public void testSyncSupplierFromDB() {
 		
-		List<PrettyPrintVistranskError> errorList = transactionManager.syncronizeCustomerInvoices();
-		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranskError.class));
+		List<PrettyPrintVistranslError> errorList = transactionManager.syncronizeSupplierInvoices();
+		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));
 		
 	}	
 	
 	@Test
-	public void testSyncCustomerInvoiceValid() {
+	public void testSyncSupplierInvoiceValid() {
 
-		vistranskDaoService.deleteAll(null);
+		vistranslDaoService.deleteAll(null);
 		
 		
 		setupValid();
 		
-		List<PrettyPrintVistranskError> errorList = transactionManager.syncronizeCustomerInvoices();
-		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranskError.class));
+		List<PrettyPrintVistranslError> errorList = transactionManager.syncronizeSupplierInvoices();
+		logger.info(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));
 
 		assertResultValid();
 		
@@ -57,24 +58,24 @@ public class TestJCustomerInvoiceTransactionManager {
 	}
 	
 	private void setupValid() {
-		getValidVistranskDaos().forEach((vk) -> {
-			vistranskDaoService.create(vk);
+		getValidVistranslDaos().forEach((vk) -> {
+			vistranslDaoService.create(vk);
 		});
 	}
 	
 	private void assertResultValid() {
-		getValidVistranskDaos().forEach((vk) ->{
-			assertNull(vistranskDaoService.find(vk));
+		getValidVistranslDaos().forEach((vk) ->{
+			assertNull(vistranslDaoService.find(vk));
 		});
 	}	
 	
-	private List<VistranskDao> getValidVistranskDaos() {
-		List<VistranskDao> list = new ArrayList<VistranskDao>();
-		VistranskDao dao = new VistranskDao();		
+	private List<VistranslDao> getValidVistranslDaos() {
+		List<VistranslDao> list = new ArrayList<VistranslDao>();
+		VistranslDao dao = new VistranslDao();		
 		
 		dao.setFirma("SY");
 		dao.setAktkod("A");
-		dao.setRecnr(10);
+		dao.setRecnr(50000);
 		dao.setBilnr(111);
 		dao.setPosnr(1);
 		dao.setBilaar(2018);
@@ -96,11 +97,11 @@ public class TestJCustomerInvoiceTransactionManager {
 		dao.setMomsk("3");  //TEGN 1
 
 		
-		VistranskDao dao2 = new VistranskDao();		
+		VistranslDao dao2 = new VistranslDao();		
 		
 		dao2.setFirma("SY");
 		dao2.setAktkod("A");
-		dao2.setRecnr(10);
+		dao2.setRecnr(50000);
 		dao2.setBilnr(111);
 		dao2.setPosnr(2);
 		dao2.setBilaar(2018);

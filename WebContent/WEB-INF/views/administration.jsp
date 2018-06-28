@@ -47,7 +47,7 @@
 			Overfør Kundefaktura
 		</div>
 		<div class="col-3">
-			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncCustomerInvoice('${user.user}')">Overfør</button>
+			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncCustomerInvoices('${user.user}')">Overfør</button>
 		</div>
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
@@ -77,7 +77,7 @@
 			Overfør Leverandørfaktura
 		</div>
 		<div class="col-3">
-			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncSupplierInvoice('${user.user}')">Overfør</button>
+			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncSupplierInvoices('${user.user}')">Overfør</button>
 		</div>
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">

@@ -4,7 +4,6 @@
 <!-- ======================= header ===========================-->
 <jsp:include page="/WEB-INF/views/headerVisma.jsp" />
 <!-- =====================end header ==========================-->
-
 <style type="text/css">
 .ui-datepicker {
 	font-size: 9pt;
@@ -23,16 +22,21 @@
 	});
 	var jq = jQuery.noConflict();
 	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
-	var baseUrl = "/visma-net-proxy/vistrlogl?user=${user.user}";
+	var baseUrl = "/visma-net-proxy/vistransl?user=${user.user}";
 	
 	function load_data() {
 
 		var runningUrl = baseUrl;
 
-		var selectedBilnr = jq('#selectBilnr').val();
+		var selectedLevnr = jq('#selectLevnr').val();
+		var selectedBilnr = jq('#selectBilnr').val();	
 		var selectedFradato = jq('#selectFradato').val();
-		var selectedTildato = jq('#selectTildato').val();
 
+		if (selectedLevnr != "") {
+			runningUrl = runningUrl + "&levnr=" + selectedLevnr;
+		} else {
+			runningUrl = runningUrl + "&levnr=ALL";
+		}
 		if (selectedBilnr != "") {
 			runningUrl = runningUrl + "&bilnr=" + selectedBilnr;
 		} else {
@@ -43,12 +47,6 @@
 		} else {
 			runningUrl = runningUrl + "&fraDato=ALL";
 		}
-		if (selectedTildato != null && selectedTildato != "") {
-			runningUrl = runningUrl + "&tilDato=" + selectedTildato;
-		} else {
-			runningUrl = runningUrl + "&tilDato=ALL";
-
-		}
 
 		console.log("runningUrl=" + runningUrl);
 
@@ -56,30 +54,38 @@
 			message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
 		});
 
-		var vistrloglTable = jq('#vistrloglTable').DataTable({
+
+	var vistranslTable = jq('#vistranslTable').DataTable({
 			"dom" : '<"top">t<"bottom"flip><"clear">',
 			responsive : true,
 			select : true,
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 5, "desc" ] ],
+			"order" : [ [ 4, "desc" ] ],
+
 			"aoColumns" : [ {
+				"mData" : "recnr"
+			}, {
 				"mData" : "bilnr"
 			}, {
-				"mData" : "bilaar"
+				"mData" : "posnr"
 			},{
-				"mData" : "bilmnd"
-			},{
-				"mData" : "bildag"
-			},{
-				"mData" : "status"
+				"mData" : "biltxt"
 			},{
 				"mData" : "syncda"
 			}, {
-				"mData" : "synctm"
-			}, {
 				"mData" : "syerro"
+			}, {
+				"mData" : "konto"
+			}, {
+				"mData" : "ksted"
+			}, {
+				"mData" : "kbarer"
+			}, {
+				"mData" : "betbet"
+			}, {
+				"mData" : "aktkod"
 			} ],
 			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
@@ -87,12 +93,12 @@
 			}
 
 		});
-		
+
 		jq.unblockUI();
 
+		
 	}
 
-	
 	jq(document).ready(function() {
 
 	});
@@ -118,7 +124,7 @@
 			    <span class="badge badge-danger">${customer_all_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link active" href="supplier.do">Leverandør
+		<a class="nav-item nav-link active" onClick="setBlockUI(this);" href="supplier.do">Leverandør
 			<c:if test="${not empty supplier_all_error}">
 			    <span class="badge badge-danger">${supplier_all_error}</span>
 			</c:if>			
@@ -132,18 +138,18 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør
+	    <a class="nav-item nav-link"  onClick="setBlockUI(this);" href="supplier.do">Leverandør
 			<c:if test="${not empty supplier_error}">
 			    <span class="badge badge-danger">${supplier_error}</span>
-			</c:if>		    
+			</c:if>	    
 	    </a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do">Faktura
+		<a class="nav-item nav-link active" href="supplierInvoice.do">Faktura
 			<c:if test="${not empty supplier_invoice_error}">
 			    <span class="badge badge-danger">${supplier_invoice_error}</span>
-			</c:if>		    
+			</c:if>			
 		</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="vislelog.do">Leverandør - historikk</a>
-	    <a class="nav-item nav-link active"  href="vistrlogl.do">Faktura - historikk</a>
+	    <a class="nav-item nav-link " onClick="setBlockUI(this);" href="vistrlogl.do">Faktura - historikk</a>
 	  </div>
 	</nav>
 	
@@ -151,15 +157,19 @@
 		
 	<div class="row">
 		<div class="col-1">
-			<label for="selectKundenr">Fakturanr:&nbsp;</label>
-			<input type="text" class="inputText" name="selectBilnr" id="selectBilnr" size="9" maxlength="8"/> 
+			<label for="selectKundenr">Leverandør:&nbsp;</label>
+			<input type="text" class="inputText" name="selectLevnr" id="selectLevnr" size="9" maxlength="8"/> 
 		</div>
 		<div class="col-1">
-			<label for="selectFradato">Fra feildato:&nbsp;</label>
+			<label for="selectBilnr">Fakturanr:&nbsp;</label>
+			<input type="text" class="inputText" name="selectBilnr" id="selectBilnr" size="8" maxlength="7">
+		</div>		
+		<div class="col-1">
+			<label for="selectFradato">Fra&nbsp;feildato:&nbsp;</label>
 			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
 		<div class="col-1">
-			<br>
+		 	<br>
 			<button class="btn inputFormSubmit" onclick="load_data()" autofocus>Søk</button>
 		</div>
 	</div>
@@ -167,24 +177,26 @@
 	<div class="padded-row-small">&nbsp;</div>
 	
 	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover" id="vistrloglTable">
+		<table class="table table-striped table-bordered table-hover" id="vistranslTable">
 			<thead class="tableHeaderField">
 				<tr>
+					<th>Levnr</th>
 					<th>Fakturanr</th>
-					<th>År</th>
-					<th>Måned</th>
-					<th>Dag</th>
-					<th>Status</th>
-					<th>Dato</th>
-					<th>Tid</th>
-					<th>Feil</th>
+					<th>Pos</th>
+					<th>Text</th>
+					<th>Feildato</th>
+					<th>Feil (på faktura hode)</th>
+					<th>Konto</th>
+					<th>Kost.sted</th>
+					<th>Kost.barer</th>
+					<th>Bet.beting.</th>
+					<th>Type</th>
 				</tr>
 			</thead>
 		</table>
 	</div>
   
 </div>
-
 
 <!-- ======================= footer ===========================-->
 <jsp:include page="/WEB-INF/views/footer.jsp" />
