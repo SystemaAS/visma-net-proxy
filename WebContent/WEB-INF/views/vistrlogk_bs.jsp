@@ -118,7 +118,11 @@
 			    <span class="badge badge-danger">${customer_all_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør</a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør
+			<c:if test="${not empty supplier_all_error}">
+			    <span class="badge badge-danger">${supplier_all_error}</span>
+			</c:if>			
+		</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="administration.do" role="tab">Administrasjon</a>
 	  </div>
 	</nav>

@@ -34,6 +34,7 @@ import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.CundfDaoService;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
+import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
 import no.systema.jservices.common.util.StringUtils;
@@ -84,9 +85,13 @@ public class WebController {
 	
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
-	
+
 	@Autowired
 	VistranskDaoService vistranskDaoService;
+
+	@Autowired
+	VisleveDaoService visleveDaoService;	
+	
 	
 	
 	/**
@@ -502,6 +507,7 @@ public class WebController {
 	}
 	
 	private void setErrorCounts(ModelAndView successView) {
+		//Customer
 		int customerErrorCount = viskundeDaoService.countAll();
 		if (customerErrorCount > 0) {
 			successView.addObject("customer_error", customerErrorCount);
@@ -514,6 +520,21 @@ public class WebController {
 		if (customerAllErrorCount > 0) {
 			successView.addObject("customer_all_error", customerAllErrorCount);
 		}
+		//Supplier
+		int supplierErrorCount = visleveDaoService.countAll();
+		if (supplierErrorCount > 0) {
+			successView.addObject("supplier_error", supplierErrorCount);
+		}		
+		
+
+		//TODO add invoice error count
+//		int supplierAllErrorCount = supplierErrorCount + supplierInvoiceErrorCount;
+		int supplierAllErrorCount = supplierErrorCount;
+		if (supplierAllErrorCount > 0) {
+			successView.addObject("supplier_all_error", supplierAllErrorCount);
+		}		
+		
+		
 	}	
 	
 	private void checkUser(String user) {

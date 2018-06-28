@@ -119,8 +119,16 @@
 
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link active" onClick="setBlockUI(this);" href="customer.do" >Kunde</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør</a>
+	    <a class="nav-item nav-link active" onClick="setBlockUI(this);" href="customer.do">Kunde
+			<c:if test="${not empty customer_all_error}">
+			    <span class="badge badge-danger">${customer_all_error}</span>
+			</c:if>		    
+	    </a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør
+			<c:if test="${not empty supplier_all_error}">
+			    <span class="badge badge-danger">${supplier_all_error}</span>
+			</c:if>			
+		</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="administration.do" role="tab">Administrasjon</a>
 	  </div>
 	</nav>

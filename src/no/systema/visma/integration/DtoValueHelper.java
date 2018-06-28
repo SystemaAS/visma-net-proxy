@@ -7,6 +7,7 @@ import java.util.Objects;
 import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueDecimal;
 import no.systema.visma.v1client.model.DtoValueInt32;
+import no.systema.visma.v1client.model.DtoValueNullableDecimal;
 import no.systema.visma.v1client.model.DtoValueString;
 
 /**
@@ -101,6 +102,30 @@ public class DtoValueHelper {
 	}			
 	
 	
+	/**
+	 * Convert Object into DtoValueNullableDecimal.<br>
+	 * 
+	 * @param o supports Double and BigDecimal
+	 * @return DtoValueNullableDecimal
+	 */
+	public static DtoValueNullableDecimal toDtoValueNullableDecimal(java.lang.Object o) {
+		DtoValueNullableDecimal dto;
+		if (o == null) {
+			return null;
+		}
+		if (o instanceof Double) {
+			Double oo = ((Double) o).doubleValue();
+			dto = new DtoValueNullableDecimal().value(oo);
+		} else if (o instanceof BigDecimal) {
+			Double oo = ((BigDecimal) o).doubleValue();
+			dto = new DtoValueNullableDecimal().value(oo);
+		} else {
+			throw new IllegalArgumentException(o.getClass()+" Not supported");
+		}
+
+		return dto;
+
+	}	
 	
 	
 }

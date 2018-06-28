@@ -58,6 +58,23 @@ public class LogHelper {
 		return sb.toString();
 		
 	}	
+
+	/**
+	 * Standardized logformat for VISTRANSL.
+	 * 
+	 * @param recnr
+	 * @param bilnr
+	 * @return String 
+	 */
+	public static String logPrefixSupplierInvoice(Object recnr, Object bilnr) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("::RECNR:").append(recnr).append("::BILNR::").append(bilnr);
+		
+		return sb.toString();
+		
+	}	
+	
+	
 	
 	/**
 	 * Trim text to max 800 char

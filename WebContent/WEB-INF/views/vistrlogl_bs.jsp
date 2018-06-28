@@ -118,7 +118,11 @@
 			    <span class="badge badge-danger">${customer_all_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link active" href="supplier.do">Leverandør</a>
+		<a class="nav-item nav-link active" href="supplier.do">Leverandør
+			<c:if test="${not empty supplier_all_error}">
+			    <span class="badge badge-danger">${supplier_all_error}</span>
+			</c:if>			
+		</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="administration.do" role="tab">Administrasjon</a>
 	  </div>
 	</nav>
@@ -128,7 +132,11 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør
+			<c:if test="${not empty supplier_error}">
+			    <span class="badge badge-danger">${supplier_error}</span>
+			</c:if>		    
+	    </a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do">Faktura</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="vislelog.do">Leverandør - historikk</a>
 	    <a class="nav-item nav-link active"  href="vistrlogl.do">Faktura - historikk</a>

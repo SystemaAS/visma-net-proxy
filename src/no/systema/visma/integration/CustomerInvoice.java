@@ -220,11 +220,9 @@ public class CustomerInvoice extends Configuration {
      * @param invoiceNumber Identifies the Customer Invoice to delete
      * @throws RestClientException if an error occurs while attempting to invoke the API
      * 
-     *
+     * NOTE: Used only in Tests.
      */
-	@Deprecated
-	//TODO Remove when Systema environmentr is running, for viewing of data.
-    public void customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceDto updateDto) throws RestClientException {	
+    void customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceDto updateDto) throws RestClientException {	
 		logger.info("customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceUpdateDto updateDto)");
 		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomer().getNumber(), updateDto.getReferenceNumber())); 
 
@@ -310,7 +308,7 @@ public class CustomerInvoice extends Configuration {
 	private List<SegmentUpdateDto> getSubaccount(VistranskLineDto lineDto) {
 		List<SegmentUpdateDto> dtoList = new ArrayList<SegmentUpdateDto>();
 		int AVDELING = 1; //Ref in Visma.net
-		int PROJEKT = 2;  //Ref in Visma.net
+//		int PROJEKT = 2;  //Ref in Visma.net
 		
 		//Avdeling
 		SegmentUpdateDto updateAvdDto = new SegmentUpdateDto();
@@ -318,12 +316,12 @@ public class CustomerInvoice extends Configuration {
 		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKbarer()));
 		dtoList.add(updateAvdDto);
 		
-		//Projekt
-		SegmentUpdateDto updateProjDto = new SegmentUpdateDto();
-		updateProjDto.setSegmentId(PROJEKT);
-		updateProjDto.setSegmentValue(String.valueOf(lineDto.getProsnr()));
+//		//Projekt
+//		SegmentUpdateDto updateProjDto = new SegmentUpdateDto();
+//		updateProjDto.setSegmentId(PROJEKT);
+//		updateProjDto.setSegmentValue(String.valueOf(lineDto.getProsnr()));
 		
-		dtoList.add(updateProjDto);
+//		dtoList.add(updateProjDto);
 		
 		return dtoList;
 	}
