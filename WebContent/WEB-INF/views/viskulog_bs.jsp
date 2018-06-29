@@ -153,7 +153,7 @@
 			</a>&nbsp;
 		</div>
 		<div class="col-1">
-			<label for="selectFradato">Fra feildato:&nbsp;</label>
+			<label for="selectFradato">Fra&nbsp;dato:&nbsp;</label>
 			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
 		<div class="col-1">

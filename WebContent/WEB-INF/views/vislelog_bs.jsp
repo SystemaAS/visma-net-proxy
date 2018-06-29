@@ -132,7 +132,11 @@
 			    <span class="badge badge-danger">${supplier_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do">Faktura</a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do">Faktura
+			<c:if test="${not empty supplier_error}">
+			    <span class="badge badge-danger">${supplier_invoice_error}</span>
+			</c:if>			
+		</a>
 		<a class="nav-item nav-link active" href="vislelog.do">Leverandør - historikk</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogl.do">Faktura - historikk</a>
 	  </div>
@@ -146,7 +150,7 @@
 			<input type="text" class="inputText" name="selectLevnr" id="selectLevnr" size="9" maxlength="8"/> 
 		</div>
 		<div class="col-1">
-			<label for="selectFradato">Fra feildato:&nbsp;</label>
+			<label for="selectFradato">Fra&nbsp;dato:&nbsp;</label>
 			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
 		</div>
 		<div class="col-1">

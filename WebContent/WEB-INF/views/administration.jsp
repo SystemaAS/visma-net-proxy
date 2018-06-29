@@ -36,7 +36,7 @@
 		</div>		
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild....
+			Skön bild fra Visma.net
 		</div>				
 	</div>
 
@@ -51,7 +51,7 @@
 		</div>
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild....
+			Skön bild fra Visma.net
 		</div>			
 	</div>		
 
@@ -66,7 +66,7 @@
 		</div>		
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild....
+			Skön bild fra Visma.net
 		</div>				
 	</div>
 
@@ -81,7 +81,7 @@
 		</div>
 		<div class="col-6">
 			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild....
+			Skön bild fra Visma.net
 		</div>			
 	</div>		
 
