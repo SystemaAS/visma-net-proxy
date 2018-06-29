@@ -28,76 +28,71 @@
 	<div class="padded-row"></div>		
 
 	<div class="row">   <!-- dashboardFrameMainE2 -->
-		<div class="col-3" align="right">
-			Overfør Kunderegister
+		<div class="col" align="right">
+			Overfør Kunderegister til Visma.net Financials
 		</div>
-		<div class="col-3">
+		<div class="col">
+			<img src="resources/images/customer.png" height="300px" width="600px">
+		</div>				
+		<div class="col">
 			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncCustomers('${user.user}')">Overfør</button>
 		</div>		
-		<div class="col-6">
-			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild fra Visma.net
-		</div>				
 	</div>
 
 	<div class="padded-row-small">&nbsp;</div>		
 	
 	<div class="row">  
-		<div class="col-3" align="right">
-			Overfør Kundefaktura
+		<div class="col" align="right">
+			Overfør Kundefaktura til Visma.net Financials
 		</div>
-		<div class="col-3">
+		<div class="col">
+			<img src="resources/images/customer_invoice.png" height="300px" width="600px">
+		</div>			
+		<div class="col">
 			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncCustomerInvoices('${user.user}')">Overfør</button>
 		</div>
-		<div class="col-6">
-			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild fra Visma.net
-		</div>			
 	</div>		
 
 	<div class="padded-row-small">&nbsp;</div>		
 	
 	<div class="row">   <!-- dashboardFrameMainE2 -->
-		<div class="col-3" align="right">
-			Overfør Leverandørregister
+		<div class="col" align="right">
+			Overfør Leverandørregister til Visma.net Financials
 		</div>
-		<div class="col-3">
+		<div class="col">
+			<img src="resources/images/supplier.png" height="300px" width="600px">
+		</div>				
+
+		<div class="col">
 			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncSuppliers('${user.user}')">Overfør</button>
 		</div>		
-		<div class="col-6">
-			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild fra Visma.net
-		</div>				
 	</div>
 
 	<div class="padded-row-small">&nbsp;</div>		
 	
 	<div class="row">  
-		<div class="col-3" align="right">
-			Overfør Leverandørfaktura
+		<div class="col" align="right">
+			Overfør Leverandørfaktura til Visma.net Financials
 		</div>
-		<div class="col-3">
+		<div class="col">
+			<img  src="resources/images/supplier_invoice.png" height="300px" width="600px">
+		</div>	
+		<div class="col">
 			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncSupplierInvoices('${user.user}')">Overfør</button>
 		</div>
-		<div class="col-6">
-			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild fra Visma.net
-		</div>			
 	</div>		
-
 
 	<div class="padded-row-small">&nbsp;</div>		
 	
 	 <div class="row">  
-		<div class="col-3" align="right">
+		<div class="col" align="right">
 			Generere sikkerhetsnøkler fra Visma.net
 		</div>
-		<div class="col-3">
-			<button name="generateButton" id="generateButton" class="buttonGrayWithGreenFrame" type="button" style="width: 100px; height: 50px">Generere</button>
+		<div class="col">
+			<img src="resources/images/visma_allow.png" height="300px" width="400px" >
 		</div>			 
-		<div class="col-6">
-			<img class="dashboardElementsImgCircleE2" src="resources/images/leaf.png" height="30px" width="30px" border="0" alt="test module">
-			Skön bild....
+		<div class="col">
+			<button name="generateButton" id="generateButton" class="buttonGrayWithGreenFrame" type="button" style="width: 100px; height: 50px">Generere</button>
 		</div>			 
 	 </div> 	
 	  
