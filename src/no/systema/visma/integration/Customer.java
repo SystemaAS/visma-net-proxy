@@ -287,7 +287,7 @@ public class Customer  extends Configuration{
 	private DtoValueString getCustomerClassId(ViskundeDao viskunde) {
 		String kundeProfilId;
 
-		if (!StringUtils.hasValue(viskunde.getSyland()) || viskunde.getSyland() == "NO") {
+		if (!StringUtils.hasValue(viskunde.getSyland()) || "NO".equals(viskunde.getSyland())) {
 			kundeProfilId = "1";
 		} else {
 			kundeProfilId = "2";

@@ -1,0 +1,4 @@
+aktkod,firma,kundnr,knavn,adr1,adr2,adr3,postnr,valkod,spraak,betbet,syland,kpers,syepos,tlf
+A,SY,111,testkunde,adress1,adress2,adress3,6001,NOK,N,14,NO,Fredrik,f@s.no,1111
+A,SY,200,testkunde 2,adress1,adress2,adress3,6001,NOK,N,14,NO,Fredrik,f@s.no,1111
+A,SY,300,testkunde 3,adress1,adress2,adress3,6001,NOK,N,14,NO,Fredrik,f@s.no,1111
