@@ -38,6 +38,7 @@ public class VistranslTransformer {
 			/*every VISTRANSL contains headerinfo in below attributes, using first row to populate head.*/
 			head.setFirma(daoList.get(0).getFirma());
 			head.setRecnr(daoList.get(0).getRecnr());
+			head.setRefnr(daoList.get(0).getRefnr());
 			head.setBilnr(daoList.get(0).getBilnr());
 			head.setBilmnd(daoList.get(0).getBilmnd());
 			head.setBildag(daoList.get(0).getBildag());

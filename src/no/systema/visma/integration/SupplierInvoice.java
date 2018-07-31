@@ -188,6 +188,7 @@ public class SupplierInvoice extends Configuration {
 		SupplierInvoiceUpdateDto dto = new SupplierInvoiceUpdateDto();
 		dto.setSupplierNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getRecnr()));
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getBilnr()));
+		dto.setSupplierReference(DtoValueHelper.toDtoString(vistranslHeadDto.getRefnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranslHeadDto));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranslHeadDto.getBetbet()));
 //		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main, behövs den?

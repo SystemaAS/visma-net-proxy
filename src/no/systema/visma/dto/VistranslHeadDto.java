@@ -15,6 +15,7 @@ public class VistranslHeadDto {
 
 	private String firma;
 	private int recnr;
+	private int refnr;
 	private int bilnr;
 	private int bilaar;
 	private int bilmnd;

@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.VistranskDao;
+import no.systema.jservices.common.dao.VistranslDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
@@ -66,7 +67,8 @@ public class LoadTestData {
 	public void run() {
 		//loadCustomers();
 		//loadCustomerInvoices();
-		loadSuppliers();
+		//loadSuppliers();
+		loadSupplierInvoices();
 		
 	}
 	
@@ -255,5 +257,83 @@ public class LoadTestData {
 		logger.debug(count + " VISLEVE posts created or changed.");
 
 	}	
+
+	private void loadSupplierInvoices() {
+		Resource vistranslFile = new ClassPathResource("vistransl.csv");
+		Reader in = null;
+		Iterable<CSVRecord> records = null;
+		int count = 0;
+		try {
+			in = new BufferedReader(new InputStreamReader(vistranslFile.getInputStream()));
+			records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		} catch (IOException e) {
+			logger.error("Could not read file", e);
+		}
+
+		for (CSVRecord record : records) {
+
+			String aktkod = record.get("aktkod");
+			String firma = record.get("firma");
+
+			String recnr = record.get("recnr");
+			String refnr = record.get("refnr");
+			String bilnr = record.get("bilnr");
+			String posnr = record.get("posnr");
+			String bilaar = record.get("bilaar");
+			String bilmnd = record.get("bilmnd");
+			String bildag = record.get("bildag");
+			String peraar = record.get("peraar");
+			String pernr = record.get("pernr");
+			String krdaar = record.get("krdaar");
+			String krdmnd = record.get("krdmnd");
+			String krddag = record.get("krddag");
+			String ffdaar = record.get("ffdaar");
+			String ffdmnd = record.get("ffdmnd");
+			String ffddag = record.get("ffddag");	
+			String biltxt = record.get("biltxt");
+			String betbet = record.get("betbet");
+			String konto = record.get("konto");
+			String ksted = record.get("ksted");
+			String kbarer = record.get("kbarer");
+			String momsk = record.get("momsk");  //TEGN 1			
+			String bbelop = record.get("bbelop");
+			
+
+			VistranslDao dao = new VistranslDao();
+			dao.setAktkod(aktkod);
+			dao.setFirma(firma);
+			dao.setRecnr(Integer.parseInt(recnr));
+			dao.setRefnr(Integer.parseInt(refnr));
+			dao.setBilnr(Integer.parseInt(bilnr));
+			dao.setPosnr(Integer.parseInt(posnr));
+			dao.setBilaar(Integer.parseInt(bilaar));
+			dao.setBilmnd(Integer.parseInt(bilmnd));
+			dao.setBildag(Integer.parseInt(bildag));
+			dao.setPeraar(Integer.parseInt(peraar));
+			dao.setPernr(Integer.parseInt(pernr));
+			dao.setKrdaar(Integer.parseInt(krdaar));
+			dao.setKrdmnd(Integer.parseInt(krdmnd));
+			dao.setKrddag(Integer.parseInt(krddag));
+			dao.setFfdaar(Integer.parseInt(ffdaar));
+			dao.setFfdmnd(Integer.parseInt(ffdmnd));
+			dao.setFfddag(Integer.parseInt(ffddag));	
+			dao.setBiltxt(biltxt);
+			dao.setBetbet(betbet);
+			dao.setKonto(Integer.parseInt(konto));
+			dao.setKsted(Integer.parseInt(ksted));
+			dao.setKbarer(Integer.parseInt(kbarer));
+//			dao.setProsnr(55);
+			dao.setMomsk(momsk);  
+			dao.setBbelop(new BigDecimal(bbelop));
+			
+			vistranslDaoService.create(dao);
+
+			count++;
+
+		}
+
+		logger.debug(count + " VISTRANSL posts created or changed.");
+
+	}		
 	
 }
