@@ -17,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.VistranskDao;
@@ -64,14 +65,14 @@ public class LoadTestData {
 	VistranslDaoService vistranslDaoService;	
 	
 	@Test
-	public void run() {
-		//loadCustomers();
-		//loadCustomerInvoices();
-		//loadSuppliers();
+	public void runAll() {
+		loadCustomers();
+		loadCustomerInvoices();
+		loadSuppliers();
 		loadSupplierInvoices();
-		
 	}
 	
+	@SneakyThrows
 	private void loadCustomers() {
 		Resource viskundeFile = new ClassPathResource("viskunde.csv");
 		Reader in = null;
@@ -125,10 +126,13 @@ public class LoadTestData {
 
 		}
 
+		in.close();
+		
 		logger.debug(count + " VISKUNDE posts created or changed.");
 
 	}
 	
+	@SneakyThrows
 	private void loadCustomerInvoices() {
 		Resource vistranskFile = new ClassPathResource("vistransk.csv");
 		Reader in = null;
@@ -201,10 +205,13 @@ public class LoadTestData {
 
 		}
 
+		in.close();
+		
 		logger.debug(count + " VISTRANSK posts created or changed.");
 
 	}	
 	
+	@SneakyThrows
 	private void loadSuppliers() {
 		Resource visleveFile = new ClassPathResource("visleve.csv");
 		Reader in = null;
@@ -222,8 +229,8 @@ public class LoadTestData {
 			String aktkod = record.get("aktkod");
 			String firma = record.get("firma");
 			String levnr = record.get("levnr");
-			String rnrale = record.get("rnrale");
 			String lnavn = record.get("lnavn");
+			String rnrale = record.get("rnrale");
 			String adr1 = record.get("adr1");
 			String adr2 = record.get("adr2");
 			String adr3 = record.get("adr3");
@@ -254,10 +261,13 @@ public class LoadTestData {
 
 		}
 
+		in.close();
+		
 		logger.debug(count + " VISLEVE posts created or changed.");
 
 	}	
 
+	@SneakyThrows
 	private void loadSupplierInvoices() {
 		Resource vistranslFile = new ClassPathResource("vistransl.csv");
 		Reader in = null;
@@ -331,6 +341,8 @@ public class LoadTestData {
 			count++;
 
 		}
+		
+		in.close();
 
 		logger.debug(count + " VISTRANSL posts created or changed.");
 

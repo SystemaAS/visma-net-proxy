@@ -40,6 +40,7 @@ public class VistranslTransformer {
 			head.setRecnr(daoList.get(0).getRecnr());
 			head.setRefnr(daoList.get(0).getRefnr());
 			head.setBilnr(daoList.get(0).getBilnr());
+			head.setBilaar(daoList.get(0).getBilaar());
 			head.setBilmnd(daoList.get(0).getBilmnd());
 			head.setBildag(daoList.get(0).getBildag());
 			head.setKrdaar(daoList.get(0).getKrdaar());
