@@ -65,12 +65,8 @@
 			}, {
 				"mData" : "land"
 			}, {
-				"mData" : "valkod"
-			}, {
 				"mData" : "betbet"
 			}, {
-				"mData" : "spraak"
-			} ,{
 				"mData" : "aktkod"
 			} ],
 			"lengthMenu" : [ 25, 75, 100 ],
@@ -171,8 +167,6 @@
 					<th>Feil</th>
 					<th>Postnr</th>
 					<th>Land</th>
-					<th>Valuta</th>
-					<th>Språk</th>
 					<th>Bet.beting.</th>
 					<th>Type</th>
 				</tr>

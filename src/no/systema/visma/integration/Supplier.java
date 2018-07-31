@@ -264,7 +264,7 @@ public class Supplier extends Configuration {
 	private DtoValueString getSupplierClassId(VisleveDao visleve) {
 		String leveProfilId;
 
-		if (!StringUtils.hasValue(visleve.getLand()) || visleve.getLand() == "NO") {
+		if (!StringUtils.hasValue(visleve.getLand()) || "NO".equals(visleve.getLand())) {
 			leveProfilId = "1";
 		} else {
 			leveProfilId = "2";

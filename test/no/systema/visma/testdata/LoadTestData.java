@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.systema.jservices.common.dao.ViskundeDao;
+import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
@@ -64,7 +65,8 @@ public class LoadTestData {
 	@Test
 	public void run() {
 		//loadCustomers();
-		loadCustomerInvoices();
+		//loadCustomerInvoices();
+		loadSuppliers();
 		
 	}
 	
@@ -201,6 +203,57 @@ public class LoadTestData {
 
 	}	
 	
-	
+	private void loadSuppliers() {
+		Resource visleveFile = new ClassPathResource("visleve.csv");
+		Reader in = null;
+		Iterable<CSVRecord> records = null;
+		int count = 0;
+		try {
+			in = new BufferedReader(new InputStreamReader(visleveFile.getInputStream()));
+			records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		} catch (IOException e) {
+			logger.error("Could not read file", e);
+		}
+
+		for (CSVRecord record : records) {
+
+			String aktkod = record.get("aktkod");
+			String firma = record.get("firma");
+			String levnr = record.get("levnr");
+			String rnrale = record.get("rnrale");
+			String lnavn = record.get("lnavn");
+			String adr1 = record.get("adr1");
+			String adr2 = record.get("adr2");
+			String adr3 = record.get("adr3");
+			String postnr = record.get("postnr");
+			String betbet = record.get("betbet");
+			String land = record.get("land");
+			String kpers = record.get("kpers");
+			String tlf = record.get("tlf");
+
+			VisleveDao dao = new VisleveDao();
+			dao.setAktkod(aktkod);
+			dao.setFirma(firma);
+			dao.setLevnr(Integer.parseInt(levnr));
+			dao.setLnavn(lnavn);
+			dao.setRnrale(rnrale);
+			dao.setAdr1(adr1);
+			dao.setAdr2(adr2);
+			dao.setAdr3(adr3);
+			dao.setPostnr(Integer.parseInt(postnr));
+			dao.setBetbet(betbet);
+			dao.setLand(land);
+			dao.setKpers(kpers);
+			dao.setTlf(tlf);
+
+			visleveDaoService.create(dao);
+
+			count++;
+
+		}
+
+		logger.debug(count + " VISLEVE posts created or changed.");
+
+	}	
 	
 }

@@ -385,8 +385,6 @@ public class DataController {
 			dto.setLevnr(dao.getLevnr());
 			dto.setLnavn(dao.getLnavn());
 			dto.setPostnr(dao.getPostnr());
-			dto.setValkod(dao.getValkod());
-			dto.setSpraak(dao.getSpraak());
 			dto.setBetbet(dao.getBetbet());
 			dto.setLand(dao.getLand());
 			dto.setSyncda(dao.getSyncda());
