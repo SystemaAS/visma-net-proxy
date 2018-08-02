@@ -22,7 +22,6 @@
 		});
 	});
 	var jq = jQuery.noConflict();
-	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/viskulog?user=${user.user}";
 	
 	function load_data() {
@@ -119,6 +118,7 @@
 			</c:if>			
 		</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="administration.do" role="tab">Administrasjon</a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="log.do" role="tab">Log</a>
 	  </div>
 	</nav>
 

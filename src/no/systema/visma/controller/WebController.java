@@ -288,6 +288,22 @@ public class WebController {
 		}
 	}
 
+	@RequestMapping(value = "log.do", method={RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView doLog(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("log"); 
+
+		logger.info("INSIDE: log");
+	
+		if (appUser == null) {
+			return loginView;
+		} else {
+			setErrorCounts(successView);	
+			return successView;
+		}
+	}	
+	
+	
 	@RequestMapping(value = "customer.do", method={RequestMethod.GET})
 	public ModelAndView doCustomer(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
@@ -508,7 +524,7 @@ public class WebController {
 	 * @param request, user 
 	 * @return status
 	 */	
-	@RequestMapping(value = "showHistory.do", method = { RequestMethod.GET })
+	@RequestMapping(value = "showHistory.do", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String showHistory(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
 		logger.info("INSIDE: showHistory.do...");
@@ -524,9 +540,13 @@ public class WebController {
 		} catch (IOException e) {
 			logger.info(e);
 			logResult.append(e);
-		} finally {
+		} 
+		
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
 			session.invalidate();
-		}
+		}		
+		
+		
 
 		return logResult.toString();
 

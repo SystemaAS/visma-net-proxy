@@ -22,7 +22,6 @@
 		});
 	});
 	var jq = jQuery.noConflict();
-	var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Vennligst vent...";
 	var baseUrl = "/visma-net-proxy/vistrlogk?user=${user.user}";
 	
 	function load_data() {

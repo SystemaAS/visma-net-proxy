@@ -40,6 +40,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
  	<script type="text/javascript" src="resources/selectlist/js/jquery.selectlist.min.js"></script>
+ 	<script type="text/javascript" src="https://d3js.org/d3.v5.js"></script>
 	<script type="text/javascript" src="resources/js/headerReports.js?ver=${user.versionEspedsg}"></script>	
 
 	<script type="text/javascript">
