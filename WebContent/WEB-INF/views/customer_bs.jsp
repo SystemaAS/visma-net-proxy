@@ -175,8 +175,8 @@
 					<th>Postnr</th>
 					<th>Land</th>
 					<th>Valuta</th>
-					<th>Språk</th>
 					<th>Bet.beting.</th>
+					<th>Språk</th>
 					<th>Type</th>
 				</tr>
 			</thead>
