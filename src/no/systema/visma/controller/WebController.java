@@ -102,7 +102,7 @@ public class WebController {
 	VistranslDaoService vistranslDaoService;	
 	
 	/**
-	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
 	 */
 	@RequestMapping(value="syncronizeCustomers.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
@@ -131,7 +131,7 @@ public class WebController {
 	}	
 	
 	/**
-	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeCustomerInvoices.do?user=SYSTEMA
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeCustomerInvoices.do?user=SYSTEMA
 	 */
 	@RequestMapping(value="syncronizeCustomerInvoices.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
@@ -160,7 +160,7 @@ public class WebController {
 	}		
 
 	/**
-	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeSuppliers.do?user=SYSTEMA
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeSuppliers.do?user=SYSTEMA
 	 */
 	@RequestMapping(value="syncronizeSuppliers.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
@@ -189,7 +189,7 @@ public class WebController {
 	}	
 	
 	/**
-	 * Example: http://gw.systema.no:8080/visma-net-proxy/syncronizeSupplierInvoices.do?user=SYSTEMA
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeSupplierInvoices.do?user=SYSTEMA
 	 */
 	@RequestMapping(value="syncronizeSupplierInvoices.do", method={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody

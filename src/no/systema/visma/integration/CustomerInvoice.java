@@ -258,7 +258,6 @@ public class CustomerInvoice extends Configuration {
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
-//		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main, behövs den?
 		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
 		// Note: same as DocumentDueDate
 		dto.setCashDiscountDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));		
