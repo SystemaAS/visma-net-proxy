@@ -1,5 +1,6 @@
 package no.systema.visma.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Data;
@@ -14,7 +15,7 @@ import lombok.Data;
 public class VistranskHeadDto {
 
 	private String firma;
-	private int recnr;
+	private int resnr;
 	private int bilnr;
 	private int bilaar;
 	private int bilmnd;
@@ -28,6 +29,8 @@ public class VistranskHeadDto {
 	private String betbet;
 	private int peraar;
 	private int pernr;
+	private String valkox;
+	private BigDecimal valku1 = new BigDecimal(0);	
 	private List<VistranskLineDto> lines;
 	
 }

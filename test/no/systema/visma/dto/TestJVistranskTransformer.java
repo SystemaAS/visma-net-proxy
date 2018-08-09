@@ -44,9 +44,9 @@ public class TestJVistranskTransformer {
 	}
 	
 	
-	private VistranskDao getVistranskDao(int recnr, int bilnr, int posnr, String biltxt) {
+	private VistranskDao getVistranskDao(int resnr, int bilnr, int posnr, String biltxt) {
 		VistranskDao dao = new VistranskDao();
-		dao.setRecnr(recnr);
+		dao.setResnr(resnr);
 		dao.setBilnr(bilnr);
 		dao.setPosnr(posnr);
 		dao.setBiltxt(biltxt);

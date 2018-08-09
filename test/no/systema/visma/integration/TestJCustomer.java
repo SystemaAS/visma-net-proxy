@@ -36,7 +36,7 @@ public class TestJCustomer {
 	@Test
 	public void testGetCustomer() {
 		
-		logger.debug("dto="+customer.getGetBycustomerCd("10"));
+		logger.debug("dto="+customer.getGetBycustomerCd("111"));
 
 	}	
 

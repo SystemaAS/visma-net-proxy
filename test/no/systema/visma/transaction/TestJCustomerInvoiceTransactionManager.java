@@ -74,7 +74,7 @@ public class TestJCustomerInvoiceTransactionManager {
 		
 		dao.setFirma("SY");
 		dao.setAktkod("A");
-		dao.setRecnr(10);
+		dao.setResnr(10);
 		dao.setBilnr(111);
 		dao.setPosnr(1);
 		dao.setBilaar(2018);
@@ -100,7 +100,7 @@ public class TestJCustomerInvoiceTransactionManager {
 		
 		dao2.setFirma("SY");
 		dao2.setAktkod("A");
-		dao2.setRecnr(10);
+		dao2.setResnr(10);
 		dao2.setBilnr(111);
 		dao2.setPosnr(2);
 		dao2.setBilaar(2018);

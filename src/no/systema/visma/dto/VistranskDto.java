@@ -14,7 +14,7 @@ public class VistranskDto {
 
 	private String aktkod;
 	private String firma;
-	private int recnr; //kundnr
+	private int resnr; //kundnr
 	private int bilnr; //faktura
 	private int posnr;
 	private String betbet;

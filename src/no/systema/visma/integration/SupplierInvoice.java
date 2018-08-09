@@ -14,12 +14,10 @@ import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
-import no.systema.visma.dto.VistranskLineDto;
+import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslLineDto;
 import no.systema.visma.v1client.api.SupplierInvoiceApi;
-import no.systema.visma.v1client.model.CustomerInvoiceDto;
-import no.systema.visma.v1client.model.CustomerInvoiceUpdateDto;
 import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 import no.systema.visma.v1client.model.SupplierDto;
@@ -71,14 +69,14 @@ public class SupplierInvoice extends Configuration {
 	 */
 	public void syncronize(VistranslHeadDto vistranslHeadDto) throws RestClientException, HttpClientErrorException {
 		logger.info("syncronize(VistranslHeadDto vistranslHeadDto)");
-		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 
 		try {
 			// Sanity check 1
-			SupplierDto supplierExistDto = supplier.getGetBysupplierCd(String.valueOf(vistranslHeadDto.getRecnr()));
+			SupplierDto supplierExistDto = supplier.getGetBysupplierCd(String.valueOf(vistranslHeadDto.getResnr()));
 			if (supplierExistDto == null) {
-				logger.error("Could not find Supplier on number:" + vistranslHeadDto.getRecnr());
-				throw new RuntimeException("Could not find Supplier on number:" + vistranslHeadDto.getRecnr());
+				logger.error("Could not find Supplier on number:" + vistranslHeadDto.getResnr());
+				throw new RuntimeException("Could not find Supplier on number:" + vistranslHeadDto.getResnr());
 			} else { // Sanity check 2
 				String referenceNumber = String.valueOf(vistranslHeadDto.getBilnr());
 				SupplierInvoiceDto supplierInvoiceExistDto = getByinvoiceNumber(referenceNumber);
@@ -97,17 +95,17 @@ public class SupplierInvoice extends Configuration {
 			}
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranslHeadDto=" + vistranslHeadDto.toString());
 			logger.error("message:" + e.getMessage());
 			logger.error("status text:" + new String(e.getStatusText())); // Status text contains Response body from Visma.net
 			throw e;
 		} catch (RestClientException e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranslHeadDto=" + vistranslHeadDto.toString());
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error(e.getClass() + " On syncronize.  vistranslHeadDto=" + vistranslHeadDto.toString());
 			throw e;
 		}
@@ -186,15 +184,20 @@ public class SupplierInvoice extends Configuration {
 		
 		// Head
 		SupplierInvoiceUpdateDto dto = new SupplierInvoiceUpdateDto();
-		dto.setSupplierNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getRecnr()));
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getBilnr()));
-		dto.setSupplierReference(DtoValueHelper.toDtoString(vistranslHeadDto.getRefnr()));
+		dto.setSupplierNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getResnr()));
+		dto.setSupplierReference(DtoValueHelper.toDtoString(vistranslHeadDto.getKrnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranslHeadDto));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranslHeadDto.getBetbet()));
-//		dto.setLocationId(DtoValueHelper.toDtoString("Main")); // TODO verify Main, behövs den?
+		dto.setPaymentRefNo(DtoValueHelper.toDtoString(vistranslHeadDto.getLkid()));
+		dto.setDate(DtoValueHelper.toDtoValueDateTime(vistranslHeadDto.getKrdaar(), vistranslHeadDto.getKrdmnd(), vistranslHeadDto.getKrddag()));
 		dto.setDueDate(DtoValueHelper.toDtoValueDateTime(vistranslHeadDto.getFfdaar(), vistranslHeadDto.getFfdmnd(), vistranslHeadDto.getFfddag()));
-		// Note: same as DueDate
-		dto.setCashDiscountDate(DtoValueHelper.toDtoValueDateTime(vistranslHeadDto.getFfdaar(), vistranslHeadDto.getFfdmnd(), vistranslHeadDto.getFfddag()));		
+		if (StringUtils.hasValue(vistranslHeadDto.getValkox())) {
+			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranslHeadDto.getValkox()));
+			dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranslHeadDto.getValku1()));
+		} else {
+			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
+		}	
 		//End head
 		
 		// Invoice Lines  
@@ -222,12 +225,10 @@ public class SupplierInvoice extends Configuration {
 			SupplierInvoiceLineUpdateDto updateDto = new SupplierInvoiceLineUpdateDto();
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
-			updateDto.setUnitCostInCurrency(DtoValueHelper.toDtoValueNullableDecimal(lineDto.getBbelop())); // BBELOP 11 2
-			//TODO formodlinge behövs någon form av cross-ref, Visma har 2 tegn , SYSPED 1 TEGN
+			updateDto.setUnitCostInCurrency(DtoValueHelper.toDtoValueNullableDecimal(lineDto.getNbelpo()));
 			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
-//			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setOperation(OperationEnum.INSERT);
 			
@@ -248,7 +249,7 @@ public class SupplierInvoice extends Configuration {
 		//Avdeling
 		SegmentUpdateDto updateAvdDto = new SegmentUpdateDto();
 		updateAvdDto.setSegmentId(AVDELING);
-		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKbarer()));
+		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKsted()));
 		dtoList.add(updateAvdDto);
 		
 //		//Projekt
@@ -265,8 +266,8 @@ public class SupplierInvoice extends Configuration {
 	
 	// Sanity checks
 	private void mandatoryCheck(VistranslHeadDto vistranslHeadDto) {
-		if (vistranslHeadDto.getRecnr() == 0) {
-			String errMsg = "RECNR can not be 0";
+		if (vistranslHeadDto.getResnr() == 0) {
+			String errMsg = "RESNR can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
@@ -310,6 +311,21 @@ public class SupplierInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
+		if (vistranslHeadDto.getLkid() == null) {
+			String errMsg = "LKID can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
+		if (vistranslHeadDto.getValku1() == null || vistranslHeadDto.getValku1().equals(BigDecimal.ZERO)) {
+			String errMsg = "VALKU1 can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranslHeadDto.getKrnr() == null) {
+			String errMsg = "KRNR can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
 		
 	}	
 	
@@ -320,8 +336,8 @@ public class SupplierInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (lineDto.getBbelop() == null || lineDto.getBbelop().equals(BigDecimal.ZERO)) {
-			String errMsg = "BBELOP can not be 0";
+		if (lineDto.getNbelpo() == null || lineDto.getNbelpo().equals(BigDecimal.ZERO)) {
+			String errMsg = "NBELPO can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
@@ -335,8 +351,8 @@ public class SupplierInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (lineDto.getKbarer() == 0) {
-			String errMsg = "KBARER can not be 0";
+		if (lineDto.getKsted() == 0) {
+			String errMsg = "KSTED can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
@@ -344,11 +360,9 @@ public class SupplierInvoice extends Configuration {
 			String errMsg = "BILTXT can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
-		}		
+		}	
+		
 		
 	}
-	
-	
-	
 	
 }

@@ -307,7 +307,7 @@ public class DataController {
 			VistranskDto dto = new VistranskDto();
 			dto.setAktkod(dao.getAktkod());
 			dto.setFirma(dao.getFirma());
-			dto.setRecnr(dao.getRecnr());
+			dto.setResnr(dao.getResnr());
 			dto.setBilnr(dao.getBilnr());
 			dto.setBetbet(dao.getBetbet());
 			dto.setPosnr(dao.getPosnr());
@@ -332,7 +332,7 @@ public class DataController {
 			VistranslDto dto = new VistranslDto();
 			dto.setAktkod(dao.getAktkod());
 			dto.setFirma(dao.getFirma());
-			dto.setRecnr(dao.getRecnr());
+			dto.setResnr(dao.getResnr());
 			dto.setBilnr(dao.getBilnr());
 			dto.setBetbet(dao.getBetbet());
 			dto.setPosnr(dao.getPosnr());

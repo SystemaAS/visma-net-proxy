@@ -13,13 +13,14 @@ import lombok.Data;
 @Data
 public class VistranslLineDto {
 
-	private BigDecimal bbelop = new BigDecimal(0);
+//	private BigDecimal bbelop = new BigDecimal(0);
+	private BigDecimal nbelpo = new BigDecimal(0);
 	private String momsk;
 	private int konto;
 	private int ksted;
-	private int kbarer;	
+//	private int kbarer;	
 	private String biltxt;	
 	private int posnr;
-	private int prosnr;
+//	private int prosnr;
 	
 }

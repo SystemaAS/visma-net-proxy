@@ -89,9 +89,9 @@ public class TestJHelper {
 		
 	}
 	
-	private VistranskDao getVistranskDao(int recnr, int bilnr, int posnr, String biltxt) {
+	private VistranskDao getVistranskDao(int resnr, int bilnr, int posnr, String biltxt) {
 		VistranskDao dao = new VistranskDao();
-		dao.setRecnr(recnr);
+		dao.setResnr(resnr);
 		dao.setBilnr(bilnr);
 		dao.setPosnr(posnr);
 		dao.setBiltxt(biltxt);
@@ -105,6 +105,7 @@ public class TestJHelper {
 		dao.setMomsk("32");
 		dao.setKonto(3000);
 		dao.setKbarer(1000);
+		dao.setKsted(4000);
 		dao.setBetbet("14");
 		dao.setPeraar(2018);
 		dao.setPernr(5);

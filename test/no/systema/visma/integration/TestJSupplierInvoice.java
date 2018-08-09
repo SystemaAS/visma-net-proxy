@@ -110,10 +110,10 @@ public class TestJSupplierInvoice {
 		
 	}
 
-	private VistranslDao getVistranslDao(int recnr, int bilnr, int posnr, String biltxt) {
+	private VistranslDao getVistranslDao(int resnr, int bilnr, int posnr, String biltxt) {
 		VistranslDao dao = new VistranslDao();
 		dao.setFirma("SY");
-		dao.setRecnr(recnr);
+		dao.setResnr(resnr);
 		dao.setBilnr(bilnr);
 		dao.setPosnr(posnr);
 		dao.setBiltxt(biltxt);
@@ -126,8 +126,8 @@ public class TestJSupplierInvoice {
 		dao.setFfddag(25);	
 		dao.setMomsk("32");
 		dao.setKonto(3000);		
-		dao.setKbarer(3);  //Kostnadsbarer avd
-		dao.setProsnr(55); //Kostnadsbarer projekt
+		dao.setKbarer(3);  // avd
+		dao.setKsted(888); 
 		dao.setBetbet("14");
 		dao.setBbelop(cost);
 		dao.setPeraar(2018);

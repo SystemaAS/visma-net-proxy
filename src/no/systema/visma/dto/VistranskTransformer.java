@@ -26,7 +26,6 @@ public class VistranskTransformer {
 	 */
 	public static List<VistranskHeadDto> transform(List<VistranskDao> vistranskDaoList) {
 		final List<VistranskHeadDto> vistranskHeadtDtoList = new ArrayList<VistranskHeadDto>();
-		final List<VistranskLineDto> vistranskLineDtoList = new ArrayList<VistranskLineDto>();
 		
 		Map<Integer, List<VistranskDao>> groupedByBilnr = 
 				vistranskDaoList
@@ -34,10 +33,11 @@ public class VistranskTransformer {
 					.collect(groupingBy(VistranskDao::getBilnr));
 
 		groupedByBilnr.forEach((bilnr, daoList) -> {  //Head and lines to correspond to Visma.net format
+			List<VistranskLineDto> vistranskLineDtoList = new ArrayList<VistranskLineDto>();
 			VistranskHeadDto head = new VistranskHeadDto();
 			/*every VISTRANSK contains headerinfo in below attributes, using first row to populate head.*/
 			head.setFirma(daoList.get(0).getFirma());
-			head.setRecnr(daoList.get(0).getRecnr());
+			head.setResnr(daoList.get(0).getResnr());
 			head.setBilnr(daoList.get(0).getBilnr());
 			head.setBilaar(daoList.get(0).getBilaar());
 			head.setBilmnd(daoList.get(0).getBilmnd());
@@ -51,17 +51,17 @@ public class VistranskTransformer {
 			head.setBetbet(daoList.get(0).getBetbet());
 			head.setPeraar(daoList.get(0).getPeraar());
 			head.setPernr(daoList.get(0).getPernr());
+			head.setValkox(daoList.get(0).getValkox());
+			head.setValku1(daoList.get(0).getValku1());	
 			
 			daoList.forEach(dao -> { //Lines
 				VistranskLineDto line = new VistranskLineDto();
 				line.setPosnr(dao.getPosnr());
-				line.setBbelop(dao.getBbelop());
+				line.setNbelpo(dao.getNbelpo());
 				line.setMomsk(dao.getMomsk());
 				line.setKonto(dao.getKonto());
 				line.setKsted(dao.getKsted());
-				line.setKbarer(dao.getKbarer());
 				line.setBiltxt(dao.getBiltxt());
-				line.setProsnr(dao.getProsnr());
 
 				vistranskLineDtoList.add(line);
 				

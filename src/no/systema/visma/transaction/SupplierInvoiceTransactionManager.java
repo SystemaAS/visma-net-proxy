@@ -65,14 +65,14 @@ public class SupplierInvoiceTransactionManager {
 			} 
 			catch (HttpClientErrorException e) {
 				logger.error(e);
-				errorList.add(new PrettyPrintVistranslError(headDto.getRecnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
+				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
 				updateVistranslOnError(headDto, e.getStatusText());
 				createVistrlogl(headDto, e.getStatusText());
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
 				logger.error(e);
-				errorList.add(new PrettyPrintVistranslError(headDto.getRecnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
+				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
 				updateVistranslOnError(headDto, e.getMessage());
 				createVistrlogl(headDto, e.getMessage());
 				//continues with next dao in list
@@ -102,26 +102,26 @@ public class SupplierInvoiceTransactionManager {
 	}	
 	
 	private void syncronizeSupplierInvoice(VistranslHeadDto vistranslHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
-		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 
 		try {
 			
 			supplierInvoice.syncronize(vistranslHeadDto);
-			logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()) + " syncronized.");
+			logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()) + " syncronized.");
 
 		} 
 		catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransl, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
 			throw e;
 		}
 		catch (Exception e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getRecnr(), vistranslHeadDto.getBilnr()));
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
 			throw e;
 			
@@ -138,7 +138,7 @@ public class SupplierInvoiceTransactionManager {
 	private void updateVistranslOnError(VistranslHeadDto vistranslHeadDto, String errorText) {
 		VistranslDao dao = new VistranslDao();
 		dao.setFirma(vistranslHeadDto.getFirma());
-		dao.setRecnr(vistranslHeadDto.getRecnr());
+		dao.setResnr(vistranslHeadDto.getResnr());
 		dao.setBilnr(vistranslHeadDto.getBilnr());
 
 		int[] dato = LogHelper.getNowDato();			

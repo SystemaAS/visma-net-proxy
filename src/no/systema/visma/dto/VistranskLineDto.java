@@ -13,13 +13,12 @@ import lombok.Data;
 @Data
 public class VistranskLineDto {
 
-	private BigDecimal bbelop = new BigDecimal(0);
+	private BigDecimal nbelpo = new BigDecimal(0);
 	private String momsk;
 	private int konto;
 	private int ksted;
 	private int kbarer;	
 	private String biltxt;	
 	private int posnr;
-	private int prosnr;
 	
 }

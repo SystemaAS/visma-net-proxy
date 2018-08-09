@@ -22,6 +22,7 @@
 			</c:if>			
 		</a>
 	    <a class="nav-item nav-link active" href="administration.do" role="tab">Administrasjon</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="log.do" role="tab">Log</a>
 	  </div>
 	</nav>
 

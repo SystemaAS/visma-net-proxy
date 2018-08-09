@@ -256,6 +256,7 @@ public class Supplier extends Configuration {
 		dto.setStatus(getStatus(visleve));
 		dto.setMainContact(getMainContact(visleve));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(visleve.getBetbet())); 
+		dto.setCurrencyId(DtoValueHelper.toDtoString(visleve.getValkod()));
 		dto.setSupplierClassId(getSupplierClassId(visleve));
 		
 		return dto;
@@ -317,7 +318,11 @@ public class Supplier extends Configuration {
 		addressdto.setAddressLine2(DtoValueHelper.toDtoString(visleve.getAdr2()));
 		addressdto.setAddressLine3(DtoValueHelper.toDtoString(visleve.getAdr3()));
 		addressdto.countryId(DtoValueHelper.toDtoString(visleve.getLand()));
-		addressdto.setPostalCode(DtoValueHelper.toDtoString(visleve.getPostnr()));
+		if (visleve.getPostnr() > 0) {
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(visleve.getPostnr()));
+		} else {
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(visleve.getPostnu()));
+		}
 		addressdto.setCity(DtoValueHelper.toDtoString(visleve.getAdr3()));
 		
 		dtoValueDto.setValue(addressdto);

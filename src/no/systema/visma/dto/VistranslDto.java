@@ -14,7 +14,7 @@ public class VistranslDto {
 
 	private String aktkod;
 	private String firma;
-	private int recnr; //levnr
+	private int resnr; //levnr
 	private int bilnr; //faktura
 	private int posnr;
 	private String betbet;

@@ -26,6 +26,7 @@ import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.dao.services.VistranslDaoService;
+import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.integration.Customer;
 import no.systema.visma.integration.CustomerInvoice;
 import no.systema.visma.integration.Supplier;
@@ -57,7 +58,6 @@ public class LoadTestData {
 	@Autowired
 	VistranskDaoService vistranskDaoService;
 	
-	
 	@Autowired
 	VisleveDaoService visleveDaoService;
 	
@@ -66,9 +66,9 @@ public class LoadTestData {
 	
 	@Test
 	public void runAll() {
-		loadCustomers();
-		loadCustomerInvoices();
-		loadSuppliers();
+//		loadCustomers();
+//		loadCustomerInvoices();
+//		loadSuppliers();
 		loadSupplierInvoices();
 	}
 	
@@ -95,6 +95,7 @@ public class LoadTestData {
 			String adr2 = record.get("adr2");
 			String adr3 = record.get("adr3");
 			String postnr = record.get("postnr");
+			String sypoge = record.get("sypoge");
 			String valkod = record.get("valkod");
 			String spraak = record.get("spraak");
 			String betbet = record.get("betbet");
@@ -112,6 +113,7 @@ public class LoadTestData {
 			dao.setAdr2(adr2);
 			dao.setAdr3(adr3);
 			dao.setPostnr(Integer.parseInt(postnr));
+			dao.setSypoge(sypoge);
 			dao.setValkod(valkod);
 			dao.setSpraak(spraak);
 			dao.setBetbet(betbet);
@@ -149,8 +151,7 @@ public class LoadTestData {
 
 			String aktkod = record.get("aktkod");
 			String firma = record.get("firma");
-
-			String recnr = record.get("recnr");
+			String resnr = record.get("resnr");
 			String bilnr = record.get("bilnr");
 			String posnr = record.get("posnr");
 			String bilaar = record.get("bilaar");
@@ -168,15 +169,17 @@ public class LoadTestData {
 			String betbet = record.get("betbet");
 			String konto = record.get("konto");
 			String ksted = record.get("ksted");
-			String kbarer = record.get("kbarer");
-			String momsk = record.get("momsk");  //TEGN 1			
-			String bbelop = record.get("bbelop");
-			
+			String momsk = record.get("momsk"); 		
+			String nbelpo = record.get("nbelpo");
+			String valkox = record.get("valkox");
+			String valku1 = record.get("valku1");
 
+			logger.info("valku1="+valku1);
+			
 			VistranskDao dao = new VistranskDao();
 			dao.setAktkod(aktkod);
 			dao.setFirma(firma);
-			dao.setRecnr(Integer.parseInt(recnr));
+			dao.setResnr(Integer.parseInt(resnr));
 			dao.setBilnr(Integer.parseInt(bilnr));
 			dao.setPosnr(Integer.parseInt(posnr));
 			dao.setBilaar(Integer.parseInt(bilaar));
@@ -194,10 +197,10 @@ public class LoadTestData {
 			dao.setBetbet(betbet);
 			dao.setKonto(Integer.parseInt(konto));
 			dao.setKsted(Integer.parseInt(ksted));
-			dao.setKbarer(Integer.parseInt(kbarer));
-//			dao.setProsnr(55);
 			dao.setMomsk(momsk);  
-			dao.setBbelop(new BigDecimal(bbelop));
+			dao.setNbelpo(new BigDecimal(nbelpo));
+			dao.setValkox(valkox);
+			dao.setValku1(new BigDecimal(valku1));
 			
 			vistranskDaoService.create(dao);
 
@@ -235,7 +238,9 @@ public class LoadTestData {
 			String adr2 = record.get("adr2");
 			String adr3 = record.get("adr3");
 			String postnr = record.get("postnr");
+			String postnu = record.get("postnu");		
 			String betbet = record.get("betbet");
+			String valkod = record.get("valkod");
 			String land = record.get("land");
 			String kpers = record.get("kpers");
 			String tlf = record.get("tlf");
@@ -250,7 +255,9 @@ public class LoadTestData {
 			dao.setAdr2(adr2);
 			dao.setAdr3(adr3);
 			dao.setPostnr(Integer.parseInt(postnr));
+			dao.setPostnu(postnu);
 			dao.setBetbet(betbet);
+			dao.setValkod(valkod);
 			dao.setLand(land);
 			dao.setKpers(kpers);
 			dao.setTlf(tlf);
@@ -284,8 +291,7 @@ public class LoadTestData {
 
 			String aktkod = record.get("aktkod");
 			String firma = record.get("firma");
-
-			String recnr = record.get("recnr");
+			String resnr = record.get("resnr");
 			String refnr = record.get("refnr");
 			String bilnr = record.get("bilnr");
 			String posnr = record.get("posnr");
@@ -305,14 +311,17 @@ public class LoadTestData {
 			String konto = record.get("konto");
 			String ksted = record.get("ksted");
 			String kbarer = record.get("kbarer");
-			String momsk = record.get("momsk");  //TEGN 1			
-			String bbelop = record.get("bbelop");
-			
+			String momsk = record.get("momsk");  		
+			String nbelpo = record.get("nbelpo");
+			String valkox = record.get("valkox");
+			String valku1 = record.get("valku1");
+			String krnr = record.get("krnr");
+			String lkid = record.get("lkid");
 
 			VistranslDao dao = new VistranslDao();
 			dao.setAktkod(aktkod);
 			dao.setFirma(firma);
-			dao.setRecnr(Integer.parseInt(recnr));
+			dao.setResnr(Integer.parseInt(resnr));
 			dao.setRefnr(Integer.parseInt(refnr));
 			dao.setBilnr(Integer.parseInt(bilnr));
 			dao.setPosnr(Integer.parseInt(posnr));
@@ -332,9 +341,14 @@ public class LoadTestData {
 			dao.setKonto(Integer.parseInt(konto));
 			dao.setKsted(Integer.parseInt(ksted));
 			dao.setKbarer(Integer.parseInt(kbarer));
-//			dao.setProsnr(55);
 			dao.setMomsk(momsk);  
-			dao.setBbelop(new BigDecimal(bbelop));
+			dao.setNbelpo(new BigDecimal(nbelpo));
+			if (StringUtils.hasValue(valkox)) {
+				dao.setValkox(valkox);
+				dao.setValku1(new BigDecimal(valku1));
+			}
+			dao.setKrnr(krnr);
+			dao.setLkid(lkid);
 			
 			vistranslDaoService.create(dao);
 

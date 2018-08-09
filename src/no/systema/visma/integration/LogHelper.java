@@ -53,7 +53,7 @@ public class LogHelper {
 	 */
 	public static String logPrefixCustomerInvoice(Object recnr, Object bilnr) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("::RECNR:").append(recnr).append("::BILNR::").append(bilnr);
+		sb.append("::RESNR:").append(recnr).append("::BILNR::").append(bilnr);
 		
 		return sb.toString();
 		
@@ -62,13 +62,13 @@ public class LogHelper {
 	/**
 	 * Standardized logformat for VISTRANSL.
 	 * 
-	 * @param recnr
+	 * @param resnr
 	 * @param bilnr
 	 * @return String 
 	 */
-	public static String logPrefixSupplierInvoice(Object recnr, Object bilnr) {
+	public static String logPrefixSupplierInvoice(Object resnr, Object bilnr) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("::RECNR:").append(recnr).append("::BILNR::").append(bilnr);
+		sb.append("::RESNR:").append(resnr).append("::BILNR::").append(bilnr);
 		
 		return sb.toString();
 		
@@ -134,8 +134,5 @@ public class LogHelper {
 		
 		
 	}
-	
-	
-	
 	
 }

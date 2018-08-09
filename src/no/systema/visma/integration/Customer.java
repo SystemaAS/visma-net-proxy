@@ -279,6 +279,7 @@ public class Customer  extends Configuration{
 		dto.setStatus(getStatus(viskunde));
 		dto.setMainContact(getMainContact(viskunde));
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(viskunde.getBetbet())); 
+		dto.setCurrencyId(DtoValueHelper.toDtoString(viskunde.getValkod()));
 		dto.setCustomerClassId(getCustomerClassId(viskunde));
 		
 		return dto;
@@ -343,7 +344,11 @@ public class Customer  extends Configuration{
 		addressdto.setAddressLine2(DtoValueHelper.toDtoString(viskunde.getAdr2()));
 		addressdto.setAddressLine3(DtoValueHelper.toDtoString(viskunde.getAdr3()));
 		addressdto.countryId(DtoValueHelper.toDtoString(viskunde.getSyland()));
-		addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getPostnr()));
+		if (viskunde.getPostnr() > 0) {
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getPostnr()));
+		} else {
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getSypoge()));
+		}
 		addressdto.setCity(DtoValueHelper.toDtoString(viskunde.getAdr3()));
 		
 		dtoValueDto.setValue(addressdto);

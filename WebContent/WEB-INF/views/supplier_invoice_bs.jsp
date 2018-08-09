@@ -64,7 +64,7 @@
 			"order" : [ [ 4, "desc" ] ],
 
 			"aoColumns" : [ {
-				"mData" : "recnr"
+				"mData" : "resnr"
 			}, {
 				"mData" : "bilnr"
 			}, {

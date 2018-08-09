@@ -98,10 +98,10 @@ public class TestJCustomerInvoice {
 		
 	}
 
-	private VistranskDao getVistranskDao(int recnr, int bilnr, int posnr, String biltxt) {
+	private VistranskDao getVistranskDao(int resnr, int bilnr, int posnr, String biltxt) {
 		VistranskDao dao = new VistranskDao();
 		dao.setFirma("SY");
-		dao.setRecnr(recnr);
+		dao.setResnr(resnr);
 		dao.setBilnr(bilnr);
 		dao.setPosnr(posnr);
 		dao.setBiltxt(biltxt);
@@ -114,12 +114,13 @@ public class TestJCustomerInvoice {
 		dao.setFfddag(25);	
 		dao.setMomsk("32");
 		dao.setKonto(3000);		
-		dao.setKbarer(3);  //Kostnadsbarer avd
-		dao.setProsnr(55); //Kostnadsbarer projekt
+		dao.setKsted(3);  // avd
 		dao.setBetbet("14");
 		dao.setBbelop(new BigDecimal(15.0));
 		dao.setPeraar(2018);
 		dao.setPernr(8);
+		dao.setValkox("NOK");
+		dao.setValku1(new BigDecimal(100.0));
 		
 		return dao;
 	}	
