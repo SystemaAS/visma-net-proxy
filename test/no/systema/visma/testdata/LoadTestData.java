@@ -68,7 +68,7 @@ public class LoadTestData {
 	public void runAll() {
 //		loadCustomers();
 //		loadCustomerInvoices();
-//		loadSuppliers();
+		loadSuppliers();
 		loadSupplierInvoices();
 	}
 	

@@ -14,7 +14,9 @@ import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.jservices.common.dao.services.ViscrossrDaoService;
 import no.systema.jservices.common.util.StringUtils;
+import no.systema.jservices.common.values.ViscrossrKoder;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslLineDto;
 import no.systema.visma.v1client.api.SupplierInvoiceApi;
@@ -39,6 +41,9 @@ public class SupplierInvoice extends Configuration {
 
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;
+	
+	@Autowired
+	public ViscrossrDaoService viscrossrDaoService;	
 
 	@Autowired
 	public SupplierInvoiceApi supplierInvoiceApi = new SupplierInvoiceApi(apiClient());
@@ -226,7 +231,7 @@ public class SupplierInvoice extends Configuration {
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitCostInCurrency(DtoValueHelper.toDtoValueNullableDecimal(lineDto.getNbelpo()));
-			updateDto.setVatCodeId(DtoValueHelper.toDtoString(lineDto.getMomsk()));  
+			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -240,6 +245,15 @@ public class SupplierInvoice extends Configuration {
 		
 	}	
 	
+	private DtoValueString getVatCodeId(String momsk) {
+		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MOMSK);
+		if (vismaCodeId == null) {
+			throw new RuntimeException("No Visma.net value found in VISCROSSR for SYSPED value:"+momsk);
+		}
+		
+		return DtoValueHelper.toDtoString(vismaCodeId);
+		
+	}
 	
 	private List<SegmentUpdateDto> getSubaccount(VistranslLineDto lineDto) {
 		List<SegmentUpdateDto> dtoList = new ArrayList<SegmentUpdateDto>();
