@@ -1,7 +1,6 @@
 package no.systema.visma.transaction;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +56,6 @@ public class CustomerTransactionManager {
 				
 				deleteViskunde(dao);
 				
-				createViskulog(dao);
 
 			} 
 			catch (HttpClientErrorException e) {

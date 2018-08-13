@@ -266,9 +266,9 @@ public class CustomerInvoice extends Configuration {
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
 		dto.setDocumentDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag()));
 		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
-		dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranskHeadDto.getValku1()));
 		if (StringUtils.hasValue(vistranskHeadDto.getValkox())) {
 			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranskHeadDto.getValkox()));
+			dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranskHeadDto.getValku1()));
 		} else {
 			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
 		}

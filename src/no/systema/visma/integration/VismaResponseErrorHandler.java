@@ -83,19 +83,20 @@ public class VismaResponseErrorHandler implements ResponseErrorHandler {
 		switch (statusCode.series()) {
 			case CLIENT_ERROR:
 				responseBody =  new String(getResponseBody(response), getCharset(response));
-				logger.error("CLIENT_ERROR:, response body="+responseBody);
+				logger.error("CLIENT_ERROR: response body="+responseBody);
 //				throw new HttpClientErrorException(statusCode, response.getStatusText(),
 //						response.getHeaders(), getResponseBody(response), getCharset(response));
 				throw new HttpClientErrorException(statusCode, LogHelper.trimToError(responseBody));
 			case SERVER_ERROR:
+				logger.error("SERVER_ERROR: raw response ="+response);
 				responseBody =  new String(getResponseBody(response), getCharset(response));
-				logger.error("SERVER_ERROR:, response body="+responseBody);
+				logger.error("SERVER_ERROR: response body="+responseBody);
 //				throw new HttpServerErrorException(statusCode, response.getStatusText(),
 //						response.getHeaders(), getResponseBody(response), getCharset(response));
 				throw new HttpClientErrorException(statusCode, LogHelper.trimToError(responseBody));
 			default:
 				responseBody =  new String(getResponseBody(response), getCharset(response));
-				logger.error("default:, response body="+responseBody);				
+				logger.error("default: response body="+responseBody);				
 				throw new UnknownHttpStatusCodeException(statusCode.value(), response.getStatusText(),
 						response.getHeaders(), getResponseBody(response), getCharset(response));
 		}
@@ -125,9 +126,16 @@ public class VismaResponseErrorHandler implements ResponseErrorHandler {
 	 * @since 4.3.8
 	 */
 	protected Charset getCharset(ClientHttpResponse response) {
-		HttpHeaders headers = response.getHeaders();
-		MediaType contentType = headers.getContentType();
-		return (contentType != null ? contentType.getCharset() : null);
+		try {
+			HttpHeaders headers = response.getHeaders();
+			MediaType contentType = headers.getContentType();
+			return (contentType != null ? contentType.getCharset() : null);
+		} catch (NullPointerException e) {
+			logger.error("Could no found charset, using default charset for jvm.");
+			//continue
+		}
+		
+		return Charset.defaultCharset();
 	}	
 	
 	

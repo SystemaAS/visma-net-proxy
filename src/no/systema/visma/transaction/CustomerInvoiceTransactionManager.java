@@ -1,7 +1,6 @@
 package no.systema.visma.transaction;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +58,6 @@ public class CustomerInvoiceTransactionManager {
 				syncronizeCustomerInvoice(headDto);
 				
 				deleteVistransk(headDto);
-				
-				createVistrlogk(headDto);
 
 			} 
 			catch (HttpClientErrorException e) {

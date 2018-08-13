@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import no.systema.jservices.common.dao.ViskulogDao;
-import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VislelogDao;
 import no.systema.jservices.common.dao.VisleveDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
@@ -57,8 +55,6 @@ public class SupplierTransactionManager {
 				syncronizeSupplier(dao);
 				
 				deleteVisleve(dao);
-
-				createVislelog(dao);
 
 			} 
 			catch (HttpClientErrorException e) {

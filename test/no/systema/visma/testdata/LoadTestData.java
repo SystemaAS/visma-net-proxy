@@ -68,12 +68,13 @@ public class LoadTestData {
 	public void runAll() {
 //		loadCustomers();
 //		loadCustomerInvoices();
-		loadSuppliers();
+//		loadSuppliers();
 		loadSupplierInvoices();
 	}
 	
 	@SneakyThrows
 	private void loadCustomers() {
+		viskundeDaoService.deleteAll(null);
 		Resource viskundeFile = new ClassPathResource("viskunde.csv");
 		Reader in = null;
 		Iterable<CSVRecord> records = null;
@@ -136,6 +137,7 @@ public class LoadTestData {
 	
 	@SneakyThrows
 	private void loadCustomerInvoices() {
+		vistranskDaoService.deleteAll(null);
 		Resource vistranskFile = new ClassPathResource("vistransk.csv");
 		Reader in = null;
 		Iterable<CSVRecord> records = null;
@@ -199,8 +201,10 @@ public class LoadTestData {
 			dao.setKsted(Integer.parseInt(ksted));
 			dao.setMomsk(momsk);  
 			dao.setNbelpo(new BigDecimal(nbelpo));
-			dao.setValkox(valkox);
-			dao.setValku1(new BigDecimal(valku1));
+			if (StringUtils.hasValue(valkox)) {
+				dao.setValkox(valkox);
+				dao.setValku1(new BigDecimal(valku1));
+			}
 			
 			vistranskDaoService.create(dao);
 

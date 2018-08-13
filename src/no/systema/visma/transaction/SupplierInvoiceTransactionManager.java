@@ -59,8 +59,6 @@ public class SupplierInvoiceTransactionManager {
 				syncronizeSupplierInvoice(headDto);
 				
 				deleteVistransl(headDto);
-				
-				createVistrlogl(headDto);
 
 			} 
 			catch (HttpClientErrorException e) {
