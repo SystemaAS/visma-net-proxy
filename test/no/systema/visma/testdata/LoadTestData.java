@@ -67,9 +67,9 @@ public class LoadTestData {
 	@Test
 	public void runAll() {
 //		loadCustomers();
-//		loadCustomerInvoices();
+		loadCustomerInvoices();
 //		loadSuppliers();
-		loadSupplierInvoices();
+//		loadSupplierInvoices();
 	}
 	
 	@SneakyThrows

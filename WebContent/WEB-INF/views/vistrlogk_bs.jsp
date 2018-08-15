@@ -67,13 +67,11 @@
 				"mData" : "bilnr"
 			}, {
 				"mData" : "bilaar"
-			},{
+			}, {
 				"mData" : "bilmnd"
-			},{
+			}, {
 				"mData" : "bildag"
-			},{
-				"mData" : "status"
-			},{
+			}, {
 				"mData" : "syncda"
 			}, {
 				"mData" : "synctm"
@@ -174,7 +172,6 @@
 					<th>År</th>
 					<th>Måned</th>
 					<th>Dag</th>
-					<th>Status</th>
 					<th>Dato</th>
 					<th>Tid</th>
 					<th>Feil</th>

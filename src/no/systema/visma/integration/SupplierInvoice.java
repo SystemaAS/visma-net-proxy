@@ -76,6 +76,8 @@ public class SupplierInvoice extends Configuration {
 		logger.info("syncronize(VistranslHeadDto vistranslHeadDto)");
 		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 
+		mandatoryCheck(vistranslHeadDto);		
+		
 		try {
 			// Sanity check 1
 			SupplierDto supplierExistDto = supplier.getGetBysupplierCd(String.valueOf(vistranslHeadDto.getResnr()));
@@ -184,8 +186,6 @@ public class SupplierInvoice extends Configuration {
 	
 	private SupplierInvoiceUpdateDto convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto) {
 		logger.info("convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto)");
-		
-		mandatoryCheck(vistranslHeadDto);
 		
 		// Head
 		SupplierInvoiceUpdateDto dto = new SupplierInvoiceUpdateDto();

@@ -68,8 +68,6 @@
 			}, {
 				"mData" : "knavn"
 			}, {
-				"mData" : "status"
-			}, {
 				"mData" : "syncda"
 			}, {
 				"mData" : "synctm"
@@ -170,7 +168,6 @@
 				<tr>
 					<th>Kundnr</th>
 					<th>Navn</th>
-					<th>Status</th>
 					<th>Dato</th>
 					<th>Tid</th>
 					<th>Feil</th>

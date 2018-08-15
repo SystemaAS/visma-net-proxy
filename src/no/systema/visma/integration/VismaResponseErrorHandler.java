@@ -76,7 +76,6 @@ public class VismaResponseErrorHandler implements ResponseErrorHandler {
 	 * 
 	 * The {@link HttpClientErrorException} is narrowed into {@link new HttpClientErrorException(statusCode, statusText)}, where statusText is the response body.
 	 * 
-	 * @since 5.0
 	 */
 	protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
 		String responseBody;
@@ -88,7 +87,7 @@ public class VismaResponseErrorHandler implements ResponseErrorHandler {
 //						response.getHeaders(), getResponseBody(response), getCharset(response));
 				throw new HttpClientErrorException(statusCode, LogHelper.trimToError(responseBody));
 			case SERVER_ERROR:
-				logger.error("SERVER_ERROR: raw response ="+response);
+				logger.error("SERVER_ERROR: response.getStatusText() ="+response.getStatusText());
 				responseBody =  new String(getResponseBody(response), getCharset(response));
 				logger.error("SERVER_ERROR: response body="+responseBody);
 //				throw new HttpServerErrorException(statusCode, response.getStatusText(),
@@ -107,13 +106,13 @@ public class VismaResponseErrorHandler implements ResponseErrorHandler {
 	 * @param response the response to inspect
 	 * @return the response body as a byte array,
 	 * or an empty byte array if the body could not be read
-	 * @since 4.3.8
 	 */
 	protected byte[] getResponseBody(ClientHttpResponse response) {
 		try {
 			return FileCopyUtils.copyToByteArray(response.getBody());
 		}
 		catch (IOException ex) {
+			logger.info("::getResponseBody, ignoring IOException...::");
 			// ignore
 		}
 		return new byte[0];
@@ -122,21 +121,19 @@ public class VismaResponseErrorHandler implements ResponseErrorHandler {
 	/**
 	 * Determine the charset of the response (for inclusion in a status exception).
 	 * @param response the response to inspect
-	 * @return the associated charset, or {@code null} if none
-	 * @since 4.3.8
+	 * @return the associated charset, or Charset.defaultCharset() if none
 	 */
 	protected Charset getCharset(ClientHttpResponse response) {
-		try {
-			HttpHeaders headers = response.getHeaders();
-			MediaType contentType = headers.getContentType();
-			return (contentType != null ? contentType.getCharset() : null);
-		} catch (NullPointerException e) {
-			logger.error("Could no found charset, using default charset for jvm.");
-			//continue
+		Charset charSet = Charset.defaultCharset();
+		HttpHeaders headers = response.getHeaders();
+		MediaType contentType = headers.getContentType();
+		if (contentType != null) {
+			if (contentType.getCharset() != null) {
+				charSet = contentType.getCharset();
+			}
 		}
-		
-		return Charset.defaultCharset();
+
+		return charSet;
 	}	
-	
 	
 }

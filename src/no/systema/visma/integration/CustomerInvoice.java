@@ -1,5 +1,6 @@
 package no.systema.visma.integration;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -19,6 +21,7 @@ import no.systema.jservices.common.util.StringUtils;
 import no.systema.jservices.common.values.ViscrossrKoder;
 import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranskLineDto;
+import no.systema.visma.integration.extended.CustomerInvoiceApiExtended;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
@@ -29,9 +32,11 @@ import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 
 /**
- * A Wrapper on {@linkplain CustomerInvoiceApi}
+ * A Wrapper on {@linkplain CustomerInvoiceApi} but overrides it using {@linkplain CustomerInvoiceApiExtended} 
+ * to support adding attachments to invoice.
  * 
  * Also see https://integration.visma.net/API-index/#!/CustomerInvoice
+ * 
  * 
  * @author fredrikmoller
  */
@@ -45,11 +50,14 @@ public class CustomerInvoice extends Configuration {
 	@Autowired
 	public ViscrossrDaoService viscrossrDaoService;	
 	
-	@Autowired
-	public CustomerInvoiceApi customerInvoiceApi = new CustomerInvoiceApi(apiClient());
+//	@Autowired
+//	public CustomerInvoiceApi customerInvoiceApi = new CustomerInvoiceApi(apiClient());
 
 	@Autowired
 	public Customer customer;
+	
+	@Autowired
+	public CustomerInvoiceApiExtended customerInvoiceApi = new CustomerInvoiceApiExtended(apiClient());
 
 	@PostConstruct
 	public void post_construct() {
@@ -76,6 +84,8 @@ public class CustomerInvoice extends Configuration {
 		logger.info("syncronize(VistranskHeadDto vistranskHeadDto)");
 		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getResnr(), vistranskHeadDto.getBilnr()));
 
+		mandatoryCheck(vistranskHeadDto);
+		
 		try {
 			// Sanity check 1
 			CustomerDto customerExistDto = customer.getGetBycustomerCd(String.valueOf(vistranskHeadDto.getResnr()));
@@ -253,10 +263,29 @@ public class CustomerInvoice extends Configuration {
     	
     }
 	
+    
+    public Object attachFile(int bilnr, Resource file) {
+    
+    	logger.info("attachFile ");
+  
+		CustomerInvoiceDto dto = customerInvoiceApi.customerInvoiceGetByinvoiceNumber("20");
+		logger.debug("dto="+dto);  	
+    	
+    	
+    	Object object = null;
+    	try {
+			object = customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(String.valueOf(bilnr), file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return object;
+    }
+    
+    
 	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
 		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
-		
-		mandatoryCheck(vistranskHeadDto);
 		
 		// Head
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();

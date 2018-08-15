@@ -48,7 +48,7 @@ public class TestJSupplierInvoice {
 
 	@Test
 	public void testGetSupplierInvoice() {
-		SupplierInvoiceDto dto = supplierInvoice.getByinvoiceNumber("200001");
+		SupplierInvoiceDto dto = supplierInvoice.getByinvoiceNumber("20");
 		
 		logger.debug("dto="+dto);
 

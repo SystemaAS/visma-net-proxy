@@ -1,6 +1,9 @@
 package no.systema.visma.integration;
 
 import static org.junit.Assert.*;
+
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,19 +35,38 @@ public class TestJCustomerInvoice {
 	@Autowired 
 	CustomerInvoice customerInvoice;
 	
+	
 	@Before
 	public void setUp() throws Exception {
 		now = LocalDateTime.now();
 		desc = "T-shirt"+now;
 	}
+	
 
 	@Test
 	public void testGetCustomerInvoice() {
-		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber("10");
+		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber("987");
 		
 		logger.debug("dto="+dto);
+		
+		assertNotNull(dto);
 
 	}	
+
+	@Test
+	public void testAttachInvoice() throws IOException{
+		
+//		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber("20");
+//		logger.debug("dto="+dto);
+		
+		Resource file = customerInvoice.customerInvoiceApi.getTestFile();
+		assertNotNull(file);
+		Object obj = customerInvoice.attachFile(20, file);
+		logger.debug("obj="+obj);
+		
+	}	
+	
+	
 	
 	@Test
 	public void testCustomerInvoiceSyncCreateAndDelete() {
@@ -87,8 +110,7 @@ public class TestJCustomerInvoice {
 		logger.debug("dto="+dto);		
 		
 	}
-	
-	
+
 	private List<VistranskDao> getUpdateList() {
 		List<VistranskDao> list = new ArrayList<VistranskDao>();
 		
