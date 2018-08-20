@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import no.systema.jservices.common.dao.VistranslDao;
 import no.systema.jservices.common.dao.services.VistranslDaoService;
+import no.systema.visma.integration.extended.CustomerInvoiceApiExtended;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJVistranslTransformer {
+	private static Logger logger = Logger.getLogger(TestJVistranslTransformer.class);
 
+	
 	@Autowired
 	VistranslDaoService vistranslDaoService;
 	

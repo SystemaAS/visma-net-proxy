@@ -85,7 +85,7 @@
 			}, {
 				"mData" : "betbet"
 			}, {
-				"mData" : "aktkod"
+				"mData" : "fakkre"
 			} ],
 			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
@@ -194,7 +194,7 @@
 					<th>Kost.sted</th>
 					<th>Kost.barer</th>
 					<th>Bet.beting.</th>
-					<th>Type</th>
+					<th>Fakturatype</th>
 				</tr>
 			</thead>
 		</table>

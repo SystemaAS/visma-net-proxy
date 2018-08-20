@@ -25,10 +25,10 @@ public class DtoValueHelper {
 	 * @return DtoValueString
 	 */
 	public static DtoValueString toDtoString(java.lang.Object o) {
-		if (o == null) {
+		if (o == null || o.toString().isEmpty()) {
 			return null;
 		}
-
+		
 		return new DtoValueString().value(o.toString());
 
 	}	
@@ -91,8 +91,18 @@ public class DtoValueHelper {
 		DtoValueDateTime dto = new DtoValueDateTime();
 		Objects.requireNonNull(aar, "aar is mandatory");
 		Objects.requireNonNull(mnd, "mnd is mandatory");
-		Objects.requireNonNull(aar, "dag is mandatory");
+		Objects.requireNonNull(dag, "dag is mandatory");
 
+		if (Integer.signum(aar) == 0) {
+			throw new RuntimeException("aar has wrong date-format, aar="+aar);
+		}
+		if (Integer.signum(mnd) == 0) {
+			throw new RuntimeException("mnd has wrong date-format, mnd="+mnd);
+		}
+		if (Integer.signum(dag) == 0) {
+			throw new RuntimeException("dag has wrong date-format, dag="+dag);
+		}
+		
 		LocalDateTime value = LocalDateTime.of(aar, mnd, dag, 0, 0, 0);
 
 		dto.setValue(value);

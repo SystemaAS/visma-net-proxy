@@ -316,6 +316,7 @@ public class DataController {
 			dto.setKbarer(dao.getKbarer());
 			dto.setBiltxt(dao.getBiltxt());
 			dto.setSyncda(dao.getSyncda());
+			dto.setFakkre(dao.getFakkre());
 			dto.setSyerro(dao.getSyerro());
 			
 			vistranskDtoList.add(dto);

@@ -21,8 +21,12 @@ import no.systema.jservices.common.util.StringUtils;
 import no.systema.jservices.common.values.ViscrossrKoder;
 import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranskLineDto;
+import no.systema.visma.dto.VistranskTransformer;
 import no.systema.visma.integration.extended.CustomerInvoiceApiExtended;
+import no.systema.visma.v1client.api.CustomerCreditNoteApi;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
+import no.systema.visma.v1client.model.CustomerCreditNoteLineUpdateDto;
+import no.systema.visma.v1client.model.CustomerCreditNoteUpdateDto;
 import no.systema.visma.v1client.model.CustomerDto;
 import no.systema.visma.v1client.model.CustomerInvoiceDto;
 import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
@@ -35,7 +39,9 @@ import no.systema.visma.v1client.model.SegmentUpdateDto;
  * A Wrapper on {@linkplain CustomerInvoiceApi} but overrides it using {@linkplain CustomerInvoiceApiExtended} 
  * to support adding attachments to invoice.
  * 
- * Also see https://integration.visma.net/API-index/#!/CustomerInvoice
+ * This class also contains endpoint for {@linkplain CustomerCreditNoteApi}  
+ * 
+ * @see https://integration.visma.net/API-index/#!/CustomerInvoice and https://integration.visma.net/API-index/#!/CustomerCreditNote
  * 
  * 
  * @author fredrikmoller
@@ -50,14 +56,14 @@ public class CustomerInvoice extends Configuration {
 	@Autowired
 	public ViscrossrDaoService viscrossrDaoService;	
 	
-//	@Autowired
-//	public CustomerInvoiceApi customerInvoiceApi = new CustomerInvoiceApi(apiClient());
-
 	@Autowired
 	public Customer customer;
 	
 	@Autowired
 	public CustomerInvoiceApiExtended customerInvoiceApi = new CustomerInvoiceApiExtended(apiClient());
+	
+	@Autowired
+	public CustomerCreditNoteApi customerCreditNoteApi = new CustomerCreditNoteApi(apiClient());
 
 	@PostConstruct
 	public void post_construct() {
@@ -99,13 +105,18 @@ public class CustomerInvoice extends Configuration {
 				if (customerInvoiceExistDto != null) {
 					String errMsg = String.format("Fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
 					logger.error(errMsg);
-	    			throw new RuntimeException(errMsg);
-				} else {   // do the thing
-					CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
-
-					customerInvoiceCreate(updateDto);
-					logger.info("Fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
-
+					throw new RuntimeException(errMsg);
+				} else { // do the thing
+					logger.info("vistranskHeadDto.getFakkre().getCode=" + vistranskHeadDto.getFakkre()+".");
+					if (vistranskHeadDto.getFakkre().equals("K")) {
+						CustomerCreditNoteUpdateDto updateDto = convertToCustomerCreditNoteUpdateDto(vistranskHeadDto);
+						customerCreditNoteCreate(updateDto);
+						logger.info("KREDITNOTA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
+					} else { //FAKKRE=F
+						CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
+						customerInvoiceCreate(updateDto);
+						logger.info("FAKTURA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
+					}
 				}
 			}
 
@@ -127,72 +138,6 @@ public class CustomerInvoice extends Configuration {
 
 	}
 
-	/**
-	 * Get a specific Invoice Data for Customer Invoice
-	 * <p>
-	 * <b>200</b> - OK
-	 * 
-	 * @param invoiceNumber
-	 *            Identifies the Invoice
-	 * @return CustomerInvoiceDto
-	 * @throws RestClientException
-	 *             if an error occurs while attempting to invoke the API
-	 */
-	public CustomerInvoiceDto getByinvoiceNumber(String invoiceNumber) throws RestClientException {
-		logger.info("getByinvoiceNumber(String invoiceNumber)");
-		CustomerInvoiceDto customerInvoiceExistDto;
-
-		try {
-
-			customerInvoiceExistDto = customerInvoiceApi.customerInvoiceGetByinvoiceNumber(invoiceNumber);
-
-		} catch (HttpClientErrorException e) {
-			logger.info("message:" + e.getMessage() + ", customerInvoiceExistDto is null, continue...");
-			customerInvoiceExistDto = null;
-			// continue
-		}
-
-		return customerInvoiceExistDto;
-
-	}
-
-	/**
-	 * Update a specific Invoice Response Message has StatusCode NoContent if
-	 * PUT operation succeed
-	 * <p>
-	 * <b>204</b> - NoContent
-	 * 
-	 * @param invoiceNumber
-	 *            Identifies the Invoice to update
-	 * @param invoice
-	 *            Defines the data for the Invoice to update
-	 * @throws RestClientException
-	 *             if an error occurs while attempting to invoke the API
-	 */
-	public void customerInvoiceUpdateByinvoiceNumber(String invoiceNumber, CustomerInvoiceUpdateDto updateDto) throws RestClientException {
-		logger.info("customerInvoiceUpdateByinvoiceNumber(String invoiceNumber, CustomerInvoiceUpdateDto updateDto)");
-		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
-
-		try {
-			
-			customerInvoiceApi.customerInvoiceUpdateByinvoiceNumber(invoiceNumber, updateDto);
-
-		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
-			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceUpdateByinvoiceNumber call. updateDto=" + updateDto.toString());
-			throw e;
-		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
-			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceUpdateByinvoiceNumber call. updateDto=" + updateDto.toString(), e);
-			throw e;
-		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
-			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceUpdateByinvoiceNumber call. updateDto=" + updateDto.toString());
-			throw e;
-		}
-		
-
-	}
 
 	/**
 	 * Create an Invoice Response Message has StatusCode Created if POST
@@ -205,13 +150,18 @@ public class CustomerInvoice extends Configuration {
 	 * @throws RestClientException
 	 *             if an error occurs while attempting to invoke the API
 	 */
-	public void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto) throws RestClientException {
+	//TODO lägg till File i signatur
+	private void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto) throws RestClientException {
 		logger.info("customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto)");
 		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 
 		try {
-
+			
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
+			//TODO hitta faktura_file
+			//attachFile(vistranskHeadDto.getBilnr(), file);
+
+			
 
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
@@ -229,60 +179,46 @@ public class CustomerInvoice extends Configuration {
 
 	}
 
+
     /**
-     * Deletes a specific Customer Invoice
-     * Response Message has StatusCode NoContent if DELETE operation succeed
-     * <p><b>204</b> - NoContent
-     * @param invoiceNumber Identifies the Customer Invoice to delete
+     * Create a Credit Note
+     * Response Message has StatusCode Created if POST operation succeed
+     * <p><b>201</b> - Created
+     * @param creditNote Defines the data for the Credit Note to create
+     * @return Object
      * @throws RestClientException if an error occurs while attempting to invoke the API
-     * 
-     * NOTE: Used only in Tests.
-     */
-    void customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceDto updateDto) throws RestClientException {	
-		logger.info("customerInvoiceDeleteByinvoiceNumber(CustomerInvoiceUpdateDto updateDto)");
-		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomer().getNumber(), updateDto.getReferenceNumber())); 
+     */	
+	//TODO lägg till File i signatur
+	private void customerCreditNoteCreate(CustomerCreditNoteUpdateDto updateDto) {
+		logger.info("customerCreditNoteCreate(CustomerCreditNoteUpdateDto updateDto)");
+		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 
 		try {
+			
+			customerCreditNoteApi.customerCreditNoteCreate(updateDto); 
+			//TODO hitta faktura_file
+			//attachFile(vistranskHeadDto.getBilnr(), file);
 
-			String invoiceNumber = updateDto.getReferenceNumber();
-			customerInvoiceApi.customerInvoiceDeleteByinvoiceNumber(invoiceNumber);
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomer().getNumber(), updateDto.getReferenceNumber())); 
-			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceDeleteByinvoiceNumber call. updateDto=" + updateDto.toString());
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
+			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate call. updateDto=" + updateDto.toString());
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomer().getNumber(), updateDto.getReferenceNumber()));
-			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceDeleteByinvoiceNumber call. updateDto=" + updateDto.toString(), e);
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
+			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomer().getNumber(), updateDto.getReferenceNumber()));
-			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceDeleteByinvoiceNumber call. updateDto=" + updateDto.toString());
+			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
+			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate updateDto=" + updateDto.toString());
 			throw e;
-		}    	
-    	
-    }
+		}		
+		
+	}	
 	
-    
-    public Object attachFile(int bilnr, Resource file) {
-    
-    	logger.info("attachFile ");
-  
-		CustomerInvoiceDto dto = customerInvoiceApi.customerInvoiceGetByinvoiceNumber("20");
-		logger.debug("dto="+dto);  	
-    	
-    	
-    	Object object = null;
-    	try {
-			object = customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(String.valueOf(bilnr), file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	return object;
+    Object attachFile(int bilnr, Resource file) throws IOException {
+			return customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(String.valueOf(bilnr), file);
     }
-    
     
 	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
 		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
@@ -310,6 +246,63 @@ public class CustomerInvoice extends Configuration {
 
 	}
 
+	private CustomerCreditNoteUpdateDto convertToCustomerCreditNoteUpdateDto(VistranskHeadDto vistranskHeadDto) {
+		logger.info("convertToCustomerCreditNoteUpdateDto(VistranskHeadDto vistranskHeadDto)");
+		
+		// Head
+		CustomerCreditNoteUpdateDto dto = new CustomerCreditNoteUpdateDto();
+		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getResnr()));
+		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getBilnr()));
+		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
+//		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
+		dto.setDocumentDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag()));
+//		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
+		if (StringUtils.hasValue(vistranskHeadDto.getValkox())) {
+			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranskHeadDto.getValkox()));
+//			dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranskHeadDto.getValku1()));
+		} else {
+			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
+		}
+		//End head
+		
+		// Lines  
+		dto.setLines(getLines(vistranskHeadDto.getLines()));
+
+		return dto;
+
+	}
+
+	
+	/**
+	 * Get a specific Invoice Data for Customer Invoice
+	 * <p>
+	 * <b>200</b> - OK
+	 * 
+	 * @param invoiceNumber
+	 *            Identifies the Invoice
+	 * @return CustomerInvoiceDto
+	 * @throws RestClientException
+	 *             if an error occurs while attempting to invoke the API
+	 */
+	private CustomerInvoiceDto getByinvoiceNumber(String invoiceNumber) throws RestClientException {
+		logger.info("getByinvoiceNumber(String invoiceNumber)");
+		CustomerInvoiceDto customerInvoiceExistDto;
+
+		try {
+
+			customerInvoiceExistDto = customerInvoiceApi.customerInvoiceGetByinvoiceNumber(invoiceNumber);
+
+		} catch (HttpClientErrorException e) {
+			logger.info("message:" + e.getMessage() + ", customerInvoiceExistDto is null, continue...");
+			customerInvoiceExistDto = null;
+			// continue
+		}
+
+		return customerInvoiceExistDto;
+
+	}
+	
+	
 	private DtoValueString getFinancialsPeriod(VistranskHeadDto vistranskHeadDto) {
 		String year = String.valueOf(vistranskHeadDto.getPeraar());
 		String month = String.format("%02d", vistranskHeadDto.getPernr()); // pad up to 2 char, ex. 1 -> 01
@@ -343,6 +336,31 @@ public class CustomerInvoice extends Configuration {
 		
 	}
 
+	private List<CustomerCreditNoteLineUpdateDto> getLines(List<VistranskLineDto> lineDtoList) {
+		List<CustomerCreditNoteLineUpdateDto> updateDtoList = new ArrayList<CustomerCreditNoteLineUpdateDto>();
+
+		lineDtoList.forEach(lineDto -> {
+
+			mandatoryCheck(lineDto);
+			
+			CustomerCreditNoteLineUpdateDto updateDto = new CustomerCreditNoteLineUpdateDto();
+			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
+			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
+			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getNbelpo())); 
+			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
+			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
+			updateDto.setSubaccount(getSubaccount(lineDto));
+			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
+			updateDto.setOperation(no.systema.visma.v1client.model.CustomerCreditNoteLineUpdateDto.OperationEnum.INSERT);
+			
+			updateDtoList.add(updateDto);
+			
+		});
+		
+		return updateDtoList;
+		
+	}
+	
 	private DtoValueString getVatCodeId(String momsk) {
 		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MOMSK);
 		if (vismaCodeId == null) {
@@ -406,7 +424,7 @@ public class CustomerInvoice extends Configuration {
 			String errMsg = "KRDDAG can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
-		}		
+		}	
 		if (vistranskHeadDto.getFfdaar() == 0) {
 			String errMsg = "FFDAAR can not be 0";
 			logger.error(errMsg);
@@ -427,6 +445,11 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
+		if (vistranskHeadDto.getFakkre() == null) {
+			String errMsg = "FAKKRE can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}		
 		
 	}	
 	

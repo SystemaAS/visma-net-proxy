@@ -1,7 +1,7 @@
-aktkod,firma,resnr,bilnr,posnr,bilaar,bilmnd,bildag,peraar,pernr,krdaar,krdmnd,krddag,ffdaar,ffdmnd,ffddag,biltxt,betbet,konto,ksted,momsk,nbelpo,valkox,valku1
-A,SY,111,20,1,2018,7,30,2018,7,2018,7,30,2018,7,30,Sokkeplast,14,3000,3,3,15.0,SEK,100.23
-A,SY,111,20,2,2018,7,30,2018,7,2018,7,30,2018,7,30,Skärmmössa,14,3000,3,3,25.0,SEK,100.23
-A,SY,111,20,3,2018,8,30,2018,8,2018,8,30,2018,7,30,Klocka,14,3000,3,3,2545.0,SEK,100.23
-A,SY,200,987,1,2018,7,30,2018,7,2018,7,30,2018,7,30,Rymdraket,14,3000,3,3,100500.34,,
-A,SY,200,987,2,2018,7,30,2018,7,2018,7,30,2018,7,30,Hoverboard,14,3000,3,3,2754.23,,
-A,SY,200,987,3,2018,7,30,2018,7,2018,7,30,2018,7,30,Tesla,14,3000,3,3,5.50,,
+aktkod,firma,resnr,bilnr,posnr,bilaar,bilmnd,bildag,peraar,pernr,krdaar,krdmnd,krddag,ffdaar,ffdmnd,ffddag,biltxt,betbet,konto,ksted,momsk,nbelpo,valkox,valku1,fakkre
+A,SY,111,20,1,2018,7,30,2018,7,2018,7,30,2018,7,30,Sokkeplast,14,3000,3,3,15.0,,,F
+A,SY,111,20,2,2018,7,30,2018,7,2018,7,30,2018,7,30,Skärmmössa,14,3000,3,3,25.0,,,F
+A,SY,111,20,3,2018,8,30,2018,8,2018,8,30,2018,7,30,Klocka,14,3000,3,3,2545.0,,,F
+A,SY,200,987,1,2018,7,30,2018,7,2018,7,30,2018,7,30,Rymdraket,14,3000,3,3,100500.34,,,K
+A,SY,200,987,2,2018,7,30,2018,7,2018,7,30,2018,7,30,Hoverboard,14,3000,3,3,2754.23,,,K
+A,SY,200,987,3,2018,7,30,2018,7,2018,7,30,2018,7,30,Tesla,14,3000,3,3,5.50,,,K

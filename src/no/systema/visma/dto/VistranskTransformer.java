@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
 
@@ -18,6 +20,8 @@ import no.systema.visma.v1client.api.CustomerInvoiceApi;
  */
 public class VistranskTransformer {
 
+	private static Logger logger = Logger.getLogger(VistranskTransformer.class);	
+	
 	/**
 	 * Transform flat list of {@link VistranskDao} into composite list of {@link VistranskHeadDto}.
 	 * 
@@ -53,6 +57,7 @@ public class VistranskTransformer {
 			head.setPernr(daoList.get(0).getPernr());
 			head.setValkox(daoList.get(0).getValkox());
 			head.setValku1(daoList.get(0).getValku1());	
+			head.setFakkre(daoList.get(0).getFakkre());
 			
 			daoList.forEach(dao -> { //Lines
 				VistranskLineDto line = new VistranskLineDto();

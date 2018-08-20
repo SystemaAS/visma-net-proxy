@@ -132,13 +132,11 @@ public class TestJCustomerTransactionManager {
 		getValidViskundeDaos().forEach((vk) ->{
 			assertNull(viskundeDaoService.find(vk));
 		});
-		//TODO 2. Assert rollback
 	}	
 	
 	
 	private void assertResultInValid() {
 		assertTrue(!getInValidViskundeDaos().isEmpty());
-		//TODO 1. Assert rollback
 	}	
 
 	private List<ViskundeDao> getInValidViskundeDaos() {

@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -43,23 +46,20 @@ public class TestJCustomerInvoice {
 	}
 	
 
-	@Test
-	public void testGetCustomerInvoice() {
-		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber("987");
-		
-		logger.debug("dto="+dto);
-		
-		assertNotNull(dto);
-
-	}	
+//	@Test
+//	public void testGetCustomerInvoice() {
+//		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber("987");
+//		
+//		logger.debug("dto="+dto);
+//		
+//		assertNotNull(dto);
+//
+//	}	
 
 	@Test
 	public void testAttachInvoice() throws IOException{
 		
-//		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber("20");
-//		logger.debug("dto="+dto);
-		
-		Resource file = customerInvoice.customerInvoiceApi.getTestFile();
+		Resource file = getTestFile();
 		assertNotNull(file);
 		Object obj = customerInvoice.attachFile(20, file);
 		logger.debug("obj="+obj);
@@ -68,25 +68,21 @@ public class TestJCustomerInvoice {
 	
 	
 	
-	@Test
-	public void testCustomerInvoiceSyncCreateAndDelete() {
-		List<VistranskHeadDto> list = VistranskTransformer.transform( getCreateList() );
-
-		customerInvoice.syncronize(list.get(0));
-		
-		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
-		assertEquals("Should be same", desc, dto.getInvoiceLines().get(0).getDescription());
-		logger.debug("dto="+dto);		
-
-		assertTrue("Should be 2 lines as defined in getCreateList.", dto.getInvoiceLines().size() == 2);
-		
-		customerInvoice.customerInvoiceDeleteByinvoiceNumber(dto);
-
-		dto = customerInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
-		assertNull("Should not exist in Visma.net", dto);
-		
-		
-	}
+//	@Test
+//	public void testCustomerInvoiceSyncCreate() {
+//		List<VistranskHeadDto> list = VistranskTransformer.transform( getCreateList() );
+//
+//		customerInvoice.syncronize(list.get(0));
+//		
+//		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
+//		assertEquals("Should be same", desc, dto.getInvoiceLines().get(0).getDescription());
+//		logger.debug("dto="+dto);		
+//
+//		assertTrue("Should be 2 lines as defined in getCreateList.", dto.getInvoiceLines().size() == 2);
+//		
+//		
+//		
+//	}
 
 	private List<VistranskDao> getCreateList() {
 		List<VistranskDao> list = new ArrayList<VistranskDao>();
@@ -99,17 +95,17 @@ public class TestJCustomerInvoice {
 	}	
 	
 	
-	@Test(expected=RuntimeException.class) //Updates not allowed
-	public void testCustomerInvoiceSyncUpdate() {
-		List<VistranskHeadDto> list = VistranskTransformer.transform( getUpdateList() );
-
-		customerInvoice.syncronize(list.get(0));
-		
-		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
-		assertEquals("Should be same", desc, dto.getInvoiceLines().get(0).getDescription());
-		logger.debug("dto="+dto);		
-		
-	}
+//	@Test(expected=RuntimeException.class) //Updates not allowed
+//	public void testCustomerInvoiceSyncUpdate() {
+//		List<VistranskHeadDto> list = VistranskTransformer.transform( getUpdateList() );
+//
+//		customerInvoice.syncronize(list.get(0));
+//		
+//		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
+//		assertEquals("Should be same", desc, dto.getInvoiceLines().get(0).getDescription());
+//		logger.debug("dto="+dto);		
+//		
+//	}
 
 	private List<VistranskDao> getUpdateList() {
 		List<VistranskDao> list = new ArrayList<VistranskDao>();
@@ -146,5 +142,16 @@ public class TestJCustomerInvoice {
 		
 		return dao;
 	}	
+
+	
+    public static Resource getTestFile() throws IOException {
+        Path testFile = Files.createTempFile("test-file", ".txt");
+        StringBuilder txt = new StringBuilder("Hello World !!, This is a test file, generated:").append(LocalDateTime.now().toString());
+        Files.write(testFile, txt.toString().getBytes());
+
+        return new FileSystemResource(testFile.toFile());
+    }	
+	
+	
 	
 }

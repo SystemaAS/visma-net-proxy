@@ -101,7 +101,7 @@ public class Subaccount extends Configuration{
 		
 	}
 
-	//TODO ?? full insert saknas i SubAccountUpdateDto
+	//TODO full insert saknas i SubAccountUpdateDto
 	  private SubAccountUpdateDto convertToSubAccountUpdateDto(VisavdDao visavd) {
 	    	logger.info("SubAccountUpdateDto(ViskundeDao viskunde, IUDEnum status)");
 	    	//Sanity checks

@@ -128,13 +128,11 @@ public class TestJSupplierTransactionManager {
 		getValidVisleveDaos().forEach((vk) ->{
 			assertNull(visleveDaoService.find(vk));
 		});
-		//TODO 2. Assert rollback
 	}	
 	
 	
 	private void assertResultInValid() {
 		assertTrue(!getInValidVisleveDaos().isEmpty());
-		//TODO 1. Assert rollback
 	}	
 
 	private List<VisleveDao> getInValidVisleveDaos() {

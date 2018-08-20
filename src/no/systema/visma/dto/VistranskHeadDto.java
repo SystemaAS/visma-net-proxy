@@ -31,6 +31,7 @@ public class VistranskHeadDto {
 	private int pernr;
 	private String valkox;
 	private BigDecimal valku1 = new BigDecimal(0);	
+	private String fakkre;
 	private List<VistranskLineDto> lines;
 	
 }
