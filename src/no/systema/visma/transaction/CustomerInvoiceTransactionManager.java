@@ -1,5 +1,6 @@
 package no.systema.visma.transaction;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +117,11 @@ public class CustomerInvoiceTransactionManager {
 			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getResnr(), vistranskHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransk="+vistranskHeadDto, e);
 			throw e;
+		}
+		catch (IOException e) {
+			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getResnr(), vistranskHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransk="+vistranskHeadDto, e);
+			throw new RuntimeException("Could not find file", e.getCause());
 		}
 		catch (Exception e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getResnr(), vistranskHeadDto.getBilnr()));

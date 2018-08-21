@@ -1,8 +1,8 @@
 package no.systema.visma.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -22,9 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.systema.jservices.common.dao.VistranskDao;
-import no.systema.visma.dto.VistranskHeadDto;
-import no.systema.visma.dto.VistranskTransformer;
-import no.systema.visma.v1client.model.CustomerInvoiceDto;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
@@ -59,12 +56,28 @@ public class TestJCustomerInvoice {
 	@Test
 	public void testAttachInvoice() throws IOException{
 		
-		Resource file = getTestFile();
+		Resource file = getPdfFile();
+		
+		logger.info("file exist="+file.exists());
+		logger.info("file contentlenght="+file.contentLength());
+		
 		assertNotNull(file);
-		Object obj = customerInvoice.attachFile(20, file);
-		logger.debug("obj="+obj);
+//		Object obj = customerInvoice.attachInvoiceFile("20", file);
+//		logger.debug("obj="+obj);
 		
 	}	
+	
+	
+	@Test
+	public void testAttachCreditNote() throws IOException{
+		
+		Resource file = getTestFile();
+		
+		assertNotNull(file);
+		Object obj = customerInvoice.attachCreditNoteFile("987", file);
+		logger.debug("obj="+obj);
+		
+	}		
 	
 	
 	
@@ -152,6 +165,16 @@ public class TestJCustomerInvoice {
         return new FileSystemResource(testFile.toFile());
     }	
 	
-	
+    public static Resource getPdfFile() throws IOException {
+    	 
+    	File file =new File("/XXXUsers/fredrikmoller/git/visma-net-proxy/test/CloudNativeLandscape_v0.9.4.pdf");
+
+    	logger.info("file.exists())= "+file.exists());
+    	
+    	return new FileSystemResource(file);	
+
+    }	
+    
+    
 	
 }

@@ -175,8 +175,7 @@ public class LoadTestData {
 			String nbelpo = record.get("nbelpo");
 			String valkox = record.get("valkox");
 			String valku1 = record.get("valku1");
-
-			logger.info("valku1="+valku1);
+			String fakkre = record.get("fakkre");
 			
 			VistranskDao dao = new VistranskDao();
 			dao.setAktkod(aktkod);
@@ -201,6 +200,7 @@ public class LoadTestData {
 			dao.setKsted(Integer.parseInt(ksted));
 			dao.setMomsk(momsk);  
 			dao.setNbelpo(new BigDecimal(nbelpo));
+			dao.setFakkre(fakkre);
 			if (StringUtils.hasValue(valkox)) {
 				dao.setValkox(valkox);
 				dao.setValku1(new BigDecimal(valku1));

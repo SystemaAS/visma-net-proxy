@@ -9,6 +9,7 @@
 	<bean id="customerInvoiceApi" class="no.systema.visma.v1client.api.CustomerInvoiceApi"/>
 	<bean id="customerCreditNoteApi" class="no.systema.visma.v1client.api.CustomerCreditNoteApi"/>
 	<bean id="customerInvoiceApiExtended" class="no.systema.visma.integration.extended.CustomerInvoiceApiExtended"/>
+	<bean id="customerCreditNoteApiExtended" class="no.systema.visma.integration.extended.CustomerCreditNoteApiExtended"/>
 	<bean id="vatCategory" class="no.systema.visma.integration.VatCategory"/>
 	<bean id="vatCategoryApi" class="no.systema.visma.v1client.api.VatCategoryApi"/>
 	<bean id="subAccount" class="no.systema.visma.integration.Subaccount"/>

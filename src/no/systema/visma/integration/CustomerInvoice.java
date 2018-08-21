@@ -1,7 +1,11 @@
 package no.systema.visma.integration;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +13,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,10 +26,11 @@ import no.systema.jservices.common.util.StringUtils;
 import no.systema.jservices.common.values.ViscrossrKoder;
 import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranskLineDto;
-import no.systema.visma.dto.VistranskTransformer;
+import no.systema.visma.integration.extended.CustomerCreditNoteApiExtended;
 import no.systema.visma.integration.extended.CustomerInvoiceApiExtended;
 import no.systema.visma.v1client.api.CustomerCreditNoteApi;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
+import no.systema.visma.v1client.model.CustomerCreditNoteDto;
 import no.systema.visma.v1client.model.CustomerCreditNoteLineUpdateDto;
 import no.systema.visma.v1client.model.CustomerCreditNoteUpdateDto;
 import no.systema.visma.v1client.model.CustomerDto;
@@ -63,8 +69,9 @@ public class CustomerInvoice extends Configuration {
 	public CustomerInvoiceApiExtended customerInvoiceApi = new CustomerInvoiceApiExtended(apiClient());
 	
 	@Autowired
-	public CustomerCreditNoteApi customerCreditNoteApi = new CustomerCreditNoteApi(apiClient());
+	public CustomerCreditNoteApiExtended customerCreditNoteApi = new CustomerCreditNoteApiExtended(apiClient());
 
+	
 	@PostConstruct
 	public void post_construct() {
 		FirmvisDao firmvis = firmvisDaoService.get();
@@ -86,7 +93,7 @@ public class CustomerInvoice extends Configuration {
 	 * @throws RestClientException
 	 * @throws HttpClientErrorException
 	 */
-	public void syncronize(VistranskHeadDto vistranskHeadDto) throws RestClientException, HttpClientErrorException {
+	public void syncronize(VistranskHeadDto vistranskHeadDto) throws RestClientException, HttpClientErrorException, IOException {
 		logger.info("syncronize(VistranskHeadDto vistranskHeadDto)");
 		logger.info(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getResnr(), vistranskHeadDto.getBilnr()));
 
@@ -98,26 +105,32 @@ public class CustomerInvoice extends Configuration {
 			if (customerExistDto == null) {
 				logger.error("Could not find Customer on number:" + vistranskHeadDto.getResnr());
 				throw new RuntimeException("Could not find Customer on number:" + vistranskHeadDto.getResnr());
-			} else { // Sanity check 2
-				String referenceNumber = String.valueOf(vistranskHeadDto.getBilnr());
-				CustomerInvoiceDto customerInvoiceExistDto = getByinvoiceNumber(referenceNumber);
-
-				if (customerInvoiceExistDto != null) {
-					String errMsg = String.format("Fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
-					logger.error(errMsg);
-					throw new RuntimeException(errMsg);
-				} else { // do the thing
-					logger.info("vistranskHeadDto.getFakkre().getCode=" + vistranskHeadDto.getFakkre()+".");
-					if (vistranskHeadDto.getFakkre().equals("K")) {
-						CustomerCreditNoteUpdateDto updateDto = convertToCustomerCreditNoteUpdateDto(vistranskHeadDto);
-						customerCreditNoteCreate(updateDto);
-						logger.info("KREDITNOTA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
-					} else { //FAKKRE=F
-						CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
-						customerInvoiceCreate(updateDto);
-						logger.info("FAKTURA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
-					}
-				}
+			} 
+			// Sanity check 2
+			String referenceNumber = String.valueOf(vistranskHeadDto.getBilnr());
+			CustomerInvoiceDto customerInvoiceExistDto = getByinvoiceNumber(referenceNumber);
+			if (customerInvoiceExistDto != null) {
+				String errMsg = String.format("FAKTURA:fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			}
+			// Sanity check 3
+			CustomerCreditNoteDto customerCreditNoteExistDto = getCustomerCreditNoteByInvoiceNumber(referenceNumber);
+			if (customerCreditNoteExistDto != null) {
+				String errMsg = String.format("KREDITNOTA:fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			}
+			// Do the thing, if no exception from above
+			Resource attachment = getAttachment(vistranskHeadDto);
+			if (vistranskHeadDto.getFakkre().equals("K")) {
+				CustomerCreditNoteUpdateDto updateDto = convertToCustomerCreditNoteUpdateDto(vistranskHeadDto);
+				customerCreditNoteCreate(updateDto, attachment);
+				logger.info("KREDITNOTA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
+			} else { // FAKKRE=F
+				CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
+				customerInvoiceCreate(updateDto, attachment);
+				logger.info("FAKTURA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
 			}
 
 		} catch (HttpClientErrorException e) {
@@ -145,24 +158,24 @@ public class CustomerInvoice extends Configuration {
 	 * <p>
 	 * <b>201</b> - Created
 	 * 
+	 * @param attachment
+	 * 
 	 * @param invoice
 	 *            Defines the data for the Invoice to create
 	 * @throws RestClientException
 	 *             if an error occurs while attempting to invoke the API
+	 * @throws IOException if attachment not found.
 	 */
-	//TODO lägg till File i signatur
-	private void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto) throws RestClientException {
-		logger.info("customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto)");
+	private void customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto, Resource attachment) throws RestClientException, IOException {
+		logger.info("customerInvoiceCreate(CustomerInvoiceUpdateDto updateDto, Resource attachment)");
 		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 
 		try {
 			
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
-			//TODO hitta faktura_file
-			//attachFile(vistranskHeadDto.getBilnr(), file);
+			attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
 
 			
-
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
@@ -174,37 +187,36 @@ public class CustomerInvoice extends Configuration {
 		} catch (Exception e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
 			logger.error(e.getClass() + " On customerInvoiceApi.customerInvoiceCreate call. updateDto=" + updateDto.toString());
-			throw e;
+				throw e;
 		}
 
 	}
-
 
     /**
      * Create a Credit Note
      * Response Message has StatusCode Created if POST operation succeed
      * <p><b>201</b> - Created
+     * @param attachment 
      * @param creditNote Defines the data for the Credit Note to create
      * @return Object
      * @throws RestClientException if an error occurs while attempting to invoke the API
+     * @throws IOException if attachment not found.
      */	
-	//TODO lägg till File i signatur
-	private void customerCreditNoteCreate(CustomerCreditNoteUpdateDto updateDto) {
-		logger.info("customerCreditNoteCreate(CustomerCreditNoteUpdateDto updateDto)");
+	private void customerCreditNoteCreate(CustomerCreditNoteUpdateDto updateDto, Resource attachment) throws RestClientException, IOException {
+		logger.info("customerCreditNoteCreate(CustomerCreditNoteUpdateDto updateDto, Resource attachment )");
 		logger.info(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 
 		try {
 			
 			customerCreditNoteApi.customerCreditNoteCreate(updateDto); 
-			//TODO hitta faktura_file
-			//attachFile(vistranskHeadDto.getBilnr(), file);
+			attachCreditNoteFile(updateDto.getReferenceNumber().getValue(), attachment);
 
 
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate call. updateDto=" + updateDto.toString());
 			throw e;
-		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
+		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException  e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber()));
 			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate updateDto=" + updateDto.toString(), e);
 			throw e;
@@ -216,9 +228,23 @@ public class CustomerInvoice extends Configuration {
 		
 	}	
 	
-    Object attachFile(int bilnr, Resource file) throws IOException {
-			return customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(String.valueOf(bilnr), file);
+    Object attachInvoiceFile(String bilnr, Resource file) throws IOException {
+			return customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
     }
+    
+    Object attachCreditNoteFile(String bilnr, Resource file) throws IOException {
+			return customerCreditNoteApi.customerCreditNoteCreateHeaderAttachmentBycreditNoteNumber(bilnr, file);
+    }    
+ 
+	//TODO getAttachment path
+	private Resource getAttachment(VistranskHeadDto vistranskHeadDto) throws IOException {
+//        File file = new File(vistranskHeadDto.pathToFile());
+        File file = new File("vistranskHeadDto.pathToFile()");
+        if (!file.exists()) {
+        	throw new RuntimeException("Could create file on path:"+"vistranskHeadDto.pathToFile()");
+        }
+        return new FileSystemResource(file);	
+	}
     
 	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
 		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
@@ -301,6 +327,37 @@ public class CustomerInvoice extends Configuration {
 		return customerInvoiceExistDto;
 
 	}
+	
+	/**
+	 * Get a specific Credit Note Data for Customer Invoice
+	 * <p>
+	 * <b>200</b> - OK
+	 * 
+	 * @param invoiceNumber
+	 *            Identifies the Invoice
+	 * @return CustomerInvoiceDto
+	 * @throws RestClientException
+	 *             if an error occurs while attempting to invoke the API
+	 */
+	private CustomerCreditNoteDto getCustomerCreditNoteByInvoiceNumber(String creditNoteNumber) throws RestClientException {
+		logger.info("getCustomerCreditNoteByInvoiceNumber(String creditNoteNumber)");
+		CustomerCreditNoteDto customerCreditNoteExistDto;
+
+		try {
+
+			customerCreditNoteExistDto = customerCreditNoteApi.customerCreditNoteGetBycreditNoteNumber(creditNoteNumber);
+
+		} catch (HttpClientErrorException e) {
+			logger.info("message:" + e.getMessage() + ", customerCreditNoteExistDto is null, continue...");
+			customerCreditNoteExistDto = null;
+			// continue
+		}
+
+		return customerCreditNoteExistDto;
+
+	}
+	
+	
 	
 	
 	private DtoValueString getFinancialsPeriod(VistranskHeadDto vistranskHeadDto) {
@@ -449,7 +506,8 @@ public class CustomerInvoice extends Configuration {
 			String errMsg = "FAKKRE can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
-		}		
+		}	
+		//TODO check  pdf-path
 		
 	}	
 	
