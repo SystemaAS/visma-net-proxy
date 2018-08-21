@@ -56,6 +56,7 @@ public class VistranslTransformer {
 			head.setValku1(daoList.get(0).getValku1());	
 			head.setLkid(daoList.get(0).getLkid());	
 			head.setPath(daoList.get(0).getPath());
+			head.setFakkre(daoList.get(0).getFakkre());
 			
 			daoList.forEach(dao -> { //Lines
 				VistranslLineDto line = new VistranslLineDto();

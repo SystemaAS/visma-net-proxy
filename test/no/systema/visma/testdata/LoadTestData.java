@@ -323,6 +323,7 @@ public class LoadTestData {
 			String valku1 = record.get("valku1");
 			String krnr = record.get("krnr");
 			String lkid = record.get("lkid");
+			String fakkre = record.get("fakkre");
 
 			VistranslDao dao = new VistranslDao();
 			dao.setAktkod(aktkod);
@@ -355,6 +356,7 @@ public class LoadTestData {
 			}
 			dao.setKrnr(krnr);
 			dao.setLkid(lkid);
+			dao.setFakkre(fakkre);
 			
 			vistranslDaoService.create(dao);
 

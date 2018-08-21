@@ -1,6 +1,5 @@
 package no.systema.visma.integration;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,11 +19,12 @@ import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dao.services.ViscrossrDaoService;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.jservices.common.values.ViscrossrKoder;
-import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslLineDto;
 import no.systema.visma.integration.extended.SupplierInvoiceApiExtended;
 import no.systema.visma.v1client.api.SupplierInvoiceApi;
+import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes;
+import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes.ValueEnum;
 import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 import no.systema.visma.v1client.model.SupplierDto;
@@ -206,6 +205,11 @@ public class SupplierInvoice extends Configuration {
 		// Head
 		SupplierInvoiceUpdateDto dto = new SupplierInvoiceUpdateDto();
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getBilnr()));
+		if (vistranslHeadDto.getFakkre().equals("K")) {
+			dto.setDocumentType(DtoValueHelper.getSupplierInvoiceType(ValueEnum.DEBITADJ));
+		} else { //FAKKRE = F
+			dto.setDocumentType(DtoValueHelper.getSupplierInvoiceType(ValueEnum.INVOICE));
+		}
 		dto.setSupplierNumber(DtoValueHelper.toDtoString(vistranslHeadDto.getResnr()));
 		dto.setSupplierReference(DtoValueHelper.toDtoString(vistranslHeadDto.getKrnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranslHeadDto));
@@ -353,6 +357,11 @@ public class SupplierInvoice extends Configuration {
 		}
 		if (vistranslHeadDto.getKrnr() == null) {
 			String errMsg = "KRNR can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (vistranslHeadDto.getFakkre() == null) {
+			String errMsg = "FAKKRE can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}

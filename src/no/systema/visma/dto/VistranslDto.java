@@ -22,6 +22,7 @@ public class VistranslDto {
 	private int ksted;
 	private int kbarer;
 	private String biltxt;
+	private String fakkre;
 	private int syncda;
 	private String syerro;
 	

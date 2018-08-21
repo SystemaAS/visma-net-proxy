@@ -341,6 +341,7 @@ public class DataController {
 			dto.setKsted(dao.getKsted());
 			dto.setKbarer(dao.getKbarer());
 			dto.setBiltxt(dao.getBiltxt());
+			dto.setFakkre(dao.getFakkre());
 			dto.setSyncda(dao.getSyncda());
 			dto.setSyerro(dao.getSyerro());
 			

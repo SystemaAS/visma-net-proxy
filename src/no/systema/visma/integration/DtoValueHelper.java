@@ -14,7 +14,9 @@ import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueDecimal;
 import no.systema.visma.v1client.model.DtoValueInt32;
 import no.systema.visma.v1client.model.DtoValueNullableDecimal;
+import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes;
 import no.systema.visma.v1client.model.DtoValueString;
+import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes.ValueEnum;
 
 /**
  * This helper is transforming proprietary SYSPED types into Visma.net types.
@@ -143,6 +145,20 @@ public class DtoValueHelper {
 
 	}	
 
+	/**
+	 * Return a {@linkplain DtoValueNullableSupplierInvoiceTypes} based on provided {@linkplain ValueEnum}.
+	 * 
+	 * @param value
+	 * @return {@linkplain DtoValueNullableSupplierInvoiceTypes}
+	 */
+	public static DtoValueNullableSupplierInvoiceTypes getSupplierInvoiceType(ValueEnum value) {
+		DtoValueNullableSupplierInvoiceTypes dto = new DtoValueNullableSupplierInvoiceTypes();
+		dto.setValue(value);
+	
+		return dto;
+		
+	}	
+	
 	/**
 	 * Return a {@linkplain FileSystemResource} from provided path.
 	 * 

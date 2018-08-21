@@ -1,6 +1,6 @@
-aktkod,firma,resnr,refnr,bilnr,posnr,bilaar,bilmnd,bildag,peraar,pernr,krdaar,krdmnd,krddag,ffdaar,ffdmnd,ffddag,biltxt,betbet,konto,ksted,kbarer,momsk,nbelpo,valkox,valku1,lkid,krnr
-A,SY,301,999,20,1,2018,8,31,2018,8,2018,8,8,2018,8,31,Arbetshandskar,14,3000,3,3,0,45.0,,100.0,998877,123123
-A,SY,301,999,20,2,2018,7,31,2018,7,2018,8,8,2018,8,31,Skinnkeps,14,3000,3,3,0,650.0,,100.0,998877,123123
-A,SY,500,888,27,1,2018,8,31,2018,8,2018,8,8,2018,8,31,TV skärm,14,5000,3,3,1,4500.35,,,99887700,773123
-A,SY,500,888,27,2,2018,7,31,2018,7,2018,8,8,2018,8,31,DVI-kabel,14,5000,3,3,1,50.45,,,99887700,773123
-A,SY,500,888,27,3,2018,7,31,2018,7,2018,8,8,2018,8,31,Ryggsäck,14,5000,3,3,1,507.45,,,99887700,773123
+aktkod,firma,resnr,refnr,bilnr,posnr,bilaar,bilmnd,bildag,peraar,pernr,krdaar,krdmnd,krddag,ffdaar,ffdmnd,ffddag,biltxt,betbet,konto,ksted,kbarer,momsk,nbelpo,valkox,valku1,lkid,krnr,fakkre
+A,SY,301,999,20,1,2018,8,31,2018,8,2018,8,8,2018,8,31,Arbetshandskar,14,3000,3,3,0,45.0,,100.0,998877,123123,F
+A,SY,301,999,20,2,2018,7,31,2018,7,2018,8,8,2018,8,31,Skinnkeps,14,3000,3,3,0,650.0,,100.0,998877,123123,F
+A,SY,500,888,27,1,2018,8,31,2018,8,2018,8,8,2018,8,31,TV skärm,14,5000,3,3,1,4500.35,,,99887700,773123,K
+A,SY,500,888,27,2,2018,7,31,2018,7,2018,8,8,2018,8,31,DVI-kabel,14,5000,3,3,1,50.45,,,99887700,773123,K
+A,SY,500,888,27,3,2018,7,31,2018,7,2018,8,8,2018,8,31,Ryggsäck,14,5000,3,3,1,507.45,,,99887700,773123,K

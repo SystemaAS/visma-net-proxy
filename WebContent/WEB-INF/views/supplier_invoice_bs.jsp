@@ -84,7 +84,7 @@
 			}, {
 				"mData" : "betbet"
 			}, {
-				"mData" : "aktkod"
+				"mData" : "fakkre"
 			} ],
 			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
