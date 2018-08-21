@@ -62,11 +62,11 @@
 			}, {
 				"mData" : "postnr"
 			}, {
+				"mData" : "postnu"
+			}, {
 				"mData" : "land"
 			}, {
 				"mData" : "betbet"
-			}, {
-				"mData" : "aktkod"
 			} ],
 			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
@@ -166,9 +166,9 @@
 					<th>Feildato</th>
 					<th>Feil</th>
 					<th>Postnr</th>
+					<th>Postnr(utl.)</th>
 					<th>Land</th>
 					<th>Bet.beting.</th>
-					<th>Type</th>
 				</tr>
 			</thead>
 		</table>

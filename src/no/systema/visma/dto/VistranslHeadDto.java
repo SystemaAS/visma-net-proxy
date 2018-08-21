@@ -32,6 +32,7 @@ public class VistranslHeadDto {
 	private int pernr;
 	private String lkid;
 	private String valkox;
+	private String path;
 	private BigDecimal valku1 = new BigDecimal(0);	
 	private List<VistranslLineDto> lines;
 	

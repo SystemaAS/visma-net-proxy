@@ -1,9 +1,15 @@
 package no.systema.visma.integration;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+
+import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueDecimal;
 import no.systema.visma.v1client.model.DtoValueInt32;
@@ -136,6 +142,21 @@ public class DtoValueHelper {
 		return dto;
 
 	}	
+
+	/**
+	 * Return a {@linkplain FileSystemResource} from provided path.
+	 * 
+	 * @param path in AS400-format
+	 * @return {@linkplain FileSystemResource}
+	 * @throws IOException
+	 */
+	public static Resource getAttachment(String path) throws IOException {
+        File file = new File(path);
+        if (!file.exists()) {
+        	throw new RuntimeException("Could create file on path:"+path);
+        }
+        return new FileSystemResource(file);	
+	}
 	
 	
 }

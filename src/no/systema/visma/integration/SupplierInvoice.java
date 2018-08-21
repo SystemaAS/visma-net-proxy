@@ -1,5 +1,7 @@
 package no.systema.visma.integration;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,8 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -17,8 +21,10 @@ import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dao.services.ViscrossrDaoService;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.jservices.common.values.ViscrossrKoder;
+import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslLineDto;
+import no.systema.visma.integration.extended.SupplierInvoiceApiExtended;
 import no.systema.visma.v1client.api.SupplierInvoiceApi;
 import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
@@ -46,7 +52,8 @@ public class SupplierInvoice extends Configuration {
 	public ViscrossrDaoService viscrossrDaoService;	
 
 	@Autowired
-	public SupplierInvoiceApi supplierInvoiceApi = new SupplierInvoiceApi(apiClient());
+//	public SupplierInvoiceApi supplierInvoiceApi = new SupplierInvoiceApi(apiClient());
+	public SupplierInvoiceApiExtended supplierInvoiceApi = new SupplierInvoiceApiExtended(apiClient());
 
 	@Autowired
 	public Supplier supplier;
@@ -72,7 +79,7 @@ public class SupplierInvoice extends Configuration {
 	 * @throws RestClientException
 	 * @throws HttpClientErrorException
 	 */
-	public void syncronize(VistranslHeadDto vistranslHeadDto) throws RestClientException, HttpClientErrorException {
+	public void syncronize(VistranslHeadDto vistranslHeadDto) throws RestClientException, HttpClientErrorException, IOException {
 		logger.info("syncronize(VistranslHeadDto vistranslHeadDto)");
 		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 
@@ -84,22 +91,24 @@ public class SupplierInvoice extends Configuration {
 			if (supplierExistDto == null) {
 				logger.error("Could not find Supplier on number:" + vistranslHeadDto.getResnr());
 				throw new RuntimeException("Could not find Supplier on number:" + vistranslHeadDto.getResnr());
-			} else { // Sanity check 2
-				String referenceNumber = String.valueOf(vistranslHeadDto.getBilnr());
-				SupplierInvoiceDto supplierInvoiceExistDto = getByinvoiceNumber(referenceNumber);
-
-				if (supplierInvoiceExistDto != null) {
-					String errMsg = String.format("Fakturanr: %s already exist, updates not allowed!", vistranslHeadDto.getBilnr());
-					logger.error(errMsg);
-	    			throw new RuntimeException(errMsg);
-				} else {   // do the thing
-					SupplierInvoiceUpdateDto updateDto = convertToSupplierInvoiceUpdateDto(vistranslHeadDto);
-
-					supplierInvoicePost(updateDto);
-					logger.info("Fakturanr:" + vistranslHeadDto.getBilnr() + " is inserted.");
-
-				}
+			} 
+			// Sanity check 2
+			String referenceNumber = String.valueOf(vistranslHeadDto.getBilnr());
+			SupplierInvoiceDto supplierInvoiceExistDto = getByinvoiceNumber(referenceNumber);
+			if (supplierInvoiceExistDto != null) {
+				String errMsg = String.format("INNG.FAKTURA:fakturanr: %s already exist, updates not allowed!", vistranslHeadDto.getBilnr());
+				logger.error(errMsg);
+    			throw new RuntimeException(errMsg);
+			} 
+			// Do the thing, if no exception from above
+			Resource attachment = null;
+			if (StringUtils.hasValue(vistranslHeadDto.getPath())) {
+				attachment = DtoValueHelper.getAttachment(vistranslHeadDto.getPath());
 			}
+			SupplierInvoiceUpdateDto updateDto = convertToSupplierInvoiceUpdateDto(vistranslHeadDto);
+			supplierInvoicePost(updateDto, attachment);
+			logger.info("INNG.FAKTURA:fakturanr:" + vistranslHeadDto.getBilnr() + " is inserted.");
+
 
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
@@ -148,25 +157,28 @@ public class SupplierInvoice extends Configuration {
 
 	}	
 	
-	
 	/**
 	 * Create an Invoice Response 
 	 * Message has StatusCode Created if POST operation succeed
 	 * <p>
 	 * <b>201</b> - Created
-	 * 
 	 * @param invoice
 	 *            Defines the data for the Invoice to create
+	 * @param attachment can be null
 	 * @throws RestClientException
 	 *             if an error occurs while attempting to invoke the API
+     * @throws IOException if attachment not found.  
 	 */
-	public void supplierInvoicePost(SupplierInvoiceUpdateDto updateDto) throws RestClientException {
-		logger.info("supplierInvoiceCreate(SupplierInvoiceUpdateDto updateDto)");
+	public void supplierInvoicePost(SupplierInvoiceUpdateDto updateDto, Resource attachment) throws RestClientException, IOException  {
+		logger.info("supplierInvoiceCreate(SupplierInvoiceUpdateDto updateDto, Resource attachment)");
 		logger.info(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber(), updateDto.getReferenceNumber())); 
 
 		try {
 
 			supplierInvoiceApi.supplierInvoicePost(updateDto);
+			if (attachment != null) {
+				attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
+			}
 
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber(), updateDto.getReferenceNumber())); 
@@ -183,7 +195,11 @@ public class SupplierInvoice extends Configuration {
 		}
 
 	}	
-	
+
+    void attachInvoiceFile(String bilnr, Resource file) throws IOException {
+			supplierInvoiceApi.supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
+    }
+    
 	private SupplierInvoiceUpdateDto convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto) {
 		logger.info("convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto)");
 		

@@ -22,6 +22,7 @@
 	<bean id="supplierApi" class="no.systema.visma.v1client.api.SupplierApi"/>
 	<bean id="supplierInvoice" class="no.systema.visma.integration.SupplierInvoice"/>
 	<bean id="supplierInvoiceApi" class="no.systema.visma.v1client.api.SupplierInvoiceApi"/>	
+	<bean id="supplierInvoiceApiExtended" class="no.systema.visma.integration.extended.SupplierInvoiceApiExtended"/>
 	
 	
 	<bean id="customerTransactionManager" class="no.systema.visma.transaction.CustomerTransactionManager"/>

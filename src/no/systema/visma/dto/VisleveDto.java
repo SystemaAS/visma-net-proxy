@@ -17,6 +17,7 @@ public class VisleveDto {
 	private int levnr; // key
 	private String lnavn;
 	private int postnr;
+	private String postnu;
 	private String valkod;
 	private String spraak;
 	private String betbet;

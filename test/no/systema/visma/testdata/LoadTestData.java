@@ -67,9 +67,9 @@ public class LoadTestData {
 	@Test
 	public void runAll() {
 //		loadCustomers();
-		loadCustomerInvoices();
+//		loadCustomerInvoices();
 //		loadSuppliers();
-//		loadSupplierInvoices();
+		loadSupplierInvoices();
 	}
 	
 	@SneakyThrows
@@ -220,6 +220,7 @@ public class LoadTestData {
 	
 	@SneakyThrows
 	private void loadSuppliers() {
+		visleveDaoService.deleteAll(null);
 		Resource visleveFile = new ClassPathResource("visleve.csv");
 		Reader in = null;
 		Iterable<CSVRecord> records = null;
@@ -280,6 +281,7 @@ public class LoadTestData {
 
 	@SneakyThrows
 	private void loadSupplierInvoices() {
+		vistranslDaoService.deleteAll(null);
 		Resource vistranslFile = new ClassPathResource("vistransl.csv");
 		Reader in = null;
 		Iterable<CSVRecord> records = null;

@@ -58,6 +58,7 @@ public class VistranskTransformer {
 			head.setValkox(daoList.get(0).getValkox());
 			head.setValku1(daoList.get(0).getValku1());	
 			head.setFakkre(daoList.get(0).getFakkre());
+			head.setPath(daoList.get(0).getPath());
 			
 			daoList.forEach(dao -> { //Lines
 				VistranskLineDto line = new VistranskLineDto();

@@ -1,11 +1,7 @@
 package no.systema.visma.integration;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -110,27 +105,27 @@ public class CustomerInvoice extends Configuration {
 			String referenceNumber = String.valueOf(vistranskHeadDto.getBilnr());
 			CustomerInvoiceDto customerInvoiceExistDto = getByinvoiceNumber(referenceNumber);
 			if (customerInvoiceExistDto != null) {
-				String errMsg = String.format("FAKTURA:fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
+				String errMsg = String.format("UTG.FAKTURA:fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
 				logger.error(errMsg);
 				throw new RuntimeException(errMsg);
 			}
 			// Sanity check 3
 			CustomerCreditNoteDto customerCreditNoteExistDto = getCustomerCreditNoteByInvoiceNumber(referenceNumber);
 			if (customerCreditNoteExistDto != null) {
-				String errMsg = String.format("KREDITNOTA:fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
+				String errMsg = String.format("UTG.KREDITNOTA:fakturanr: %s already exist, updates not allowed!", vistranskHeadDto.getBilnr());
 				logger.error(errMsg);
 				throw new RuntimeException(errMsg);
 			}
 			// Do the thing, if no exception from above
-			Resource attachment = getAttachment(vistranskHeadDto);
+			Resource attachment = DtoValueHelper.getAttachment(vistranskHeadDto.getPath());
 			if (vistranskHeadDto.getFakkre().equals("K")) {
 				CustomerCreditNoteUpdateDto updateDto = convertToCustomerCreditNoteUpdateDto(vistranskHeadDto);
 				customerCreditNoteCreate(updateDto, attachment);
-				logger.info("KREDITNOTA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
+				logger.info("UTG.KREDITNOTA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
 			} else { // FAKKRE=F
 				CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
 				customerInvoiceCreate(updateDto, attachment);
-				logger.info("FAKTURA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
+				logger.info("UTG:FAKTURA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
 			}
 
 		} catch (HttpClientErrorException e) {
@@ -174,7 +169,6 @@ public class CustomerInvoice extends Configuration {
 			
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
 			attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
-
 			
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
@@ -211,7 +205,6 @@ public class CustomerInvoice extends Configuration {
 			customerCreditNoteApi.customerCreditNoteCreate(updateDto); 
 			attachCreditNoteFile(updateDto.getReferenceNumber().getValue(), attachment);
 
-
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate call. updateDto=" + updateDto.toString());
@@ -228,24 +221,16 @@ public class CustomerInvoice extends Configuration {
 		
 	}	
 	
-    Object attachInvoiceFile(String bilnr, Resource file) throws IOException {
-			return customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
+    void attachInvoiceFile(String bilnr, Resource file) throws IOException {
+		logger.info("attachInvoiceFile(bilnr file)");
+    	customerInvoiceApi.customerInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
     }
     
-    Object attachCreditNoteFile(String bilnr, Resource file) throws IOException {
-			return customerCreditNoteApi.customerCreditNoteCreateHeaderAttachmentBycreditNoteNumber(bilnr, file);
+    void attachCreditNoteFile(String bilnr, Resource file) throws IOException {
+		logger.info("attachCreditNoteFile(bilnr file)");
+    	customerCreditNoteApi.customerCreditNoteCreateHeaderAttachmentBycreditNoteNumber(bilnr, file);
     }    
  
-	//TODO getAttachment path
-	private Resource getAttachment(VistranskHeadDto vistranskHeadDto) throws IOException {
-//        File file = new File(vistranskHeadDto.pathToFile());
-        File file = new File("vistranskHeadDto.pathToFile()");
-        if (!file.exists()) {
-        	throw new RuntimeException("Could create file on path:"+"vistranskHeadDto.pathToFile()");
-        }
-        return new FileSystemResource(file);	
-	}
-    
 	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
 		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
 		
@@ -280,12 +265,9 @@ public class CustomerInvoice extends Configuration {
 		dto.setCustomerNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getResnr()));
 		dto.setReferenceNumber(DtoValueHelper.toDtoString(vistranskHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranskHeadDto));
-//		dto.setCreditTermsId(DtoValueHelper.toDtoString(vistranskHeadDto.getBetbet()));
 		dto.setDocumentDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getKrdaar(), vistranskHeadDto.getKrdmnd(), vistranskHeadDto.getKrddag()));
-//		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
 		if (StringUtils.hasValue(vistranskHeadDto.getValkox())) {
 			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranskHeadDto.getValkox()));
-//			dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranskHeadDto.getValku1()));
 		} else {
 			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
 		}
@@ -356,9 +338,6 @@ public class CustomerInvoice extends Configuration {
 		return customerCreditNoteExistDto;
 
 	}
-	
-	
-	
 	
 	private DtoValueString getFinancialsPeriod(VistranskHeadDto vistranskHeadDto) {
 		String year = String.valueOf(vistranskHeadDto.getPeraar());
@@ -507,7 +486,11 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}	
-		//TODO check  pdf-path
+		if (vistranskHeadDto.getPath() == null) {
+			String errMsg = "PATH can not be empty";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
 		
 	}	
 	

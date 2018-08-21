@@ -74,8 +74,7 @@ public class TestJCustomerInvoice {
 		Resource file = getTestFile();
 		
 		assertNotNull(file);
-		Object obj = customerInvoice.attachCreditNoteFile("987", file);
-		logger.debug("obj="+obj);
+		customerInvoice.attachCreditNoteFile("987", file);
 		
 	}		
 	
@@ -167,7 +166,7 @@ public class TestJCustomerInvoice {
 	
     public static Resource getPdfFile() throws IOException {
     	 
-    	File file =new File("/XXXUsers/fredrikmoller/git/visma-net-proxy/test/CloudNativeLandscape_v0.9.4.pdf");
+    	File file =new File("/Users/fredrikmoller/git/visma-net-proxy/test/CloudNativeLandscape_v0.9.4.pdf");
 
     	logger.info("file.exists())= "+file.exists());
     	

@@ -1,5 +1,6 @@
 package no.systema.visma.transaction;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +119,11 @@ public class SupplierInvoiceTransactionManager {
 			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
 			throw e;
 		}
+		catch (IOException e) {
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			throw new RuntimeException("Could not find file", e.getCause());
+		}		
 		catch (Exception e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
