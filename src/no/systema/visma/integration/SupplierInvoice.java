@@ -170,7 +170,7 @@ public class SupplierInvoice extends Configuration {
 	 */
 	public void supplierInvoicePost(SupplierInvoiceUpdateDto updateDto, Resource attachment) throws RestClientException, IOException  {
 		logger.info("supplierInvoiceCreate(SupplierInvoiceUpdateDto updateDto, Resource attachment)");
-		logger.info(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber(), updateDto.getReferenceNumber())); 
+		logger.info(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue())); 
 
 		try {
 
@@ -180,24 +180,25 @@ public class SupplierInvoice extends Configuration {
 			}
 
 		} catch (HttpClientErrorException e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber(), updateDto.getReferenceNumber())); 
+			logger.error("HttpClientErrorException::"+LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue())); 
 			logger.error(e.getClass() + " On supplierInvoiceApi.supplierInvoicePost call. updateDto=" + updateDto.toString());
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber(), updateDto.getReferenceNumber()));
+			logger.error("RestClientException | IllegalArgumentException | IndexOutOfBoundsException::"+LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue()));
 			logger.error(e.getClass() + " On supplierInvoiceApi.supplierInvoicePost call. updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-			logger.error(LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber(), updateDto.getReferenceNumber()));
+			logger.error("Exception::"+LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue()));
 			logger.error(e.getClass() + " On supplierInvoiceApi.supplierInvoicePost call. updateDto=" + updateDto.toString());
 			throw e;
 		}
 
 	}	
 
-    void attachInvoiceFile(String bilnr, Resource file) throws IOException {
-			supplierInvoiceApi.supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
-    }
+	void attachInvoiceFile(String bilnr, Resource file) throws IOException {
+		logger.info("attachInvoiceFile(bilnr="+bilnr+", filename="+file.getFilename()+", file.contentLength="+file.contentLength());
+		supplierInvoiceApi.supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
+	}
     
 	private SupplierInvoiceUpdateDto convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto) {
 		logger.info("convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto)");
@@ -252,7 +253,7 @@ public class SupplierInvoice extends Configuration {
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitCostInCurrency(DtoValueHelper.toDtoValueNullableDecimal(lineDto.getNbelpo()));
 			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
-			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
+			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setOperation(OperationEnum.INSERT);
@@ -385,8 +386,8 @@ public class SupplierInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (lineDto.getKonto() == 0) {
-			String errMsg = "KONTO can not be 0";
+		if (lineDto.getKontov() == 0) {
+			String errMsg = "KONTOV can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		

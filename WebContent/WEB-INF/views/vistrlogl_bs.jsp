@@ -62,7 +62,7 @@
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 5, "desc" ] ],
+			"order" : [ [ 4, "desc" ] ],
 			"aoColumns" : [ {
 				"mData" : "bilnr"
 			}, {

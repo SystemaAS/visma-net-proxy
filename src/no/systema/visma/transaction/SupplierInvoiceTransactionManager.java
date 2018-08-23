@@ -101,7 +101,7 @@ public class SupplierInvoiceTransactionManager {
 	}	
 	
 	private void syncronizeSupplierInvoice(VistranslHeadDto vistranslHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
-		logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+		logger.info("syncronizeSupplierInvoice"+LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 
 		try {
 			

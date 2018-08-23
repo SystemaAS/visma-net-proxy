@@ -169,7 +169,7 @@ public class LoadTestData {
 			String ffddag = record.get("ffddag");	
 			String biltxt = record.get("biltxt");
 			String betbet = record.get("betbet");
-			String konto = record.get("konto");
+			String kontov = record.get("kontov");
 			String ksted = record.get("ksted");
 			String momsk = record.get("momsk"); 		
 			String nbelpo = record.get("nbelpo");
@@ -196,11 +196,12 @@ public class LoadTestData {
 			dao.setFfddag(Integer.parseInt(ffddag));	
 			dao.setBiltxt(biltxt);
 			dao.setBetbet(betbet);
-			dao.setKonto(Integer.parseInt(konto));
+			dao.setKontov(Integer.parseInt(kontov));
 			dao.setKsted(Integer.parseInt(ksted));
 			dao.setMomsk(momsk);  
 			dao.setNbelpo(new BigDecimal(nbelpo));
 			dao.setFakkre(fakkre);
+			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
 			if (StringUtils.hasValue(valkox)) {
 				dao.setValkox(valkox);
 				dao.setValku1(new BigDecimal(valku1));
@@ -314,7 +315,7 @@ public class LoadTestData {
 			String ffddag = record.get("ffddag");	
 			String biltxt = record.get("biltxt");
 			String betbet = record.get("betbet");
-			String konto = record.get("konto");
+			String kontov = record.get("kontov");
 			String ksted = record.get("ksted");
 			String kbarer = record.get("kbarer");
 			String momsk = record.get("momsk");  		
@@ -345,7 +346,7 @@ public class LoadTestData {
 			dao.setFfddag(Integer.parseInt(ffddag));	
 			dao.setBiltxt(biltxt);
 			dao.setBetbet(betbet);
-			dao.setKonto(Integer.parseInt(konto));
+			dao.setKontov(Integer.parseInt(kontov));
 			dao.setKsted(Integer.parseInt(ksted));
 			dao.setKbarer(Integer.parseInt(kbarer));
 			dao.setMomsk(momsk);  
@@ -357,6 +358,7 @@ public class LoadTestData {
 			dao.setKrnr(krnr);
 			dao.setLkid(lkid);
 			dao.setFakkre(fakkre);
+//			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
 			
 			vistranslDaoService.create(dao);
 

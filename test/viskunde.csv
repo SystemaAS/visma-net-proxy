@@ -1,5 +1,5 @@
 aktkod,firma,kundnr,knavn,adr1,adr2,adr3,postnr,sypoge,valkod,spraak,betbet,syland,kpers,syepos,tlf
-A,SY,111,testkunde svensk,adress1,adress2,adress3,0,41871,SEK,S,14,SE,Fredrik,f@s.no,1111
-A,SY,222,testkunde svensk 2,adress1,adress2,adress3,0,41871,SEK,S,14,SE,Fredrik,f@s.no,1111
-A,SY,200,testkunde 2,adress1,adress2,adress3,6001,777,NOK,N,14,NO,Svein,f@s.no,1111
-A,SY,300,testkunde 3,adress1,adress2,adress3,6001,777,NOK,N,14,NO,Svein,f@s.no,1111
+A,SY,11122233,testkunde svensk,adress1,adress2,adress3,0,41871,SEK,S,14,SE,Fredrik,f@s.no,1111
+A,SY,22233344,testkunde svensk 2,adress1,adress2,adress3,0,41871,SEK,S,14,SE,Fredrik,f@s.no,1111
+A,SY,200300,testkunde norsk,adress1,adress2,adress3,6001,777,NOK,N,14,NO,Svein,f@s.no,1111
+A,SY,300400,testkunde norsk,adress1,adress2,adress3,6001,777,NOK,N,14,NO,Svein,f@s.no,1111

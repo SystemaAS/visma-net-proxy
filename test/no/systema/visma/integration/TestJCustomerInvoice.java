@@ -143,7 +143,7 @@ public class TestJCustomerInvoice {
 		dao.setFfdmnd(5);
 		dao.setFfddag(25);	
 		dao.setMomsk("32");
-		dao.setKonto(3000);		
+		dao.setKontov(3000);		
 		dao.setKsted(3);  // avd
 		dao.setBetbet("14");
 		dao.setBbelop(new BigDecimal(15.0));

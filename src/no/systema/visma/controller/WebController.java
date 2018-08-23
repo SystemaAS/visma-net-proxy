@@ -243,10 +243,8 @@ public class WebController {
 
     
     @RequestMapping(value = "vismaCallback.do", method={RequestMethod.GET})
-	public ModelAndView doCallback(HttpSession session, HttpServletRequest request) {
-		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+	public ModelAndView doVismaCallback(HttpSession session, HttpServletRequest request) {
 		ModelAndView successView = new ModelAndView("visma_callback");
-
 		logger.info("INSIDE: vismaCallback.do");
 
 		String generatedAuthorizationCode = request.getParameter(Authorization.RESPONSE_TYPE);
@@ -264,11 +262,7 @@ public class WebController {
 
 		updateFirmvis(generatedAuthorizationCode, accessToken.getToken());
 		
-		if (appUser == null) {
-			return loginView;
-		} else {
-			return successView;
-		}
+		return successView;
 		
 	}    
     

@@ -85,6 +85,8 @@
 				"mData" : "betbet"
 			}, {
 				"mData" : "fakkre"
+			}, {
+				"mData" : "valkox"
 			} ],
 			"lengthMenu" : [ 25, 75, 100 ],
 			"language" : {
@@ -191,6 +193,7 @@
 					<th>Kost.barer</th>
 					<th>Bet.beting.</th>
 					<th>Type</th>
+					<th>Valutakod</th>	
 				</tr>
 			</thead>
 		</table>

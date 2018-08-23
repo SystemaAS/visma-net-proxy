@@ -90,7 +90,7 @@ public class TestJCustomerInvoiceTransactionManager {
 		dao.setFfddag(25);	
 		dao.setBiltxt("T-shirt");
 		dao.setBetbet("14");
-		dao.setKonto(3000);
+		dao.setKontov(3000);
 		dao.setKsted(100);
 		dao.setKbarer(444);
 		dao.setMomsk("3");  //TEGN 1
@@ -116,7 +116,7 @@ public class TestJCustomerInvoiceTransactionManager {
 		dao2.setFfddag(25);	
 		dao2.setBiltxt("Hat");
 		dao2.setBetbet("14");
-		dao2.setKonto(3000);
+		dao2.setKontov(3000);
 		dao2.setKsted(100);
 		dao2.setKbarer(444);
 		dao2.setMomsk("3");  //TEGN 1		

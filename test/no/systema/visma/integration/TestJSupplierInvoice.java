@@ -68,7 +68,7 @@ public class TestJSupplierInvoice {
 		Resource file = getPdfFile();
 		
 		assertNotNull(file);
-		supplierInvoice.attachInvoiceFile("20", file);
+		supplierInvoice.attachInvoiceFile("31", file);
 		
 	}		
 	
@@ -161,7 +161,7 @@ public class TestJSupplierInvoice {
 		dao.setFfdmnd(5);
 		dao.setFfddag(25);	
 		dao.setMomsk("32");
-		dao.setKonto(3000);		
+		dao.setKontov(3000);		
 		dao.setKbarer(3);  // avd
 		dao.setKsted(888); 
 		dao.setBetbet("14");

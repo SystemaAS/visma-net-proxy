@@ -97,7 +97,7 @@ public class TestJVistranskTransformer {
 			String ffddag = record.get("ffddag");	
 			String biltxt = record.get("biltxt");
 			String betbet = record.get("betbet");
-			String konto = record.get("konto");
+			String kontov = record.get("kontov");
 			String ksted = record.get("ksted");
 			String momsk = record.get("momsk"); 		
 			String nbelpo = record.get("nbelpo");
@@ -124,7 +124,7 @@ public class TestJVistranskTransformer {
 			dao.setFfddag(Integer.parseInt(ffddag));	
 			dao.setBiltxt(biltxt);
 			dao.setBetbet(betbet);
-			dao.setKonto(Integer.parseInt(konto));
+			dao.setKontov(Integer.parseInt(kontov));
 			dao.setKsted(Integer.parseInt(ksted));
 			dao.setMomsk(momsk);  
 			dao.setNbelpo(new BigDecimal(nbelpo));

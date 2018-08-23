@@ -15,7 +15,7 @@ public class VistranskLineDto {
 
 	private BigDecimal nbelpo = new BigDecimal(0);
 	private String momsk;
-	private int konto;
+	private int kontov;
 	private int ksted;
 	private int kbarer;	
 	private String biltxt;	

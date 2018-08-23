@@ -103,7 +103,7 @@ public class TestJHelper {
 		dao.setFfdmnd(5);
 		dao.setFfddag(25);
 		dao.setMomsk("32");
-		dao.setKonto(3000);
+		dao.setKontov(3000);
 		dao.setKbarer(1000);
 		dao.setKsted(4000);
 		dao.setBetbet("14");

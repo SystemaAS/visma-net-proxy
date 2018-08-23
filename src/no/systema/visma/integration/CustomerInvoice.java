@@ -359,7 +359,7 @@ public class CustomerInvoice extends Configuration {
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getNbelpo())); 
 			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
-			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
+			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setOperation(OperationEnum.INSERT);
@@ -384,7 +384,7 @@ public class CustomerInvoice extends Configuration {
 			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getNbelpo())); 
 			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
-			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKonto()));
+			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setOperation(no.systema.visma.v1client.model.CustomerCreditNoteLineUpdateDto.OperationEnum.INSERT);
@@ -511,8 +511,8 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (lineDto.getKonto() == 0) {
-			String errMsg = "KONTO can not be 0";
+		if (lineDto.getKontov() == 0) {
+			String errMsg = "KONTOV can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		

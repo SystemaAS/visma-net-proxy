@@ -18,11 +18,12 @@ public class VistranskDto {
 	private int bilnr; //faktura
 	private int posnr;
 	private String betbet;
-	private int konto;
+	private int kontov;
 	private int ksted;
 	private int kbarer;
 	private String biltxt;
 	private String fakkre;
+	private String valkox;
 	private int syncda;
 	private String syerro;
 	

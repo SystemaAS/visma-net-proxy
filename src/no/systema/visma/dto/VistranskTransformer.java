@@ -65,7 +65,7 @@ public class VistranskTransformer {
 				line.setPosnr(dao.getPosnr());
 				line.setNbelpo(dao.getNbelpo());
 				line.setMomsk(dao.getMomsk());
-				line.setKonto(dao.getKonto());
+				line.setKontov(dao.getKontov());
 				line.setKsted(dao.getKsted());
 				line.setBiltxt(dao.getBiltxt());
 

@@ -73,12 +73,13 @@ public class SupplierInvoiceApiExtended extends SupplierInvoiceApi {
 		apiClient.addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
 		apiClient.setAccessToken(firmvis.getViacto().trim());       
  
-		// verify the required parameter 'invoiceNumber' is set
         if (invoiceNumber == null) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'invoiceNumber' when calling supplierInvoiceCreateHeaderAttachmentByinvoiceNumber");
         }
+        if (attachment == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'attachment' when calling supplierInvoiceCreateHeaderAttachmentByinvoiceNumber");
+        }  
         
-        // create path and map variables
         final Map<String, Object> uriVariables = new HashMap<String, Object>();
         uriVariables.put("invoiceNumber", invoiceNumber);
         String path = UriComponentsBuilder.fromPath("/controller/api/v1/supplierInvoice/{invoiceNumber}/attachment").buildAndExpand(uriVariables).toUriString();

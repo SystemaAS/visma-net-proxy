@@ -311,12 +311,13 @@ public class DataController {
 			dto.setBilnr(dao.getBilnr());
 			dto.setBetbet(dao.getBetbet());
 			dto.setPosnr(dao.getPosnr());
-			dto.setKonto(dao.getKonto());
+			dto.setKontov(dao.getKontov());
 			dto.setKsted(dao.getKsted());
 			dto.setKbarer(dao.getKbarer());
 			dto.setBiltxt(dao.getBiltxt());
-			dto.setSyncda(dao.getSyncda());
 			dto.setFakkre(dao.getFakkre());
+			dto.setValkox(dao.getValkox());
+			dto.setSyncda(dao.getSyncda());
 			dto.setSyerro(dao.getSyerro());
 			
 			vistranskDtoList.add(dto);
@@ -337,11 +338,13 @@ public class DataController {
 			dto.setBilnr(dao.getBilnr());
 			dto.setBetbet(dao.getBetbet());
 			dto.setPosnr(dao.getPosnr());
-			dto.setKonto(dao.getKonto());
+			dto.setKontov(dao.getKontov());
 			dto.setKsted(dao.getKsted());
 			dto.setKbarer(dao.getKbarer());
 			dto.setBiltxt(dao.getBiltxt());
 			dto.setFakkre(dao.getFakkre());
+			dto.setValkox(dao.getValkox());
+			
 			dto.setSyncda(dao.getSyncda());
 			dto.setSyerro(dao.getSyerro());
 			
