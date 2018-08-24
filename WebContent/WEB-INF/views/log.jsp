@@ -60,10 +60,6 @@
 		
 	}
 
-	jq(document).ready(function() {
-
-	});
-
 	window.addEventListener('error', function(e) {
 		var error = e.error;
 		jq.unblockUI();

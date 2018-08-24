@@ -13,15 +13,7 @@
 
 <script type="text/javascript">
 	"use strict";
-	jq(function() {
-		jq("#selectFradato").datepicker({
-			dateFormat : 'yymmdd'
-		});
-		jq("#selectTildato").datepicker({
-			dateFormat : 'yymmdd'
-		});
-	});
-	var jq = jQuery.noConflict();
+
 	var baseUrl = "/visma-net-proxy/viskulog?user=${user.user}";
 	
 	function load_data() {
@@ -30,25 +22,23 @@
 
 		var selectedKundenr = jq('#selectKundenr').val();
 		var selectedFradato = jq('#selectFradato').val();
-		var selectedTildato = jq('#selectTildato').val();
 
 		if (selectedKundenr != "") {
 			runningUrl = runningUrl + "&kundnr=" + selectedKundenr;
 		} else {
 			runningUrl = runningUrl + "&kundnr=ALL";
 		}
+
 		if (selectedFradato != null && selectedFradato != "") {
-			runningUrl = runningUrl + "&fraDato=" + selectedFradato;
+			runningUrl = getRunningUrl(runningUrl, selectedFradato);
+			if (runningUrl == '-1') {
+				return "no data found";
+			}
 		} else {
-			runningUrl = runningUrl + "&fraDato=ALL";
-		}
-		if (selectedTildato != null && selectedTildato != "") {
-			runningUrl = runningUrl + "&tilDato=" + selectedTildato;
-		} else {
-			runningUrl = runningUrl + "&tilDato=ALL";
-
-		}
-
+			alert('Dato er obligatorisk.'); 
+			return "no data found";
+		}		
+		
 		console.log("runningUrl=" + runningUrl);
 
 		jq.blockUI({
@@ -135,8 +125,8 @@
 			    <span class="badge badge-danger">${customer_invoice_error}</span>
 			</c:if>			
 		</a>
-		<a class="nav-item nav-link active" href="viskulog.do">Kunde - historikk</a>
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - historikk</a>
+		<a class="nav-item nav-link active" href="viskulog.do">Kunde - feilhistorikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogk.do">Faktura - feilhistorikk</a>
 	  </div>
 	</nav>
 	
@@ -152,7 +142,7 @@
 		</div>
 		<div class="col-1">
 			<label for="selectFradato">Fra&nbsp;dato:&nbsp;</label>
-			<input type="text" class="inputText" name="selectFradato" id="selectFradato" size="9" maxlength="8">
+			<input type="text" class="inputTextMediumBlueMandatoryField" name="selectFradato" id="selectFradato" size="11" maxlength="10">
 		</div>
 		<div class="col-1">
 			<br>

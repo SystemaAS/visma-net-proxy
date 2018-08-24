@@ -8,6 +8,29 @@ function setBlockUI(element){
   jq.blockUI({ message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
 }
   
+function getRunningUrl(runningUrl, fraDato) {
+	let today = new Date();
+	let dato = new Date(fraDato);
+	
+	if (dato > today) {
+		console.log("dato > today");
+		alert('Du har valgt ett dato i framtiden:-)');
+		return "-1";
+	}
+	var fraDatoRes = fraDato.replace(/-/g,"");
+	return runningUrl + "&fraDato=" + fraDatoRes;			
+	
+}
+
+jq(function() {
+	jq("#selectFradato").datepicker({
+		dateFormat : 'yy-mm-dd'
+	});
+	jq("#selectTildato").datepicker({
+		dateFormat : 'yy-mm-dd'
+	});
+});
+
 
 jq(function() {
 	jq('a#kundenrLink').click(function() {

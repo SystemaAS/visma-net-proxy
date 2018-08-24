@@ -68,8 +68,8 @@ public class LoadTestData {
 	public void runAll() {
 //		loadCustomers();
 //		loadCustomerInvoices();
-//		loadSuppliers();
-		loadSupplierInvoices();
+		loadSuppliers();
+//		loadSupplierInvoices();
 	}
 	
 	@SneakyThrows
@@ -317,7 +317,6 @@ public class LoadTestData {
 			String betbet = record.get("betbet");
 			String kontov = record.get("kontov");
 			String ksted = record.get("ksted");
-			String kbarer = record.get("kbarer");
 			String momsk = record.get("momsk");  		
 			String nbelpo = record.get("nbelpo");
 			String valkox = record.get("valkox");
@@ -348,7 +347,6 @@ public class LoadTestData {
 			dao.setBetbet(betbet);
 			dao.setKontov(Integer.parseInt(kontov));
 			dao.setKsted(Integer.parseInt(ksted));
-			dao.setKbarer(Integer.parseInt(kbarer));
 			dao.setMomsk(momsk);  
 			dao.setNbelpo(new BigDecimal(nbelpo));
 			if (StringUtils.hasValue(valkox)) {

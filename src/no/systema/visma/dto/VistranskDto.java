@@ -20,7 +20,7 @@ public class VistranskDto {
 	private String betbet;
 	private int kontov;
 	private int ksted;
-	private int kbarer;
+	private String momsk;
 	private String biltxt;
 	private String fakkre;
 	private String valkox;
