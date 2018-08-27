@@ -1,9 +1,6 @@
 package no.systema.visma.integration;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,14 +20,12 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
-import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.VistranslDao;
-import no.systema.visma.dto.VistranskHeadDto;
-import no.systema.visma.dto.VistranskTransformer;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslTransformer;
-import no.systema.visma.v1client.model.CustomerInvoiceDto;
 import no.systema.visma.v1client.model.SupplierInvoiceDto;
 
 @RunWith(SpringRunner.class)
@@ -40,7 +35,6 @@ public class TestJSupplierInvoice {
 	private static Logger logger = Logger.getLogger(TestJSupplierInvoice.class);	
 
 	String desc;
-	BigDecimal cost;
 	LocalDateTime now;
 	
 	@Autowired 
@@ -49,7 +43,6 @@ public class TestJSupplierInvoice {
 	@Before
 	public void setUp() throws Exception {
 		now = LocalDateTime.now();
-		cost = new BigDecimal(15.0);
 		desc = "Go bananas"+now;
 	}
 
@@ -112,30 +105,24 @@ public class TestJSupplierInvoice {
 
 	
 	
-//	@Test(expected=RuntimeException.class) //Updates not allowed
-//	public void testSupplierInvoiceSyncUpdate() {
-//		List<VistranslHeadDto> list = VistranslTransformer.transform( getUpdateList() );
-//
-//		supplierInvoice.syncronize(list.get(0));
-//		
-//		SupplierInvoiceDto dto = supplierInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
-//		assertEquals("Should be same", desc, dto.getInvoiceLines().get(0).getTransactionDescription());
-//		logger.debug("dto="+dto);		
-//		
-//	}
+	@Test
+	public void testSupplierInvoiceInsert() throws HttpClientErrorException, RestClientException, IOException {
+		List<VistranslHeadDto> list = VistranslTransformer.transform( getCreateList() );
+
+		supplierInvoice.syncronize(list.get(0));
+		
+	}
 	
 
 	private List<VistranslDao> getCreateList() {
 		List<VistranslDao> list = new ArrayList<VistranslDao>();
 		
-		list.add(getVistranslDao(50000, 200, 1, desc));
-		list.add(getVistranslDao(50000, 200, 2, "Nice %&# åäö"));
+		list.add(getVistranslDao(101, 304, 1, desc));
+		list.add(getVistranslDao(101, 304, 2, "Nice %&# åäö"));
 		
 		return list;
 		
 	}	
-	
-	
 	
 	private List<VistranslDao> getUpdateList() {
 		List<VistranslDao> list = new ArrayList<VistranslDao>();
@@ -155,19 +142,24 @@ public class TestJSupplierInvoice {
 		dao.setBiltxt(biltxt);
 		dao.setAktkod("A");
 		dao.setKrdaar(2018);
-		dao.setKrdmnd(5);
-		dao.setKrddag(25);
+		dao.setKrdmnd(8);
+		dao.setKrddag(27);
 		dao.setFfdaar(2018);
-		dao.setFfdmnd(5);
-		dao.setFfddag(25);	
-		dao.setMomsk("32");
+		dao.setFfdmnd(8);
+		dao.setFfddag(27);	
+		dao.setMomsk("0");
 		dao.setKontov(3000);		
-		dao.setKbarer(3);  // avd
-		dao.setKsted(888); 
+		dao.setKsted(3); //avd 
 		dao.setBetbet("14");
-		dao.setBbelop(cost);
+		dao.setNbelpo(new BigDecimal(15.0));
 		dao.setPeraar(2018);
 		dao.setPernr(8);
+		dao.setLkid("123456789");
+		dao.setKrnr("987654321");
+		dao.setFakkre("K");
+		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+		dao.setValkox("SEK");
+		dao.setValku1(new BigDecimal(0.925));
 		
 		return dao;
 	}	

@@ -398,7 +398,7 @@ public class CustomerInvoice extends Configuration {
 	}
 	
 	private DtoValueString getVatCodeId(String momsk) {
-		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MOMSK);
+		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MVA_S);
 		if (vismaCodeId == null) {
 			throw new RuntimeException("No Visma.net value found in VISCROSSR for SYSPED value:"+momsk);
 		}

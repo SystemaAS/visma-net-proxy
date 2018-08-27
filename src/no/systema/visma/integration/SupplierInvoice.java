@@ -267,7 +267,7 @@ public class SupplierInvoice extends Configuration {
 	}	
 	
 	private DtoValueString getVatCodeId(String momsk) {
-		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MOMSK);
+		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MVA_K);
 		if (vismaCodeId == null) {
 			throw new RuntimeException("No Visma.net value found in VISCROSSR for SYSPED value:"+momsk);
 		}
@@ -351,10 +351,12 @@ public class SupplierInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (vistranslHeadDto.getValku1() == null || vistranslHeadDto.getValku1().equals(BigDecimal.ZERO)) {
-			String errMsg = "VALKU1 can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
+		if (vistranslHeadDto.getValkox() != null) {
+			if (vistranslHeadDto.getValku1() == null || vistranslHeadDto.getValku1().equals(BigDecimal.ZERO)) {
+				String errMsg = "VALKU1 can not be 0, if VALKOX is set, VALKOX="+vistranslHeadDto.getValkox() ;
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			}
 		}
 		if (vistranslHeadDto.getKrnr() == null) {
 			String errMsg = "KRNR can not be empty";

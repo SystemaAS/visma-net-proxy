@@ -20,8 +20,12 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import no.systema.jservices.common.dao.VistranskDao;
+import no.systema.visma.dto.VistranskHeadDto;
+import no.systema.visma.dto.VistranskTransformer;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
@@ -99,25 +103,22 @@ public class TestJCustomerInvoice {
 	private List<VistranskDao> getCreateList() {
 		List<VistranskDao> list = new ArrayList<VistranskDao>();
 		
-		list.add(getVistranskDao(10, 200, 1, desc));
-		list.add(getVistranskDao(10, 200, 2, "Nice %&# åäö"));
+		list.add(getVistranskDao(4, 202, 1, desc));
+		list.add(getVistranskDao(4, 202, 2, "Nice %&# åäö"));
 		
 		return list;
 		
 	}	
 	
 	
-//	@Test(expected=RuntimeException.class) //Updates not allowed
-//	public void testCustomerInvoiceSyncUpdate() {
-//		List<VistranskHeadDto> list = VistranskTransformer.transform( getUpdateList() );
-//
-//		customerInvoice.syncronize(list.get(0));
-//		
-//		CustomerInvoiceDto dto = customerInvoice.getByinvoiceNumber(String.valueOf(list.get(0).getBilnr()));
-//		assertEquals("Should be same", desc, dto.getInvoiceLines().get(0).getDescription());
-//		logger.debug("dto="+dto);		
-//		
-//	}
+	@Test
+	public void testCustomerInvoiceInsert() throws HttpClientErrorException, RestClientException, IOException {
+		List<VistranskHeadDto> list = VistranskTransformer.transform( getCreateList() );
+
+		customerInvoice.syncronize(list.get(0));
+		
+		
+	}
 
 	private List<VistranskDao> getUpdateList() {
 		List<VistranskDao> list = new ArrayList<VistranskDao>();
@@ -137,20 +138,22 @@ public class TestJCustomerInvoice {
 		dao.setBiltxt(biltxt);
 		dao.setAktkod("A");
 		dao.setKrdaar(2018);
-		dao.setKrdmnd(5);
-		dao.setKrddag(25);
+		dao.setKrdmnd(8);
+		dao.setKrddag(27);
 		dao.setFfdaar(2018);
-		dao.setFfdmnd(5);
-		dao.setFfddag(25);	
-		dao.setMomsk("32");
+		dao.setFfdmnd(8);
+		dao.setFfddag(27);	
+		dao.setMomsk("0");
 		dao.setKontov(3000);		
 		dao.setKsted(3);  // avd
 		dao.setBetbet("14");
-		dao.setBbelop(new BigDecimal(15.0));
+		dao.setNbelpo(new BigDecimal(15.0));
 		dao.setPeraar(2018);
 		dao.setPernr(8);
-		dao.setValkox("NOK");
-		dao.setValku1(new BigDecimal(100.0));
+		dao.setFakkre("K");
+		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+		dao.setValkox("SEK");
+		dao.setValku1(new BigDecimal(0.934));
 		
 		return dao;
 	}	
@@ -173,7 +176,5 @@ public class TestJCustomerInvoice {
     	return new FileSystemResource(file);	
 
     }	
-    
-    
 	
 }
