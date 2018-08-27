@@ -51,7 +51,6 @@ public class SupplierInvoice extends Configuration {
 	public ViscrossrDaoService viscrossrDaoService;	
 
 	@Autowired
-//	public SupplierInvoiceApi supplierInvoiceApi = new SupplierInvoiceApi(apiClient());
 	public SupplierInvoiceApiExtended supplierInvoiceApi = new SupplierInvoiceApiExtended(apiClient());
 
 	@Autowired

@@ -40,17 +40,6 @@ public abstract class Configuration {
 	}
 
 	/**
-	 * Used for entering the API
-	 * 
-	 * @return
-	 */
-	@Bean
-	public ApiClient apiClientXXX(){
-		return new ApiClient(new RestTemplate());
-	}	
-	
-	
-	/**
 	 * Used for retrieving token.
 	 * 
 	 * @return

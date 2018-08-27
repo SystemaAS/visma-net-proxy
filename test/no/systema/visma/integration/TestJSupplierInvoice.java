@@ -117,8 +117,8 @@ public class TestJSupplierInvoice {
 	private List<VistranslDao> getCreateList() {
 		List<VistranslDao> list = new ArrayList<VistranslDao>();
 		
-		list.add(getVistranslDao(101, 304, 1, desc));
-		list.add(getVistranslDao(101, 304, 2, "Nice %&# åäö"));
+		list.add(getVistranslDao(101, 303, 1, desc));
+		list.add(getVistranslDao(101, 303, 2, "Nice %&# åäö"));
 		
 		return list;
 		
@@ -156,7 +156,7 @@ public class TestJSupplierInvoice {
 		dao.setPernr(8);
 		dao.setLkid("123456789");
 		dao.setKrnr("987654321");
-		dao.setFakkre("K");
+		dao.setFakkre("F");
 		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
 		dao.setValkox("SEK");
 		dao.setValku1(new BigDecimal(0.925));

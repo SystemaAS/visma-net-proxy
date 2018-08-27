@@ -64,10 +64,10 @@ public class CustomerInvoiceApiExtended extends CustomerInvoiceApi {
      * @see CustomerInvoiceApi
      */
     public Object customerInvoiceCreateHeaderAttachmentByinvoiceNumber(String invoiceNumber, Resource attachment) throws IOException {
+		logger.info("customerInvoiceCreateHeaderAttachmentByinvoiceNumber(String invoiceNumber, Resource attachment)");
     	Object postBody = null;
-    	//TODO Why can't ApiClient be reused.
-    	//    	ApiClient apiClient = getApiClient();
-    	ApiClient apiClient = new ApiClient();
+ 
+    	ApiClient apiClient = new ApiClient();  //using default RestTemplate
 		FirmvisDao firmvis = firmvisDaoService.get();
 		apiClient.setBasePath(firmvis.getVibapa().trim());
 		apiClient.addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());

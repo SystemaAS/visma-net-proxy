@@ -3,6 +3,7 @@
  */
 package no.systema.visma.integration.extended;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +21,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
+import no.systema.visma.integration.LogHelper;
+import no.systema.visma.integration.VismaClientHttpRequestInterceptor;
+import no.systema.visma.integration.VismaResponseErrorHandler;
 import no.systema.visma.v1client.ApiClient;
 import no.systema.visma.v1client.api.SupplierInvoiceApi;
 
@@ -62,11 +67,10 @@ public class SupplierInvoiceApiExtended extends SupplierInvoiceApi {
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
     public Object supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(String invoiceNumber, Resource attachment) throws RestClientException {
-        Object postBody = null;
+		logger.info("supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(String invoiceNumber, Resource attachment)");
+    	Object postBody = null;
 
-        //TODO Why can't ApiClient be reused.
-    	//    	ApiClient apiClient = getApiClient();
-    	ApiClient apiClient = new ApiClient();
+    	ApiClient apiClient = new ApiClient(); //using default RestTemplate
 		FirmvisDao firmvis = firmvisDaoService.get();
 		apiClient.setBasePath(firmvis.getVibapa().trim());
 		apiClient.addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());

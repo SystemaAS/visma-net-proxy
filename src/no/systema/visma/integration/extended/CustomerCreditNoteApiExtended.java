@@ -61,11 +61,10 @@ public class CustomerCreditNoteApiExtended extends CustomerCreditNoteApi {
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
     public Object customerCreditNoteCreateHeaderAttachmentBycreditNoteNumber(String creditNoteNumber, Resource attachment) throws RestClientException {
-        Object postBody = null;
-  
-    	//TODO Why can't ApiClient be reused.
-    	//    	ApiClient apiClient = getApiClient();
-    	ApiClient apiClient = new ApiClient();
+		logger.info("customerCreditNoteCreateHeaderAttachmentBycreditNoteNumber(String creditNoteNumber, Resource attachment)");
+    	Object postBody = null;
+
+    	ApiClient apiClient = new ApiClient(); //using default RestTemplate
 		FirmvisDao firmvis = firmvisDaoService.get();
 		apiClient.setBasePath(firmvis.getVibapa().trim());
 		apiClient.addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
