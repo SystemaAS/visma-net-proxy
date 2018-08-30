@@ -88,14 +88,14 @@ public class CustomerInvoiceTransactionManager {
 	private void createVistrlogk(VistranskHeadDto headDto) {
 		VistrlogkDao vistrlogkDao = getVistrlogkDao(headDto, null);
 		VistrlogkDaoService.create(vistrlogkDao);
-		logger.info("VISTRLOGK created, dao="+vistrlogkDao);	
+		logger.debug("VISTRLOGK created, dao="+vistrlogkDao);	
 		
 	}
 
 	private void createVistrlogk(VistranskHeadDto headDto, String errorText) {
 		VistrlogkDao vistrlogkDao = getVistrlogkDao(headDto, errorText);
 		VistrlogkDaoService.create(vistrlogkDao);
-		logger.info("VISTRLOGK created, dao="+vistrlogkDao);	
+		logger.debug("VISTRLOGK created, dao="+vistrlogkDao);	
 		
 	}	
 	
@@ -110,7 +110,7 @@ public class CustomerInvoiceTransactionManager {
 		} 
 		catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(vistranskHeadDto.getResnr(), vistranskHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransk, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
+			logger.error("Could not syncronize vistransk, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {

@@ -89,14 +89,14 @@ public class SupplierInvoiceTransactionManager {
 	private void createVistrlogl(VistranslHeadDto headDto) {
 		VistrloglDao vistrloglDao = getVistrloglDao(headDto, null);
 		vistrloglDaoService.create(vistrloglDao);
-		logger.info("VISTRLOGL created, dao="+vistrloglDao);	
+		logger.debug("VISTRLOGL created, dao="+vistrloglDao);	
 		
 	}
 
 	private void createVistrlogl(VistranslHeadDto headDto, String errorText) {
 		VistrloglDao vistrloglDao = getVistrloglDao(headDto, errorText);
 		vistrloglDaoService.create(vistrloglDao);
-		logger.info("VISTRLOGL created, dao="+vistrloglDao);	
+		logger.debug("VISTRLOGL created, dao="+vistrloglDao);	
 		
 	}	
 	
@@ -111,7 +111,7 @@ public class SupplierInvoiceTransactionManager {
 		} 
 		catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransl, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
+			logger.error("Could not syncronize vistransl, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {

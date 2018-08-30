@@ -87,14 +87,14 @@ public class CustomerTransactionManager {
 	private void createViskulog(ViskundeDao dao) {
 		ViskulogDao viskulogDao = getViskulogDao(dao, null);
 		viskulogDaoService.create(viskulogDao);
-		logger.info("VISKULOG created, dao="+viskulogDao);	
+		logger.debug("VISKULOG created, dao="+viskulogDao);	
 	}
 
 	
 	private void createViskulog(ViskundeDao dao, String errorText) {
 		ViskulogDao viskulogDao = getViskulogDao(dao, errorText);
 		viskulogDaoService.create(viskulogDao);
-		logger.info("VISKULOG created(with error), dao="+viskulogDao);	
+		logger.debug("VISKULOG created(with error), dao="+viskulogDao);	
 	}	
 	
 	
@@ -105,7 +105,6 @@ public class CustomerTransactionManager {
 	}
 
 	private void setError(ViskundeDao dao, String errorText) {
-		logger.info("Inside setError, errorText="+errorText);
 		int[] dato = LogHelper.getNowDato();		
 		dao.setSyncda(dato[0]);
 		dao.setSyerro(errorText);
@@ -122,7 +121,7 @@ public class CustomerTransactionManager {
 		} 
 		catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomer(viskundeDao.getKundnr()));
-			logger.error("Could not syncronize viskunde, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
+			logger.error("Could not syncronize viskunde, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {

@@ -86,14 +86,14 @@ public class SupplierTransactionManager {
 	private void createVislelog(VisleveDao dao) {
 		VislelogDao vislelogDao = getVislelogDao(dao, null);
 		vislelogDaoService.create(vislelogDao);
-		logger.info("VISLELOG created, dao="+vislelogDao);	
+		logger.debug("VISLELOG created, dao="+vislelogDao);	
 	}
 
 	
 	private void createVislelog(VisleveDao dao, String errorText) {
 		VislelogDao vislelogDao = getVislelogDao(dao, errorText);
 		vislelogDaoService.create(vislelogDao);
-		logger.info("VISLELOG created(with error), dao="+vislelogDao);	
+		logger.debug("VISLELOG created(with error), dao="+vislelogDao);	
 	}	
 	
 	
@@ -104,7 +104,6 @@ public class SupplierTransactionManager {
 	}
 
 	private void setError(VisleveDao dao, String errorText) {
-		logger.info("Inside setError, errorText="+errorText);
 		int[] dato = LogHelper.getNowDato();		
 		dao.setSyncda(dato[0]);
 		dao.setSyerro(errorText);
@@ -121,7 +120,7 @@ public class SupplierTransactionManager {
 		} 
 		catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixSupplier(visleveDao.getLevnr()));
-			logger.error("Could not syncronize visleve, due to Visma.net error="+e.getStatusText(), e);  //Status text holds Response body from Visma.net
+			logger.error("Could not syncronize visleve, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
