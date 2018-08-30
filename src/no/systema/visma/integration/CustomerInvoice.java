@@ -476,17 +476,19 @@ public class CustomerInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (vistranskHeadDto.getValku1() == null || vistranskHeadDto.getValku1().equals(BigDecimal.ZERO)) {
-			String errMsg = "VALKU1 can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
+		if (vistranskHeadDto.getValkox() != null) {
+			if (vistranskHeadDto.getValku1() == null || vistranskHeadDto.getValku1().equals(BigDecimal.ZERO)) {
+				String errMsg = "VALKU1 can not be 0";
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			}
 		}
 		if (vistranskHeadDto.getFakkre() == null) {
 			String errMsg = "FAKKRE can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}	
-		if (vistranskHeadDto.getPath() == null) {
+		if (!StringUtils.hasValue(vistranskHeadDto.getPath())) {
 			String errMsg = "PATH can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);

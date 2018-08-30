@@ -35,6 +35,7 @@ import no.systema.jservices.common.dao.services.CundfDaoService;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
+import no.systema.jservices.common.dao.services.VistranshDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.dao.services.VistranslDaoService;
 import no.systema.jservices.common.util.Log4jUtils;
@@ -100,6 +101,10 @@ public class WebController {
 	
 	@Autowired
 	VistranslDaoService vistranslDaoService;	
+
+	@Autowired
+	VistranshDaoService vistranshDaoService;		
+	
 	
 	/**
 	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeCustomers.do?user=SYSTEMA
@@ -423,6 +428,21 @@ public class WebController {
 		}
 	}	
 	
+	@RequestMapping(value = "supplierInvoiceJournal.do", method={RequestMethod.GET})
+	public ModelAndView getSupplierInvoiceJournal(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("supplier_invoice_journal_bs");	
+		logger.info("Inside: supplierInvoiceJournal.do");
+
+		if (appUser == null) {
+			return loginView;
+		} else {
+			setErrorCounts(successView);
+			return successView;
+		}
+	}		
+	
+	
 	
 	/**
 	 * This method serve as data populater for all child windows.
@@ -594,11 +614,14 @@ public class WebController {
 		if (supplierInvoiceErrorCount > 0) {
 			successView.addObject("supplier_invoice_error", supplierInvoiceErrorCount);
 		}		
+		int supplierInvoiceJournalErrorCount = vistranshDaoService.countAll();
+		if (supplierInvoiceJournalErrorCount > 0) {
+			successView.addObject("supplier_invoice_journal_error", supplierInvoiceJournalErrorCount);
+		}
 		int supplierAllErrorCount = supplierErrorCount + supplierInvoiceErrorCount;
 		if (supplierAllErrorCount > 0) {
 			successView.addObject("supplier_all_error", supplierAllErrorCount);
 		}		
-		
 		
 	}	
 	

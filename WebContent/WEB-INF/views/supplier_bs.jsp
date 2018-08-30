@@ -123,6 +123,11 @@
 			    <span class="badge badge-danger">${supplier_invoice_error}</span>
 			</c:if>	    
 		</a>
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoiceJournal.do">Hovedbok
+			<c:if test="${not empty supplier_invoice_journal_error}">
+			    <span class="badge badge-danger">${supplier_invoice_journal_error}</span>
+			</c:if>	    
+		</a>
 		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="vislelog.do">Leverandør - feilhistorikk</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogl.do">Faktura - feilhistorikk</a>
 	  </div>

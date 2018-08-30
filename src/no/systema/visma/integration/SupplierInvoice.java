@@ -174,9 +174,17 @@ public class SupplierInvoice extends Configuration {
 		try {
 
 			supplierInvoiceApi.supplierInvoicePost(updateDto);
-			if (attachment != null) {
-				attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
-			}
+//			2018-08-29: Bug in Visma.net
+//			In case of Supplier Invoice Attachment Process,
+//			There is a known issue which has been already taken into consideration and the remedial task is in progress.
+//			This fix has been planned to be released at 29.09.2018 into version 8.0			
+			if (updateDto.getDocumentType().equals(ValueEnum.INVOICE)) {
+				if (attachment != null) {
+					attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
+				}
+			} else { //don't do attachment due to bug
+				logger.info("DokumentType is: "+updateDto.getDocumentType()+" , ignoring attachInvoiceFile due to bug in Visma.net.");
+			} 
 
 		} catch (HttpClientErrorException e) {
 			logger.error("HttpClientErrorException::"+LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue())); 

@@ -145,15 +145,15 @@ public class TestJCustomerInvoice {
 		dao.setFfddag(27);	
 		dao.setMomsk("0");
 		dao.setKontov(3000);		
-		dao.setKsted(3);  // avd
+		dao.setKsted(1);  // avd
 		dao.setBetbet("14");
 		dao.setNbelpo(new BigDecimal(15.0));
 		dao.setPeraar(2018);
 		dao.setPernr(8);
 		dao.setFakkre("K");
 		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
-		dao.setValkox("SEK");
-		dao.setValku1(new BigDecimal(0.934));
+//		dao.setValkox("SEK");
+//		dao.setValku1(new BigDecimal(0.934));
 		
 		return dao;
 	}	
