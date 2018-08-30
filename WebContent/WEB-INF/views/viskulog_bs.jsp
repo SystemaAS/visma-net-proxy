@@ -95,12 +95,12 @@
 
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link active" onClick="setBlockUI(this);" href="customer.do" >Kunde
+	    <a class="nav-item nav-link active" onClick="setBlockUI(this);" href="customer.do"><strong>Kunde</strong>
 			<c:if test="${not empty customer_all_error}">
 			    <span class="badge badge-danger">${customer_all_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do"><strong>Leverandør</strong>
 			<c:if test="${not empty supplier_all_error}">
 			    <span class="badge badge-danger">${supplier_all_error}</span>
 			</c:if>			
@@ -115,12 +115,12 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do"><strong>Kunde</strong>
 			<c:if test="${not empty customer_error}">
 			    <span class="badge badge-danger">${customer_error}</span>
 			</c:if>	    
 	    </a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do">Faktura
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="customerInvoice.do"><strong>Faktura</strong>
 			<c:if test="${not empty customer_invoice_error}">
 			    <span class="badge badge-danger">${customer_invoice_error}</span>
 			</c:if>			

@@ -274,7 +274,6 @@ public class WebController {
 	@RequestMapping(value = "administration.do", method={RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doConfiguration(@ModelAttribute ("firmvis") FirmvisDao firmvis, BindingResult bindingResult, HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser)session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("visma_configuration"); 
 		ModelAndView successView = new ModelAndView("administration"); 
 
 		logger.info("INSIDE: administration");
@@ -306,7 +305,6 @@ public class WebController {
 	@RequestMapping(value = "customer.do", method={RequestMethod.GET})
 	public ModelAndView doCustomer(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("customer");
 		ModelAndView successView = new ModelAndView("customer_bs");
 
 		logger.info("Inside: customer");
@@ -323,7 +321,6 @@ public class WebController {
 	@RequestMapping(value = "customerInvoice.do", method={RequestMethod.GET})
 	public ModelAndView getCustomerInvoice(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("customer_invoice");
 		ModelAndView successView = new ModelAndView("customer_invoice_bs");	
 		logger.info("Inside: customerinvoice.do");
 
@@ -335,11 +332,9 @@ public class WebController {
 		}
 	}
 
-	
 	@RequestMapping(value = "viskulog.do", method={RequestMethod.GET})
 	public ModelAndView getViskulog(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("viskulog");
 		ModelAndView successView = new ModelAndView("viskulog_bs");
 		logger.info("Inside: viskulog");
 
@@ -354,7 +349,6 @@ public class WebController {
 	@RequestMapping(value = "vislelog.do", method={RequestMethod.GET})
 	public ModelAndView getVislelog(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("viskulog");
 		ModelAndView successView = new ModelAndView("vislelog_bs");
 		logger.info("Inside: viskulog");
 
@@ -366,12 +360,9 @@ public class WebController {
 		}
 	}	
 	
-	
-	
 	@RequestMapping(value = "vistrlogk.do", method={RequestMethod.GET})
 	public ModelAndView getVistrlogk(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("vistrlogk");
 		ModelAndView successView = new ModelAndView("vistrlogk_bs");
 		logger.info("Inside: vistrlogk");
 
@@ -386,9 +377,8 @@ public class WebController {
 	@RequestMapping(value = "vistrlogl.do", method={RequestMethod.GET})
 	public ModelAndView getVistrlogl(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("vistrlogl");
 		ModelAndView successView = new ModelAndView("vistrlogl_bs");
-		logger.info("Inside: vistrlogl");
+		logger.info("Inside: vistrlogh");
 
 		if (appUser == null) {
 			return loginView;
@@ -398,10 +388,24 @@ public class WebController {
 		}
 	}	
 	
+	@RequestMapping(value = "vistrlogh.do", method={RequestMethod.GET})
+	public ModelAndView getVistrlogh(HttpSession session, HttpServletRequest request) {
+		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
+		ModelAndView successView = new ModelAndView("vistrlogh_bs");
+		logger.info("Inside: vistrlogh");
+
+		if (appUser == null) {
+			return loginView;
+		} else {
+			setErrorCounts(successView);			
+			return successView;
+		}
+	}		
+	
+	
 	@RequestMapping(value = "supplier.do", method={RequestMethod.GET})
 	public ModelAndView doSupplier(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("supplier");
 		ModelAndView successView = new ModelAndView("supplier_bs");
 		logger.info("Inside: supplier");
 
@@ -416,7 +420,6 @@ public class WebController {
 	@RequestMapping(value = "supplierInvoice.do", method={RequestMethod.GET})
 	public ModelAndView getSupplierInvoice(HttpSession session, HttpServletRequest request) {
 		SystemaWebUser appUser = (SystemaWebUser) session.getAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
-//		ModelAndView successView = new ModelAndView("customer_invoice");
 		ModelAndView successView = new ModelAndView("supplier_invoice_bs");	
 		logger.info("Inside: supplierInvoice.do");
 
@@ -441,8 +444,6 @@ public class WebController {
 			return successView;
 		}
 	}		
-	
-	
 	
 	/**
 	 * This method serve as data populater for all child windows.

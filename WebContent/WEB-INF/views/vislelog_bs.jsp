@@ -94,12 +94,12 @@
 
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do">Kunde
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="customer.do"><strong>Kunde</strong>
 			<c:if test="${not empty customer_all_error}">
 			    <span class="badge badge-danger">${customer_all_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link active" href="supplier.do">Leverandør
+		<a class="nav-item nav-link active" href="supplier.do"><strong>Leverandør</strong>
 			<c:if test="${not empty supplier_all_error}">
 			    <span class="badge badge-danger">${supplier_all_error}</span>
 			</c:if>			
@@ -114,23 +114,24 @@
 		
 	<nav>
 	  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do">Leverandør
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplier.do"><strong>Leverandør</strong>
 			<c:if test="${not empty supplier_error}">
 			    <span class="badge badge-danger">${supplier_error}</span>
 			</c:if>		    
 	    </a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do">Faktura
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoice.do"><strong>Faktura</strong>
 			<c:if test="${not empty supplier_invoice_error}">
 			    <span class="badge badge-danger">${supplier_invoice_error}</span>
 			</c:if>			
 		</a>
-		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoiceJournal.do">Hovedbok
+		<a class="nav-item nav-link" onClick="setBlockUI(this);" href="supplierInvoiceJournal.do"><strong>Hovedbok</strong>
 			<c:if test="${not empty supplier_invoice_journal_error}">
 			    <span class="badge badge-danger">${supplier_invoice_journal_error}</span>
 			</c:if>	    
 		</a>
 		<a class="nav-item nav-link active" href="vislelog.do">Leverandør - feilhistorikk</a>
 	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogl.do">Faktura - feilhistorikk</a>
+	    <a class="nav-item nav-link" onClick="setBlockUI(this);" href="vistrlogh.do">Hovedbok - feilhistorikk</a>
 	  </div>
 	</nav>
 	
