@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 import no.systema.jservices.common.dao.VistranshDao;
 import no.systema.visma.dto.VistranshHeadDto;
 import no.systema.visma.dto.VistranshTransformer;
+import no.systema.visma.v1client.model.JournalTransactionDto;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
@@ -26,6 +27,17 @@ public class TestJJournalTransaction {
 	@Autowired 
 	JournalTransaction journalTransaction;
 	
+
+	@Test
+	public void testGetAllJournalTransactions() {
+		List<JournalTransactionDto> list = journalTransaction.journalTransactionGetAllJournalTransactions();
+
+		list.forEach(dto -> {
+			logger.info("dto.getBatchNumber()=" + dto.getBatchNumber());
+			logger.info("executing getSpecific, dto="+journalTransaction.getJournalTransactionByBatchnr(dto.getBatchNumber()));
+		});
+
+	}
 
 	@Test
 	public void testGetJournalTransaction() {
