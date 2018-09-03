@@ -47,7 +47,7 @@ public class DtoValueHelper {
 	 * @param o supports Double and BigDecimal
 	 * @return DtoValueDecimal
 	 */
-	public static DtoValueDecimal toDtoDecimal(java.lang.Object o) {
+	public static DtoValueDecimal toDtoValueDecimal(java.lang.Object o) {
 		DtoValueDecimal dto;
 		if (o == null) {
 			return null;

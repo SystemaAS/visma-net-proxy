@@ -74,7 +74,19 @@ public class LogHelper {
 		
 	}	
 	
-	
+	/**
+	 * Standardized logformat for VISTRANSH.
+	 * 
+	 * @param bilnr
+	 * @return String 
+	 */
+	public static String logPrefixJournalTransaction(Object bilnr) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("::BILNR::").append(bilnr);
+		
+		return sb.toString();
+		
+	}	
 	
 	/**
 	 * Trim text to max 800 char

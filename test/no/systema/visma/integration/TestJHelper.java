@@ -29,7 +29,7 @@ public class TestJHelper {
 	@Test
 	public void testToDtoDecimalBigDecimal() {
 		BigDecimal o = new BigDecimal(12.66).setScale(3, BigDecimal.ROUND_UP);
-		DtoValueDecimal result = DtoValueHelper.toDtoDecimal(o);
+		DtoValueDecimal result = DtoValueHelper.toDtoValueDecimal(o);
 		assertEquals(o.doubleValue(), result.getValue().doubleValue(), 0);
 
 	}
@@ -38,7 +38,7 @@ public class TestJHelper {
 	public void testToDtoDecimalDouble() {
 
 		Double o = new Double(12.99);
-		DtoValueDecimal result = DtoValueHelper.toDtoDecimal(o);
+		DtoValueDecimal result = DtoValueHelper.toDtoValueDecimal(o);
 		assertEquals(o.doubleValue(), result.getValue().doubleValue(), 0);
 
 	}

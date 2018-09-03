@@ -227,7 +227,7 @@ public class SupplierInvoice extends Configuration {
 		dto.setDueDate(DtoValueHelper.toDtoValueDateTime(vistranslHeadDto.getFfdaar(), vistranslHeadDto.getFfdmnd(), vistranslHeadDto.getFfddag()));
 		if (StringUtils.hasValue(vistranslHeadDto.getValkox())) {
 			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranslHeadDto.getValkox()));
-			dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranslHeadDto.getValku1()));
+			dto.setExchangeRate(DtoValueHelper.toDtoValueDecimal(vistranslHeadDto.getValku1()));
 		} else {
 			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
 		}	
@@ -257,7 +257,7 @@ public class SupplierInvoice extends Configuration {
 			
 			SupplierInvoiceLineUpdateDto updateDto = new SupplierInvoiceLineUpdateDto();
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
-			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
+			updateDto.setQuantity(DtoValueHelper.toDtoValueDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitCostInCurrency(DtoValueHelper.toDtoValueNullableDecimal(lineDto.getNbelpo()));
 			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));

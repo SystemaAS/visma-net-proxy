@@ -20,15 +20,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskundeDao;
 import no.systema.jservices.common.dao.VisleveDao;
+import no.systema.jservices.common.dao.VistranshDao;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.jservices.common.dao.VistranslDao;
 import no.systema.jservices.common.dao.services.ViskundeDaoService;
 import no.systema.jservices.common.dao.services.VisleveDaoService;
+import no.systema.jservices.common.dao.services.VistranshDaoService;
 import no.systema.jservices.common.dao.services.VistranskDaoService;
 import no.systema.jservices.common.dao.services.VistranslDaoService;
 import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.integration.Customer;
 import no.systema.visma.integration.CustomerInvoice;
+import no.systema.visma.integration.JournalTransaction;
 import no.systema.visma.integration.Supplier;
 import no.systema.visma.integration.SupplierInvoice;
 
@@ -39,6 +42,7 @@ import no.systema.visma.integration.SupplierInvoice;
  * {@link CustomerInvoice}
  * {@link Supplier}
  * {@link SupplierInvoice}
+ * {@link JournalTransaction}
  * </li>
  *  
  * 
@@ -63,13 +67,18 @@ public class LoadTestData {
 	
 	@Autowired
 	VistranslDaoService vistranslDaoService;	
+
+	@Autowired
+	VistranshDaoService vistranshDaoService;		
+	
 	
 	@Test
 	public void runAll() {
 //		loadCustomers();
 //		loadCustomerInvoices();
-		loadSuppliers();
+//		loadSuppliers();
 //		loadSupplierInvoices();
+		loadSupplierInvoicesAsJournalTransaction();
 	}
 	
 	@SneakyThrows
@@ -215,7 +224,7 @@ public class LoadTestData {
 
 		in.close();
 		
-		logger.debug(count + " VISTRANSK posts created or changed.");
+		logger.debug(count + " VISTRANSK posts created.");
 
 	}	
 	
@@ -276,7 +285,7 @@ public class LoadTestData {
 
 		in.close();
 		
-		logger.debug(count + " VISLEVE posts created or changed.");
+		logger.debug(count + " VISLEVE posts created.");
 
 	}	
 
@@ -366,8 +375,105 @@ public class LoadTestData {
 		
 		in.close();
 
-		logger.debug(count + " VISTRANSL posts created or changed.");
+		logger.debug(count + " VISTRANSL posts.");
 
 	}		
+	
+	@SneakyThrows
+	private void loadSupplierInvoicesAsJournalTransaction() {
+		vistranshDaoService.deleteAll(null);
+		Resource vistranslFile = new ClassPathResource("vistransh.csv");
+		Reader in = null;
+		Iterable<CSVRecord> records = null;
+		int count = 0;
+		try {
+			in = new BufferedReader(new InputStreamReader(vistranslFile.getInputStream()));
+			records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		} catch (IOException e) {
+			logger.error("Could not read file", e);
+		}
+
+		for (CSVRecord record : records) {
+
+			String aktkod = record.get("aktkod");
+			String firma = record.get("firma");
+			String resnr = record.get("resnr");
+			String refnr = record.get("refnr");
+			String bilnr = record.get("bilnr");
+			String posnr = record.get("posnr");
+			String bilaar = record.get("bilaar");
+			String bilmnd = record.get("bilmnd");
+			String bildag = record.get("bildag");
+			String peraar = record.get("peraar");
+			String pernr = record.get("pernr");
+			String krdaar = record.get("krdaar");
+			String krdmnd = record.get("krdmnd");
+			String krddag = record.get("krddag");
+			String ffdaar = record.get("ffdaar");
+			String ffdmnd = record.get("ffdmnd");
+			String ffddag = record.get("ffddag");	
+			String biltxt = record.get("biltxt");
+			String betbet = record.get("betbet");
+			String kontov = record.get("kontov");
+			String ksted = record.get("ksted");
+			String momsk = record.get("momsk");  		
+			String nbelpo = record.get("nbelpo");
+			String valkox = record.get("valkox");
+			String valku1 = record.get("valku1");
+			String krnr = record.get("krnr");
+			String lkid = record.get("lkid");
+			String fakkre = record.get("fakkre");
+
+			VistranshDao dao = new VistranshDao();
+			dao.setAktkod(aktkod);
+			dao.setFirma(firma);
+			dao.setResnr(Integer.parseInt(resnr));
+			dao.setRefnr(Integer.parseInt(refnr));
+			dao.setBilnr(Integer.parseInt(bilnr));
+			dao.setPosnr(Integer.parseInt(posnr));
+			dao.setBilaar(Integer.parseInt(bilaar));
+			dao.setBilmnd(Integer.parseInt(bilmnd));
+			dao.setBildag(Integer.parseInt(bildag));
+			dao.setPeraar(Integer.parseInt(peraar));
+			dao.setPernr(Integer.parseInt(pernr));
+			dao.setKrdaar(Integer.parseInt(krdaar));
+			dao.setKrdmnd(Integer.parseInt(krdmnd));
+			dao.setKrddag(Integer.parseInt(krddag));
+			dao.setFfdaar(Integer.parseInt(ffdaar));
+			dao.setFfdmnd(Integer.parseInt(ffdmnd));
+			dao.setFfddag(Integer.parseInt(ffddag));	
+			dao.setBiltxt(biltxt);
+			dao.setBetbet(betbet);
+			dao.setKontov(Integer.parseInt(kontov));
+			dao.setKsted(Integer.parseInt(ksted));
+			dao.setMomsk(momsk);  
+			dao.setNbelpo(new BigDecimal(nbelpo));
+			if (StringUtils.hasValue(valkox)) {
+				dao.setValkox(valkox);
+				dao.setValku1(new BigDecimal(valku1));
+			}
+			dao.setKrnr(krnr);
+			dao.setLkid(lkid);
+			dao.setFakkre(fakkre);
+//			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+			
+			vistranshDaoService.create(dao);
+
+			count++;
+
+		}
+		
+		in.close();
+
+		logger.debug(count + " VISTRANSH posts created.");
+
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 }

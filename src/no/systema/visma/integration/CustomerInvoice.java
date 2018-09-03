@@ -244,7 +244,7 @@ public class CustomerInvoice extends Configuration {
 		dto.setDocumentDueDate(DtoValueHelper.toDtoValueDateTime(vistranskHeadDto.getFfdaar(), vistranskHeadDto.getFfdmnd(), vistranskHeadDto.getFfddag()));
 		if (StringUtils.hasValue(vistranskHeadDto.getValkox())) {
 			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranskHeadDto.getValkox()));
-			dto.setExchangeRate(DtoValueHelper.toDtoDecimal(vistranskHeadDto.getValku1()));
+			dto.setExchangeRate(DtoValueHelper.toDtoValueDecimal(vistranskHeadDto.getValku1()));
 		} else {
 			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
 		}
@@ -356,8 +356,8 @@ public class CustomerInvoice extends Configuration {
 			
 			CustomerInvoiceLinesUpdateDto updateDto = new CustomerInvoiceLinesUpdateDto();
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
-			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
-			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getNbelpo())); 
+			updateDto.setQuantity(DtoValueHelper.toDtoValueDecimal(1.0)); // Hardcode to 1
+			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo())); 
 			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
@@ -381,8 +381,8 @@ public class CustomerInvoice extends Configuration {
 			
 			CustomerCreditNoteLineUpdateDto updateDto = new CustomerCreditNoteLineUpdateDto();
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
-			updateDto.setQuantity(DtoValueHelper.toDtoDecimal(1.0)); // Hardcode to 1
-			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoDecimal(lineDto.getNbelpo())); 
+			updateDto.setQuantity(DtoValueHelper.toDtoValueDecimal(1.0)); // Hardcode to 1
+			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo())); 
 			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
