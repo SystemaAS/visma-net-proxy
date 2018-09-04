@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
+import org.junit.Assert;
 import no.systema.jservices.common.dao.VistranshDao;
 import no.systema.visma.dto.VistranshHeadDto;
 import no.systema.visma.dto.VistranshTransformer;
@@ -45,8 +46,43 @@ public class TestJJournalTransaction {
 	}	
 	
 
-	
 	@Test
+	public void testTransformerForTwoRowsGrouped() throws HttpClientErrorException, RestClientException, IOException {
+		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateList() );
+
+		list.forEach(dto -> {
+			Assert.assertEquals("JournalTransaction expect one credit and one debit.",2,dto.getLines().size());
+			Assert.assertNotSame(dto.getLines().get(0).getFakkre(), dto.getLines().get(1).getFakkre()); 
+		});
+		
+	}	
+	
+
+	@Test(expected=RuntimeException.class )
+	public void testTransformerForTwoRowsGroupedInvalidLess() throws HttpClientErrorException, RestClientException, IOException {
+		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidListLess() );
+
+	}	
+
+	@Test(expected=RuntimeException.class )
+	public void testTransformerForTwoRowsGroupedInvalidMore() throws HttpClientErrorException, RestClientException, IOException {
+		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidListMore() );
+		
+	}	
+	
+	
+	@Test(expected=RuntimeException.class )
+	public void testTransformerForTwoRowsGroupedInvalidAmount() throws HttpClientErrorException, RestClientException, IOException {
+		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidAmountList() );
+
+		list.forEach(dto -> {
+			Assert.assertEquals("JournalTransaction expect one credit and one debit.",2,dto.getLines().size());
+			Assert.assertSame(dto.getLines().get(0).getNbelpo(), dto.getLines().get(1).getNbelpo()); 
+		});
+		
+	}	
+	
+//	@Test
 	public void testJournalTransaction() throws HttpClientErrorException, RestClientException, IOException {
 		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateList() );
 
@@ -57,14 +93,56 @@ public class TestJJournalTransaction {
 	private List<VistranshDao> getCreateList() {
 		List<VistranshDao> list = new ArrayList<VistranshDao>();
 		
-		list.add(getVistranshDao(303, 1, "description", "F"));
-		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K"));
+		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));
+		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K", new BigDecimal(15.0)));
 		
 		return list;
 		
 	}	
 
-	private VistranshDao getVistranshDao(int bilnr, int posnr, String biltxt, String fakkre) {
+	private List<VistranshDao> getCreateInvalidListLess() {
+		List<VistranshDao> list = new ArrayList<VistranshDao>();
+		
+		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));
+		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K", new BigDecimal(15.0)));
+		
+		list.add(getVistranshDao(404, 1, "Nice %&# åäö", "K", new BigDecimal(25.0)));
+		
+		return list;
+		
+	}	
+
+	private List<VistranshDao> getCreateInvalidListMore() {
+		List<VistranshDao> list = new ArrayList<VistranshDao>();
+		
+		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));
+		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K", new BigDecimal(15.0)));
+		
+		list.add(getVistranshDao(404, 1, "Nice %&# åäö", "K", new BigDecimal(25.0)));
+		list.add(getVistranshDao(404, 2, "Nice %&# åäö", "K", new BigDecimal(25.0)));
+		list.add(getVistranshDao(404, 3, "Nice %&# åäö", "F", new BigDecimal(35.0)));
+
+		
+		return list;
+		
+	}	
+	
+	private List<VistranshDao> getCreateInvalidAmountList() {
+		List<VistranshDao> list = new ArrayList<VistranshDao>();
+		
+		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));
+		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K", new BigDecimal(15.25)));
+		
+		return list;
+		
+	}		
+	
+	
+	
+	
+	
+	
+	private VistranshDao getVistranshDao(int bilnr, int posnr, String biltxt, String fakkre, BigDecimal nbelpo) {
 		VistranshDao dao = new VistranshDao();
 		dao.setFirma("SY");
 		dao.setBilnr(bilnr);
@@ -77,7 +155,7 @@ public class TestJJournalTransaction {
 		dao.setMomsk("0");
 		dao.setKontov(3000);		
 		dao.setKsted(3); //avd 
-		dao.setNbelpo(new BigDecimal(15.0));
+		dao.setNbelpo(nbelpo);
 		dao.setPeraar(2018);
 		dao.setPernr(9);
 		dao.setFakkre(fakkre);
