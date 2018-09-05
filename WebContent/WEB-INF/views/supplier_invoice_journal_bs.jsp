@@ -19,15 +19,9 @@
 
 		var runningUrl = baseUrl;
 
-		var selectedLevnr = jq('#selectLevnr').val();
 		var selectedBilnr = jq('#selectBilnr').val();	
 		var selectedFradato = jq('#selectFradato').val();
 
-		if (selectedLevnr != "") {
-			runningUrl = runningUrl + "&levnr=" + selectedLevnr;
-		} else {
-			runningUrl = runningUrl + "&levnr=ALL";
-		}
 		if (selectedBilnr != "") {
 			runningUrl = runningUrl + "&bilnr=" + selectedBilnr;
 		} else {
@@ -58,13 +52,9 @@
 			"sAjaxDataProp" : "",
 			"order" : [ [ 4, "desc" ] ],
 
-			"aoColumns" : [ {
-				"mData" : "resnr"
-			}, {
+			"aoColumns" : [  {
 				"mData" : "bilnr"
 			}, {
-				"mData" : "posnr"
-			},{
 				"mData" : "biltxt"
 			},{
 				"mData" : "syncda"
@@ -72,12 +62,6 @@
 				"mData" : "syerro"
 			}, {
 				"mData" : "kontov"
-			}, {
-				"mData" : "ksted"
-			}, {
-				"mData" : "kbarer"
-			}, {
-				"mData" : "betbet"
 			}, {
 				"mData" : "fakkre"
 			}, {
@@ -156,10 +140,6 @@
 		
 	<div class="row">
 		<div class="col-1">
-			<label for="selectKundenr">Leverandør:&nbsp;</label>
-			<input type="text" class="inputText" name="selectLevnr" id="selectLevnr" size="9" maxlength="8"/> 
-		</div>
-		<div class="col-1">
 			<label for="selectBilnr">Fakturanr:&nbsp;</label>
 			<input type="text" class="inputText" name="selectBilnr" id="selectBilnr" size="8" maxlength="7">
 		</div>		
@@ -179,16 +159,11 @@
 		<table class="table table-striped table-bordered table-hover" id="vistranshTable">
 			<thead class="tableHeaderField">
 				<tr>
-					<th>Levnr</th>
 					<th>Fakturanr</th>
-					<th>Pos</th>
 					<th>Text</th>
 					<th>Feildato</th>
 					<th>Feil (på faktura hode)</th>
 					<th>Konto</th>
-					<th>Kost.sted</th>
-					<th>Kost.barer</th>
-					<th>Bet.beting.</th>
 					<th>Type</th>
 					<th>Valutakod</th>	
 				</tr>

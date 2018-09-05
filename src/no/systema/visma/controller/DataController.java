@@ -263,18 +263,14 @@ public class DataController {
 	 */
 	@RequestMapping(path = "/vistransh", method = RequestMethod.GET)
 	@SneakyThrows
-	public List<VistranshDto> getVistransh(@RequestParam("user") String user, @RequestParam("levnr") String levnr, @RequestParam("bilnr") String bilnr,@RequestParam("fraDato") String fraDato) {
+	public List<VistranshDto> getVistransh(@RequestParam("user") String user, @RequestParam("bilnr") String bilnr,@RequestParam("fraDato") String fraDato) {
 		logger.debug("/vistransh entered...");
 		List<VistranshDao> vistranshDaoList;		
-		int qLevnr = 0;
 		int qBilnr = 0;
 		int qFraDato = 0;
 
 		checkUser(user);
 
-		if( !levnr.equals("ALL") ){
-			qLevnr = Integer.valueOf(levnr);		
-		}
 		if( !bilnr.equals("ALL") ){
 			qBilnr = Integer.valueOf(bilnr);		
 		}
@@ -282,13 +278,11 @@ public class DataController {
 			qFraDato = Integer.valueOf(fraDato);
 		}			
 		
-		vistranshDaoList = vistranshDaoService.findAllInFirma(qLevnr, qBilnr, qFraDato);
+		vistranshDaoList = vistranshDaoService.findAllInFirma( 0 , qBilnr, qFraDato);
 		
 		return convertToVistranshDto(vistranshDaoList);
 
 	}			
-	
-	
 	
 	/**
 	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistrlogk?user=SYSTEMA&bilnr=1&fraDato=20180101

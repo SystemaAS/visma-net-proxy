@@ -158,7 +158,9 @@ public class JournalTransaction extends Configuration {
 		
 		// Head
 		JournalTransactionUpdateDto dto = new JournalTransactionUpdateDto();
-		dto.setBatchNumber(DtoValueHelper.toDtoString(vistranshHeadDto.getBilnr()));
+		//TODO ta ställning till om manuell numrering, nu auto.
+		//dto.setBatchNumber(DtoValueHelper.toDtoString(vistranshHeadDto.getBilnr()));
+		dto.setDescription(DtoValueHelper.toDtoString("Bilagsnr:"+vistranshHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranshHeadDto));
 		dto.setTransactionDate(DtoValueHelper.toDtoValueDateTime(vistranshHeadDto.getKrdaar(), vistranshHeadDto.getKrdmnd(), vistranshHeadDto.getKrddag()));
 		if (StringUtils.hasValue(vistranshHeadDto.getValkox())) {

@@ -619,7 +619,7 @@ public class WebController {
 		if (supplierInvoiceJournalErrorCount > 0) {
 			successView.addObject("supplier_invoice_journal_error", supplierInvoiceJournalErrorCount);
 		}
-		int supplierAllErrorCount = supplierErrorCount + supplierInvoiceErrorCount;
+		int supplierAllErrorCount = supplierErrorCount + supplierInvoiceErrorCount + supplierInvoiceJournalErrorCount;
 		if (supplierAllErrorCount > 0) {
 			successView.addObject("supplier_all_error", supplierAllErrorCount);
 		}		
