@@ -85,6 +85,21 @@
 
 	<div class="padded-row-small">&nbsp;</div>		
 	
+	<div class="row">  
+		<div class="col" align="right">
+			Overfør Hovedbok til Visma.net Financials
+		</div>
+		<div class="col">
+			<img  src="resources/images/journal_transaction.png" height="300px" width="600px">
+		</div>	
+		<div class="col">
+			<button class="dashboardElementsFrameE2" style="width: 100px; height: 50px" onclick="syncJournalTransactions('${user.user}')">Overfør</button>
+		</div>
+	</div>		
+
+	<div class="padded-row-small">&nbsp;</div>			
+	
+	
 	 <div class="row">  
 		<div class="col" align="right">
 			Generere sikkerhetsnøkler fra Visma.net

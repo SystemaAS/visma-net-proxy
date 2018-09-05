@@ -54,6 +54,7 @@ import no.systema.visma.dto.PrettyPrintVistranslError;
 import no.systema.visma.integration.LogHelper;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
+import no.systema.visma.transaction.JournalTransactionTransactionManager;
 import no.systema.visma.transaction.SupplierInvoiceTransactionManager;
 import no.systema.visma.transaction.SupplierTransactionManager;
 
@@ -86,6 +87,9 @@ public class WebController {
 
 	@Autowired
 	SupplierInvoiceTransactionManager supplierInvoiceTransactionManager;		
+
+	@Autowired
+	JournalTransactionTransactionManager journalTransactionTransactionManager;	
 	
 	@Autowired
 	Authorization authorization;		
@@ -221,6 +225,42 @@ public class WebController {
 		return sb.toString();
 
 	}	
+
+	/**
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeJournalTransactions.do?user=SYSTEMA
+	 */
+	@RequestMapping(value="syncronizeJournalTransactions.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String syncJournalTransactions(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("syncronizeJournalTransactions.do...");
+
+		checkUser(user);
+
+		List<PrettyPrintVistranslError> errorList = journalTransactionTransactionManager.syncronizeJournalTransaction();
+
+		if (errorList.isEmpty()) {
+			sb.append("syncronizeJournalTransactions executed without errors. \n \n");
+		} else {
+			sb.append("syncronizeJournalTransactions executed WITH errors.  \n \n");
+		}
+
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}	
+	
+	
+	
+	
+	
+	
+	
 	
     @GetMapping("/loginVisma.do")
     public RedirectView redirectToVismaLogin(RedirectAttributes attributes) {

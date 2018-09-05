@@ -256,8 +256,8 @@ public class DataController {
 	}		
 	
 	/**
-	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistransh?user=SYSTEMA&kundnr=1&fraDato=20180101
-	 * @param kundnr
+	 * Example :  http://gw.systema.no:8080/visma-net-proxy/vistransh?user=SYSTEMA&bilnr=1&fraDato=20180101
+	 * @param bilnr
 	 * @param fraDato
 	 * @return
 	 */
@@ -278,7 +278,7 @@ public class DataController {
 			qFraDato = Integer.valueOf(fraDato);
 		}			
 		
-		vistranshDaoList = vistranshDaoService.findAllInFirma( 0 , qBilnr, qFraDato);
+		vistranshDaoList = vistranshDaoService.findAllInFirma(qBilnr, qFraDato);
 		
 		return convertToVistranshDto(vistranshDaoList);
 
@@ -428,15 +428,12 @@ public class DataController {
 
 		vistranshDaoList.forEach(dao -> {
 			VistranshDto dto = new VistranshDto();
-			dto.setAktkod(dao.getAktkod());
 			dto.setFirma(dao.getFirma());
-			dto.setResnr(dao.getResnr());
 			dto.setBilnr(dao.getBilnr());
-			dto.setBetbet(dao.getBetbet());
+			dto.setNbelpo(dao.getNbelpo());
 			dto.setPosnr(dao.getPosnr());
 			dto.setKontov(dao.getKontov());
 			dto.setKsted(dao.getKsted());
-			dto.setKbarer(dao.getKbarer());
 			dto.setBiltxt(dao.getBiltxt());
 			dto.setFakkre(dao.getFakkre());
 			dto.setValkox(dao.getValkox());

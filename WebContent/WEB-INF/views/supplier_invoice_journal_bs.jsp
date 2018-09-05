@@ -50,7 +50,7 @@
 			destroy : true,
 			"sAjaxSource" : runningUrl,
 			"sAjaxDataProp" : "",
-			"order" : [ [ 4, "desc" ] ],
+			"order" : [ [ 2, "desc" ] ],
 
 			"aoColumns" : [  {
 				"mData" : "bilnr"
@@ -62,6 +62,8 @@
 				"mData" : "syerro"
 			}, {
 				"mData" : "kontov"
+			}, {
+				"mData" : "nbelpo"
 			}, {
 				"mData" : "fakkre"
 			}, {
@@ -164,6 +166,7 @@
 					<th>Feildato</th>
 					<th>Feil (på faktura hode)</th>
 					<th>Konto</th>
+					<th>Beløp</th>
 					<th>Type</th>
 					<th>Valutakod</th>	
 				</tr>

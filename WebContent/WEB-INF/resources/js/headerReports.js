@@ -61,9 +61,6 @@ function syncCustomers(user) {
 		method : "POST", //to avoid invalidate session
 	}).done(function() {
 		alert("Synkronisering er ferdig.");
-		//var formatTime = d3.timeFormat("%Y%m%d");
-		//jq('#selectFradato').val(formatTime(new Date) - 1);
-		//load_data();
 	}).fail(function(data) {
 		console.log("Error", data);
 		alert("Synkronisering gikk feil.", data);
@@ -86,9 +83,6 @@ function syncCustomerInvoices(user) {
 		method : "POST", //to avoid invalidate session
 	}).done(function() {
 		alert("Synkronisering er ferdig.");
-		//var formatTime = d3.timeFormat("%Y%m%d");
-		//jq('#selectFradato').val(formatTime(new Date) - 1);
-		//load_data();
 	}).fail(function(data) {
 		console.log("Error", data);
 		alert("Synkronisering gikk feil.", data);
@@ -111,9 +105,6 @@ function syncSuppliers(user) {
 		method : "POST", //to avoid invalidate session
 	}).done(function() {
 		alert("Synkronisering er ferdig.");
-		//var formatTime = d3.timeFormat("%Y%m%d");
-		//jq('#selectFradato').val(formatTime(new Date) - 1);
-		//load_data();
 	}).fail(function(data) {
 		console.log("Error", data);
 		alert("Synkronisering gikk feil.", data);
@@ -136,9 +127,28 @@ function syncSupplierInvoices(user) {
 		method : "POST", //to avoid invalidate session
 	}).done(function() {
 		alert("Synkronisering er ferdig.");
-		//var formatTime = d3.timeFormat("%Y%m%d");
-		//jq('#selectFradato').val(formatTime(new Date) - 1);
-		//load_data();
+	}).fail(function(data) {
+		console.log("Error", data);
+		alert("Synkronisering gikk feil.", data);
+	}).always(function() {
+		console.log("Always...should unblock");
+		jq.unblockUI();
+	});
+
+}
+
+function syncJournalTransactions(user) {
+	var syncJournalTransactionsUrl = "syncronizeJournalTransactions.do?user="+user;
+
+	jq.blockUI({
+		message : BLOCKUI_OVERLAY_MESSAGE_DEFAULT
+	});
+	
+	jq.ajax({
+		url : syncJournalTransactionsUrl,
+		method : "POST", //to avoid invalidate session
+	}).done(function() {
+		alert("Synkronisering er ferdig.");
 	}).fail(function(data) {
 		console.log("Error", data);
 		alert("Synkronisering gikk feil.", data);

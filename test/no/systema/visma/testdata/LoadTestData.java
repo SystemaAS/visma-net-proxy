@@ -395,10 +395,7 @@ public class LoadTestData {
 
 		for (CSVRecord record : records) {
 
-			String aktkod = record.get("aktkod");
 			String firma = record.get("firma");
-			String resnr = record.get("resnr");
-			String refnr = record.get("refnr");
 			String bilnr = record.get("bilnr");
 			String posnr = record.get("posnr");
 			String bilaar = record.get("bilaar");
@@ -425,10 +422,7 @@ public class LoadTestData {
 			String fakkre = record.get("fakkre");
 
 			VistranshDao dao = new VistranshDao();
-			dao.setAktkod(aktkod);
 			dao.setFirma(firma);
-			dao.setResnr(Integer.parseInt(resnr));
-			dao.setRefnr(Integer.parseInt(refnr));
 			dao.setBilnr(Integer.parseInt(bilnr));
 			dao.setPosnr(Integer.parseInt(posnr));
 			dao.setBilaar(Integer.parseInt(bilaar));

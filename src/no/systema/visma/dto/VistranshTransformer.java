@@ -32,9 +32,6 @@ public class VistranshTransformer {
 					.collect(groupingBy(VistranshDao::getBilnr));
 
 		groupedByBilnr.forEach((bilnr, daoList) -> { 
-
-			sanityCheck(bilnr, daoList);
-			
 			List<VistranshLineDto> vistranshLineDtoList = new ArrayList<VistranshLineDto>();
 			VistranshHeadDto head = new VistranshHeadDto();
 			/*every VISTRANSH contains headerinfo in below attributes, using first row to populate head.*/
@@ -74,22 +71,6 @@ public class VistranshTransformer {
 		
 		return vistranshHeadtDtoList;
 
-	}
-
-	private static void sanityCheck(Integer bilnr, List<VistranshDao> daoList) {
-		if (daoList.size() != 2) {
-			String errMsg = String.format("BILNR: %s , JournalTransaction expect one creditline and one debitline, nr of rows %s ", bilnr, daoList.size());
-			throw new RuntimeException(errMsg);
-		}
-		if (daoList.get(0).getFakkre() == daoList.get(1).getFakkre()) {
-			String errMsg = String.format("BILNR: %s , JournalTransaction expect one creditline(K) and one debitline(F)", bilnr);
-			throw new RuntimeException(errMsg);
-		}
-		if (!daoList.get(0).getNbelpo().equals(daoList.get(1).getNbelpo())) {
-			String errMsg = String.format("BILNR: %s , Creditamount is not the same as debitamount, values: %s, %s", bilnr, daoList.get(0).getNbelpo(), daoList.get(1).getNbelpo());
-			throw new RuntimeException(errMsg);
-		}
-		
 	}
 	
 }

@@ -1,5 +1,7 @@
 package no.systema.visma.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import no.systema.jservices.common.dao.VistranshDao;
 
@@ -12,15 +14,12 @@ import no.systema.jservices.common.dao.VistranshDao;
 @Data
 public class VistranshDto {
 
-	private String aktkod;
 	private String firma;
-	private int resnr; //levnr
 	private int bilnr; //faktura
 	private int posnr;
-	private String betbet;
+	private BigDecimal nbelpo;
 	private int kontov;
 	private int ksted;
-	private int kbarer;
 	private String biltxt;
 	private String fakkre;
 	private String valkox;

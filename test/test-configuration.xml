@@ -32,6 +32,7 @@
 	<bean id="customerInvoiceTransactionManager" class="no.systema.visma.transaction.CustomerInvoiceTransactionManager"/>
 	<bean id="supplierTransactionManager" class="no.systema.visma.transaction.SupplierTransactionManager"/>
 	<bean id="supplierInvoiceTransactionManager" class="no.systema.visma.transaction.SupplierInvoiceTransactionManager"/>
+	<bean id="journalTransactionTransactionManager" class="no.systema.visma.transaction.JournalTransactionTransactionManager"/>
 
     <import resource="classpath:syjservicescommon-data-service-test.xml"/>
     

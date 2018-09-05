@@ -138,16 +138,16 @@ public class JournalTransaction extends Configuration {
 //			}
 
 		} catch (HttpClientErrorException e) {
-			logger.error("HttpClientErrorException::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
-			logger.error(e.getClass() + " On supplierInvoiceApi.supplierInvoicePost call. updateDto=" + updateDto.toString());
+//			logger.error("HttpClientErrorException::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
+			logger.error(e.getClass() + " On journalTransactionApi.journalTransactionPost call. updateDto=" + updateDto.toString());
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-			logger.error("RestClientException | IllegalArgumentException | IndexOutOfBoundsException::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
-			logger.error(e.getClass() + " On supplierInvoiceApi.supplierInvoicePost call. updateDto=" + updateDto.toString(), e);
+//			logger.error("RestClientException | IllegalArgumentException | IndexOutOfBoundsException::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
+			logger.error(e.getClass() + " On journalTransactionApi.journalTransactionPost call. updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-			logger.error("Exception::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
-			logger.error(e.getClass() + " On supplierInvoiceApi.supplierInvoicePost call. updateDto=" + updateDto.toString());
+//			logger.error("Exception::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
+			logger.error(e.getClass() + " On journalTransactionApi.journalTransactionPost call. updateDto=" + updateDto.toString());
 			throw e;
 		}
 
@@ -200,7 +200,7 @@ public class JournalTransaction extends Configuration {
 				updateDto.setDebitAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
 			}			
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
-			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
+//			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -299,23 +299,8 @@ public class JournalTransaction extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (lineDto.getMomsk() == null || lineDto.getMomsk().isEmpty()) {
-			String errMsg = "MOMSK can not be empty";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
 		if (lineDto.getKontov() == 0) {
 			String errMsg = "KONTOV can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (lineDto.getKsted() == 0) {
-			String errMsg = "KSTED can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
-		if (lineDto.getBiltxt() == null || lineDto.getBiltxt().isEmpty()) {
-			String errMsg = "BILTXT can not be empty";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}

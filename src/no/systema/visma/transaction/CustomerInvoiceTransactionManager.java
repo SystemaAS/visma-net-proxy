@@ -158,9 +158,9 @@ public class CustomerInvoiceTransactionManager {
 
 		dao.setFirma(headDto.getFirma());
 		dao.setBilnr(headDto.getBilnr());
-		dao.setBilaar(headDto.getBilaar());
-		dao.setBilmnd(headDto.getBilmnd());
-		dao.setBildag(headDto.getBildag());
+		dao.setBilaar(headDto.getKrdaar());
+		dao.setBilmnd(headDto.getKrdmnd());
+		dao.setBildag(headDto.getKrddag());
 
 		if (errorText != null) {
 			syerror = LogHelper.trimToError(errorText);
