@@ -18,7 +18,6 @@ import no.systema.jservices.common.dao.FirmvisDao;
 import no.systema.jservices.common.dao.services.FirmvisDaoService;
 import no.systema.jservices.common.dao.services.ViscrossrDaoService;
 import no.systema.jservices.common.util.StringUtils;
-import no.systema.jservices.common.values.ViscrossrKoder;
 import no.systema.visma.dto.VistranshHeadDto;
 import no.systema.visma.dto.VistranshLineDto;
 import no.systema.visma.v1client.api.JournalTransactionApi;
@@ -162,7 +161,7 @@ public class JournalTransaction extends Configuration {
 		//dto.setBatchNumber(DtoValueHelper.toDtoString(vistranshHeadDto.getBilnr()));
 		dto.setDescription(DtoValueHelper.toDtoString("Bilagsnr:"+vistranshHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranshHeadDto));
-		dto.setTransactionDate(DtoValueHelper.toDtoValueDateTime(vistranshHeadDto.getKrdaar(), vistranshHeadDto.getKrdmnd(), vistranshHeadDto.getKrddag()));
+		dto.setTransactionDate(DtoValueHelper.toDtoValueDateTime(vistranshHeadDto.getBilaar(), vistranshHeadDto.getBilmnd(), vistranshHeadDto.getBildag()));
 		if (StringUtils.hasValue(vistranshHeadDto.getValkox())) {
 			dto.setCurrencyId(DtoValueHelper.toDtoString(vistranshHeadDto.getValkox()));
 			dto.setExchangeRate(DtoValueHelper.toDtoValueDecimal(vistranshHeadDto.getValku1()));
@@ -214,16 +213,6 @@ public class JournalTransaction extends Configuration {
 		
 	}	
 
-	private DtoValueString getVatCodeId(String momsk) {
-		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MVA_K);
-		if (vismaCodeId == null) {
-			throw new RuntimeException("No Visma.net value found in VISCROSSR for SYSPED value:"+momsk);
-		}
-		
-		return DtoValueHelper.toDtoString(vismaCodeId);
-		
-	}	
-	
 	private List<SegmentUpdateDto> getSubaccount(VistranshLineDto lineDto) {
 		List<SegmentUpdateDto> dtoList = new ArrayList<SegmentUpdateDto>();
 		int AVDELING = 1; //Ref in Visma.net
@@ -258,18 +247,18 @@ public class JournalTransaction extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (vistranshHeadDto.getKrdaar() == 0) {
-			String errMsg = "KRDAAR can not be 0";
+		if (vistranshHeadDto.getBilaar() == 0) {
+			String errMsg = "BILAAR can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (vistranshHeadDto.getKrdmnd() == 0) {
-			String errMsg = "KRDMND can not be 0";
+		if (vistranshHeadDto.getBilmnd() == 0) {
+			String errMsg = "BILMND can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (vistranshHeadDto.getKrddag() == 0) {
-			String errMsg = "KRDDAG can not be 0";
+		if (vistranshHeadDto.getBildag() == 0) {
+			String errMsg = "BILDAG can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
@@ -301,6 +290,11 @@ public class JournalTransaction extends Configuration {
 		}
 		if (lineDto.getKontov() == 0) {
 			String errMsg = "KONTOV can not be 0";
+			logger.error(errMsg);
+			throw new RuntimeException(errMsg);
+		}
+		if (lineDto.getKsted() == 0) {
+			String errMsg = "KSTED can not be 0";
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}

@@ -403,9 +403,6 @@ public class LoadTestData {
 			String bildag = record.get("bildag");
 			String peraar = record.get("peraar");
 			String pernr = record.get("pernr");
-			String krdaar = record.get("krdaar");
-			String krdmnd = record.get("krdmnd");
-			String krddag = record.get("krddag");
 			String ffdaar = record.get("ffdaar");
 			String ffdmnd = record.get("ffdmnd");
 			String ffddag = record.get("ffddag");	
@@ -430,9 +427,6 @@ public class LoadTestData {
 			dao.setBildag(Integer.parseInt(bildag));
 			dao.setPeraar(Integer.parseInt(peraar));
 			dao.setPernr(Integer.parseInt(pernr));
-			dao.setKrdaar(Integer.parseInt(krdaar));
-			dao.setKrdmnd(Integer.parseInt(krdmnd));
-			dao.setKrddag(Integer.parseInt(krddag));
 			dao.setFfdaar(Integer.parseInt(ffdaar));
 			dao.setFfdmnd(Integer.parseInt(ffdmnd));
 			dao.setFfddag(Integer.parseInt(ffddag));	
