@@ -322,7 +322,7 @@ public class CustomerInvoice extends Configuration {
      * @return ReleaseInvoiceActionResultDto
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-	ReleaseInvoiceActionResultDto releaseInvoice(String invoiceNumber) throws RestClientException {
+	private ReleaseInvoiceActionResultDto releaseInvoice(String invoiceNumber) throws RestClientException {
 		logger.info("releaseInvoice("+invoiceNumber+")");
 		return customerInvoiceApi.customerInvoiceReleaseInvoiceByinvoiceNumber(invoiceNumber);
 	}
@@ -335,7 +335,7 @@ public class CustomerInvoice extends Configuration {
      * @return ReleaseCustomerCreditNoteActionResultDto
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-	ReleaseCustomerCreditNoteActionResultDto releaseCreditNote(String creditNoteNumber) throws RestClientException {
+	private ReleaseCustomerCreditNoteActionResultDto releaseCreditNote(String creditNoteNumber) throws RestClientException {
 		logger.info("releaseCreditNote("+creditNoteNumber+")");
 		return customerCreditNoteApi.customerCreditNoteReleaseDocumentBycreditNoteNumber(creditNoteNumber);
 	}	

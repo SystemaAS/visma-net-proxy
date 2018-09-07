@@ -75,7 +75,7 @@
 			}, {
 				"mData" : "ksted"
 			}, {
-				"mData" : "kbarer"
+				"mData" : "momsk"
 			}, {
 				"mData" : "betbet"
 			}, {
@@ -191,7 +191,7 @@
 					<th>Feil (på faktura hode)</th>
 					<th>Konto</th>
 					<th>Kost.sted</th>
-					<th>Kost.barer</th>
+					<th>Momsk</th>
 					<th>Bet.beting.</th>
 					<th>Type</th>
 					<th>Valutakod</th>	

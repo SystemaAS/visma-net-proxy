@@ -54,18 +54,25 @@ public class TestJSupplierInvoice {
 
 	}	
 
-	@Test
-	public void testAttachCreditNote() throws IOException{
-		
-//		Resource file = getTestFile();
-		Resource file = getPdfFile();
-		
-		assertNotNull(file);
-		supplierInvoice.attachInvoiceFile("31", file);
-		
-	}		
+//	@Test
+//	public void testAttachCreditNote() throws IOException{
+//		
+////		Resource file = getTestFile();
+//		Resource file = getPdfFile();
+//		
+//		assertNotNull(file);
+//		supplierInvoice.attachInvoiceFile("31", file);
+//		
+//	}		
 	
-    public static Resource getTestFile() throws IOException {
+	@Test
+	public void testReleaseInvoice() throws IOException{
+		
+		supplierInvoice.releaseInvoice("22");
+		
+	}
+	
+	public static Resource getTestFile() throws IOException {
         Path testFile = Files.createTempFile("test-file", ".txt");
         StringBuilder txt = new StringBuilder("Hello World !!, This is a test file, generated:").append(LocalDateTime.now().toString());
         Files.write(testFile, txt.toString().getBytes());

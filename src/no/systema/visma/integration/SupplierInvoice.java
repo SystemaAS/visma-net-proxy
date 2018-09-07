@@ -23,9 +23,9 @@ import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslLineDto;
 import no.systema.visma.integration.extended.SupplierInvoiceApiExtended;
 import no.systema.visma.v1client.api.SupplierInvoiceApi;
-import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes;
 import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes.ValueEnum;
 import no.systema.visma.v1client.model.DtoValueString;
+import no.systema.visma.v1client.model.ReleaseSupplierInvoiceActionResultDto;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 import no.systema.visma.v1client.model.SupplierDto;
 import no.systema.visma.v1client.model.SupplierInvoiceDto;
@@ -185,6 +185,9 @@ public class SupplierInvoice extends Configuration {
 			} else { //don't do attachment due to bug
 				logger.info("DokumentType is: "+updateDto.getDocumentType()+" , ignoring attachInvoiceFile due to bug in Visma.net.");
 			} 
+	
+			releaseInvoice(updateDto.getReferenceNumber().getValue());
+			
 
 		} catch (HttpClientErrorException e) {
 			logger.error("HttpClientErrorException::"+LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue())); 
@@ -202,11 +205,17 @@ public class SupplierInvoice extends Configuration {
 
 	}	
 
-	void attachInvoiceFile(String bilnr, Resource file) throws IOException {
+	private void attachInvoiceFile(String bilnr, Resource file) throws IOException {
 		logger.info("attachInvoiceFile(bilnr="+bilnr+", filename="+file.getFilename()+", file.contentLength="+file.contentLength());
 		supplierInvoiceApi.supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
 	}
-    
+  
+
+	ReleaseSupplierInvoiceActionResultDto releaseInvoice(String invoiceNumber) throws RestClientException {
+		logger.info("releaseInvoice("+invoiceNumber+")");
+		return supplierInvoiceApi.supplierInvoiceReleaseInvoiceByinvoiceNumber(invoiceNumber);
+	}	
+	
 	private SupplierInvoiceUpdateDto convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto) {
 		logger.info("convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto)");
 		

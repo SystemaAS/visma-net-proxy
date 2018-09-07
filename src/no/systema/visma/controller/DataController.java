@@ -408,7 +408,7 @@ public class DataController {
 			dto.setPosnr(dao.getPosnr());
 			dto.setKontov(dao.getKontov());
 			dto.setKsted(dao.getKsted());
-			dto.setKbarer(dao.getKbarer());
+			dto.setMomsk(dao.getMomsk());
 			dto.setBiltxt(dao.getBiltxt());
 			dto.setFakkre(dao.getFakkre());
 			dto.setValkox(dao.getValkox());

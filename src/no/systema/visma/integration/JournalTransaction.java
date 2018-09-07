@@ -84,7 +84,7 @@ public class JournalTransaction extends Configuration {
 			String batchNumber = String.valueOf(vistranshHeadDto.getBilnr());
 			JournalTransactionDto journalTransactionExistDto = getJournalTransactionByBatchnr(batchNumber);
 			if (journalTransactionExistDto != null) {
-				String errMsg = String.format("FAKTURA:fakturanr: %s already exist, updates not allowed!", vistranshHeadDto.getBilnr());
+				String errMsg = String.format("T:fakturanr: %s already exist, updates not allowed!", vistranshHeadDto.getBilnr());
 				logger.error(errMsg);
     			throw new RuntimeException(errMsg);
 			} 
@@ -199,7 +199,6 @@ public class JournalTransaction extends Configuration {
 				updateDto.setDebitAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
 			}			
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
-//			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
