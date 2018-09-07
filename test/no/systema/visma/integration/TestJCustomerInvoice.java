@@ -82,6 +82,20 @@ public class TestJCustomerInvoice {
 		
 	}		
 	
+	@Test
+	public void testReleaseInvoice() throws IOException{
+		
+		customerInvoice.releaseInvoice("98");
+		
+	}
+	
+	@Test
+	public void testReleaseCreditNote() throws IOException{
+		
+		customerInvoice.releaseCreditNote("99");
+		
+	}	
+	
 	
 	
 //	@Test

@@ -34,6 +34,8 @@ import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
 import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto.OperationEnum;
 import no.systema.visma.v1client.model.CustomerInvoiceUpdateDto;
 import no.systema.visma.v1client.model.DtoValueString;
+import no.systema.visma.v1client.model.ReleaseCustomerCreditNoteActionResultDto;
+import no.systema.visma.v1client.model.ReleaseInvoiceActionResultDto;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 
 /**
@@ -169,6 +171,7 @@ public class CustomerInvoice extends Configuration {
 			
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
 			attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
+			releaseInvoice(updateDto.getReferenceNumber().getValue());
 			
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
@@ -204,7 +207,8 @@ public class CustomerInvoice extends Configuration {
 			
 			customerCreditNoteApi.customerCreditNoteCreate(updateDto); 
 			attachCreditNoteFile(updateDto.getReferenceNumber().getValue(), attachment);
-
+			releaseCreditNote(updateDto.getReferenceNumber().getValue());
+			
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
 			logger.error(e.getClass() + " On customerCreditNoteApi.customerCreditNoteCreate call. updateDto=" + updateDto.toString());
@@ -309,6 +313,32 @@ public class CustomerInvoice extends Configuration {
 		return customerInvoiceExistDto;
 
 	}
+	
+    /**
+     * Release invoice operation
+     * The action result dto contains information about the result of running the action
+     * <p><b>200</b> - OK
+     * @param invoiceNumber Reference number of the invoice to be released
+     * @return ReleaseInvoiceActionResultDto
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+	ReleaseInvoiceActionResultDto releaseInvoice(String invoiceNumber) throws RestClientException {
+		logger.info("releaseInvoice("+invoiceNumber+")");
+		return customerInvoiceApi.customerInvoiceReleaseInvoiceByinvoiceNumber(invoiceNumber);
+	}
+	
+    /**
+     * Release credit note operation
+     * The action result dto contains information about the result of running the action
+     * <p><b>200</b> - OK
+     * @param creditNoteNumber Reference number of the credit note to be released
+     * @return ReleaseCustomerCreditNoteActionResultDto
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+	ReleaseCustomerCreditNoteActionResultDto releaseCreditNote(String creditNoteNumber) throws RestClientException {
+		logger.info("releaseCreditNote("+creditNoteNumber+")");
+		return customerCreditNoteApi.customerCreditNoteReleaseDocumentBycreditNoteNumber(creditNoteNumber);
+	}	
 	
 	/**
 	 * Get a specific Credit Note Data for Customer Invoice

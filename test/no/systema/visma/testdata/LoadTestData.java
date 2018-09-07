@@ -75,10 +75,10 @@ public class LoadTestData {
 	@Test
 	public void runAll() {
 //		loadCustomers();
-//		loadCustomerInvoices();
+		loadCustomerInvoices();
 //		loadSuppliers();
 //		loadSupplierInvoices();
-		loadSupplierInvoicesAsJournalTransaction();
+//		loadSupplierInvoicesAsJournalTransaction();
 	}
 	
 	@SneakyThrows
@@ -210,7 +210,7 @@ public class LoadTestData {
 			dao.setMomsk(momsk);  
 			dao.setNbelpo(new BigDecimal(nbelpo));
 			dao.setFakkre(fakkre);
-			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
 			if (StringUtils.hasValue(valkox)) {
 				dao.setValkox(valkox);
 				dao.setValku1(new BigDecimal(valku1));
