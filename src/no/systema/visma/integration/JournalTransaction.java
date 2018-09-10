@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -26,6 +28,7 @@ import no.systema.visma.v1client.model.JournalTransactionDto;
 import no.systema.visma.v1client.model.JournalTransactionLineUpdateDto;
 import no.systema.visma.v1client.model.JournalTransactionLineUpdateDto.OperationEnum;
 import no.systema.visma.v1client.model.JournalTransactionUpdateDto;
+import no.systema.visma.v1client.model.ReleaseJournalTransactionActionResultDto;
 import no.systema.visma.v1client.model.SegmentUpdateDto;
 
 /**
@@ -51,14 +54,16 @@ public class JournalTransaction extends Configuration {
 	@Autowired
 	public Supplier supplier;	
 	
+	private FirmvisDao firmvisDao;
+	
 	@PostConstruct
 	public void post_construct() {
-		FirmvisDao firmvis = firmvisDaoService.get();
+		firmvisDao = firmvisDaoService.get();
 
-		journalTransactionApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
-		journalTransactionApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		journalTransactionApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
-		journalTransactionApi.getApiClient().setAccessToken(firmvis.getViacto().trim());			
+		journalTransactionApi.getApiClient().setBasePath(firmvisDao.getVibapa().trim());
+		journalTransactionApi.getApiClient().addDefaultHeader("ipp-application-type", firmvisDao.getViapty().trim());
+		journalTransactionApi.getApiClient().addDefaultHeader("ipp-company-id", firmvisDao.getVicoid().trim());
+		journalTransactionApi.getApiClient().setAccessToken(firmvisDao.getViacto().trim());			
 		
 		//journalTransactionApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaClientHttpRequestInterceptor	
 		
@@ -130,22 +135,20 @@ public class JournalTransaction extends Configuration {
 
 		try {
 
-			journalTransactionApi.journalTransactionPost(updateDto);
-			//TODO
-//			if (attachment != null) {
-//				attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
-//			}
+			Object object = journalTransactionApi.journalTransactionPost(updateDto);
+			logger.info("Object="+ReflectionToStringBuilder.toString(object));
+			if (firmvisDao.getVirelh() == 1) {
+				String invoiceNumber = getJournalTransactiontoRelease(updateDto.getBatchNumber().toString());
+				releaseInvoice(invoiceNumber);
+			}
 
 		} catch (HttpClientErrorException e) {
-//			logger.error("HttpClientErrorException::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
 			logger.error(e.getClass() + " On journalTransactionApi.journalTransactionPost call. updateDto=" + updateDto.toString());
 			throw e;
 		} catch (RestClientException | IllegalArgumentException | IndexOutOfBoundsException e) {
-//			logger.error("RestClientException | IllegalArgumentException | IndexOutOfBoundsException::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
 			logger.error(e.getClass() + " On journalTransactionApi.journalTransactionPost call. updateDto=" + updateDto.toString(), e);
 			throw e;
 		} catch (Exception e) {
-//			logger.error("Exception::"+LogHelper.logPrefixJournalTransaction(updateDto.getBatchNumber())); 
 			logger.error(e.getClass() + " On journalTransactionApi.journalTransactionPost call. updateDto=" + updateDto.toString());
 			throw e;
 		}
@@ -157,8 +160,8 @@ public class JournalTransaction extends Configuration {
 		
 		// Head
 		JournalTransactionUpdateDto dto = new JournalTransactionUpdateDto();
-		//TODO ta ställning till om manuell numrering, nu auto.
-		//dto.setBatchNumber(DtoValueHelper.toDtoString(vistranshHeadDto.getBilnr()));
+		/** NOTE: setBatchNumber is used solely for transfering BILNR to releaseInvoice() */
+		dto.setBatchNumber(DtoValueHelper.toDtoString(vistranshHeadDto.getBilnr()));
 		dto.setDescription(DtoValueHelper.toDtoString("Bilagsnr:"+vistranshHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranshHeadDto));
 		dto.setTransactionDate(DtoValueHelper.toDtoValueDateTime(vistranshHeadDto.getBilaar(), vistranshHeadDto.getBilmnd(), vistranshHeadDto.getBildag()));
@@ -177,6 +180,11 @@ public class JournalTransaction extends Configuration {
 
 	}	
 
+	ReleaseJournalTransactionActionResultDto releaseInvoice(String invoiceNumber) throws RestClientException {
+		logger.info("releaseInvoice("+invoiceNumber+")");
+		return journalTransactionApi.journalTransactionReleaseJournalTransactionByjournalTransactionNumber(invoiceNumber);
+	}	
+	
 	private DtoValueString getFinancialsPeriod(VistranshHeadDto vistranshHeadDto) {
 		String year = String.valueOf(vistranshHeadDto.getPeraar());
 		String month = String.format("%02d", vistranshHeadDto.getPernr()); // pad up to 2 char, ex. 1 -> 01
@@ -224,7 +232,56 @@ public class JournalTransaction extends Configuration {
 		return dtoList;
 	}		
 	
-	JournalTransactionDto getJournalTransactionByBatchnr(String batchnr) {
+
+	private String getJournalTransactiontoRelease(String bilnr) {
+		Integer BALANCED = 0;
+		List<JournalTransactionDto> balancedList = getJournalTransactionsByReleased(BALANCED);
+	
+		//Sanity check
+		List<JournalTransactionDto> jtList = balancedList.stream()                       
+                .filter(dto -> dto.getDescription().endsWith(bilnr))
+                .collect(Collectors.toList());
+		if (jtList.size() > 1) {
+			String errMsg = "Found more than one JournalTransaction on BILNR="+bilnr;
+			throw new RuntimeException(errMsg+ ". Found "+jtList.size()+ " JournalTransactions");
+		}
+		
+		JournalTransactionDto jt = balancedList.stream()                       
+	                .filter(dto -> dto.getDescription().endsWith(bilnr))      
+	                .findFirst() 
+	                .orElse(null);    	
+
+		if (jt == null) {
+			String errMsg = "JournalTransactionDto is null! Searched on BILNR " + bilnr + " as ending part of description.";
+			throw new RuntimeException(errMsg);
+
+		}
+		
+		return jt.getBatchNumber();
+		
+	}
+	
+	private List<JournalTransactionDto> getJournalTransactionsByReleased(Integer released) {
+        String greaterThanValue = null;
+        Integer numberToRead = null;
+        Integer skipRecords = null;
+        String orderBy = null;
+        String lastModifiedDateTime = null;
+        String lastModifiedDateTimeCondition = null;
+        String customerSupplierStart = null;
+        String customerSupplierEnd = null;
+//        Integer released = 0; //0 = Balanced
+        Integer pageNumber = null;
+        Integer pageSize = null;
+        List<JournalTransactionDto> response = journalTransactionApi.journalTransactionGetAllJournalTransactions(greaterThanValue, numberToRead, skipRecords, orderBy, lastModifiedDateTime, lastModifiedDateTimeCondition, customerSupplierStart, customerSupplierEnd, released, pageNumber, pageSize);
+
+        return response;
+	}
+	
+	
+	
+	
+	private JournalTransactionDto getJournalTransactionByBatchnr(String batchnr) {
 		JournalTransactionDto journalTransactionExistDto;
 		try {
 
@@ -302,29 +359,6 @@ public class JournalTransaction extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-	}
-	
-	
-	/** used for poc-test*/
-	List<JournalTransactionDto> journalTransactionGetAllJournalTransactions() {
-		String greaterThanValue = null;
-		Integer numberToRead = null;
-        Integer skipRecords = null;
-        String orderBy = null;
-        String lastModifiedDateTime = null;
-        String lastModifiedDateTimeCondition = null;
-        String customerSupplierStart = null;
-        String customerSupplierEnd = null;
-        Integer released = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;		
-		
-		
-		List<JournalTransactionDto> list = journalTransactionApi.journalTransactionGetAllJournalTransactions(greaterThanValue, numberToRead, skipRecords, orderBy, lastModifiedDateTime, lastModifiedDateTimeCondition,
-				customerSupplierStart, customerSupplierEnd, released, pageNumber, pageSize);	
-		
-		return list;
-		
 	}
 	
 	

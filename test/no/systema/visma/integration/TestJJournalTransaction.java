@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import org.junit.Assert;
 import no.systema.jservices.common.dao.VistranshDao;
 import no.systema.visma.dto.VistranshHeadDto;
 import no.systema.visma.dto.VistranshTransformer;
@@ -29,21 +29,29 @@ public class TestJJournalTransaction {
 	JournalTransaction journalTransaction;
 	
 
-	@Test
-	public void testGetAllJournalTransactions() {
-		List<JournalTransactionDto> list = journalTransaction.journalTransactionGetAllJournalTransactions();
+//	@Test
+//	public void testGetAllJournalTransactions() {
+//		List<JournalTransactionDto> list = journalTransaction.journalTransactionGetAllJournalTransactions();
+//
+//		list.forEach(dto -> {
+//			logger.info("dto.getBatchNumber()=" + dto.getBatchNumber());
+//			logger.info("executing getSpecific, dto="+journalTransaction.getJournalTransactionByBatchnr(dto.getBatchNumber()));
+//		});
+//
+//	}
 
-		list.forEach(dto -> {
-			logger.info("dto.getBatchNumber()=" + dto.getBatchNumber());
-			logger.info("executing getSpecific, dto="+journalTransaction.getJournalTransactionByBatchnr(dto.getBatchNumber()));
-		});
-
-	}
-
-	@Test
-	public void testGetJournalTransaction() {
-		logger.info("dto="+journalTransaction.getJournalTransactionByBatchnr("000003"));
-	}	
+//	@Test
+//	public void testGetJournalTransactionsToRelease() {
+//		JournalTransactionDto dtoToRelease = journalTransaction.getJournalTransactiontoRelease("303"); 
+//		logger.info("dto="+ dtoToRelease);
+////		list.forEach(dto -> {
+////			logger.info("batchNumber="+ dto.getBatchNumber()+", description="+ dto.getDescription()+", status="+dto.getStatus());
+//////			logger.info("dto="+ dto);
+////			
+////		});
+////	
+//	
+//	}	
 	
 
 	@Test
@@ -82,7 +90,7 @@ public class TestJJournalTransaction {
 		
 	}	
 	
-//	@Test
+	@Test
 	public void testJournalTransaction() throws HttpClientErrorException, RestClientException, IOException {
 		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateList() );
 
@@ -137,11 +145,6 @@ public class TestJJournalTransaction {
 		
 	}		
 	
-	
-	
-	
-	
-	
 	private VistranshDao getVistranshDao(int bilnr, int posnr, String biltxt, String fakkre, BigDecimal nbelpo) {
 		VistranshDao dao = new VistranshDao();
 		dao.setFirma("SY");
@@ -149,9 +152,9 @@ public class TestJJournalTransaction {
 		dao.setPosnr(posnr);
 		dao.setBiltxt(biltxt);
 		dao.setAktkod("A");
-		dao.setKrdaar(2018);
-		dao.setKrdmnd(9);
-		dao.setKrddag(3);
+		dao.setBilaar(2018);
+		dao.setBilmnd(9);
+		dao.setBildag(3);
 		dao.setMomsk("0");
 		dao.setKontov(3000);		
 		dao.setKsted(3); //avd 
@@ -159,7 +162,7 @@ public class TestJJournalTransaction {
 		dao.setPeraar(2018);
 		dao.setPernr(9);
 		dao.setFakkre(fakkre);
-		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
 		dao.setValkox("SEK");
 		dao.setValku1(new BigDecimal(0.925));
 		

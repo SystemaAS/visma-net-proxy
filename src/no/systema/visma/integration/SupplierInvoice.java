@@ -55,15 +55,17 @@ public class SupplierInvoice extends Configuration {
 
 	@Autowired
 	public Supplier supplier;
+	
+	private FirmvisDao firmvisDao;
 
 	@PostConstruct
 	public void post_construct() {
-		FirmvisDao firmvis = firmvisDaoService.get();
+		firmvisDao = firmvisDaoService.get();
 
-		supplierInvoiceApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
-		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
-		supplierInvoiceApi.getApiClient().setAccessToken(firmvis.getViacto().trim());
+		supplierInvoiceApi.getApiClient().setBasePath(firmvisDao.getVibapa().trim());
+		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-application-type", firmvisDao.getViapty().trim());
+		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvisDao.getVicoid().trim());
+		supplierInvoiceApi.getApiClient().setAccessToken(firmvisDao.getViacto().trim());
 
 //		supplierInvoiceApi.getApiClient().setDebugging(true); //Warning...debugging in VismaClientHttpRequestInceptor
 
@@ -185,8 +187,9 @@ public class SupplierInvoice extends Configuration {
 			} else { //don't do attachment due to bug
 				logger.info("DokumentType is: "+updateDto.getDocumentType()+" , ignoring attachInvoiceFile due to bug in Visma.net.");
 			} 
-	
-			releaseInvoice(updateDto.getReferenceNumber().getValue());
+			if (firmvisDao.getVirelk() == 1) {
+				releaseInvoice(updateDto.getReferenceNumber().getValue());
+			}
 			
 
 		} catch (HttpClientErrorException e) {

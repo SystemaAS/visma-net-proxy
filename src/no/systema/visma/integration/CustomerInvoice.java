@@ -68,15 +68,16 @@ public class CustomerInvoice extends Configuration {
 	@Autowired
 	public CustomerCreditNoteApiExtended customerCreditNoteApi = new CustomerCreditNoteApiExtended(apiClient());
 
+	private FirmvisDao firmvisDao;
 	
 	@PostConstruct
 	public void post_construct() {
-		FirmvisDao firmvis = firmvisDaoService.get();
+		firmvisDao = firmvisDaoService.get();
 
-		customerInvoiceApi.getApiClient().setBasePath(firmvis.getVibapa().trim());
-		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-application-type", firmvis.getViapty().trim());
-		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvis.getVicoid().trim());
-		customerInvoiceApi.getApiClient().setAccessToken(firmvis.getViacto().trim());
+		customerInvoiceApi.getApiClient().setBasePath(firmvisDao.getVibapa().trim());
+		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-application-type", firmvisDao.getViapty().trim());
+		customerInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvisDao.getVicoid().trim());
+		customerInvoiceApi.getApiClient().setAccessToken(firmvisDao.getViacto().trim());
 
 //		customerInvoiceApi.getApiClient().setDebugging(true); //Warning...debugging in VismaClientHttpRequestInceptor
 
@@ -171,7 +172,9 @@ public class CustomerInvoice extends Configuration {
 			
 			customerInvoiceApi.customerInvoiceCreate(updateDto);
 			attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
-			releaseInvoice(updateDto.getReferenceNumber().getValue());
+			if (firmvisDao.getVirelf() == 1) {
+				releaseInvoice(updateDto.getReferenceNumber().getValue());
+			} 
 			
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
@@ -207,7 +210,9 @@ public class CustomerInvoice extends Configuration {
 			
 			customerCreditNoteApi.customerCreditNoteCreate(updateDto); 
 			attachCreditNoteFile(updateDto.getReferenceNumber().getValue(), attachment);
-			releaseCreditNote(updateDto.getReferenceNumber().getValue());
+			if (firmvisDao.getVirelf() == 1) {
+				releaseCreditNote(updateDto.getReferenceNumber().getValue());
+			}
 			
 		} catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixCustomerInvoice(updateDto.getCustomerNumber(), updateDto.getReferenceNumber())); 
