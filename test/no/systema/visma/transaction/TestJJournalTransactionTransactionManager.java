@@ -44,7 +44,7 @@ public class TestJJournalTransactionTransactionManager {
 	@Test
 	public void testSyncJournalTransactionValid() {
 
-		vistranshDaoService.deleteAll(null);
+//		vistranshDaoService.deleteAll(null);
 		
 		
 		setupValid();
@@ -77,14 +77,14 @@ public class TestJJournalTransactionTransactionManager {
 		dao.setFirma("SY");
 		dao.setBilnr(111);
 		dao.setPosnr(1);
-		dao.setKrdaar(2018);
-		dao.setKrdmnd(9);
-		dao.setKrddag(5);
+		dao.setBilaar(2018);
+		dao.setBilmnd(9);
+		dao.setBildag(5);
 		dao.setPeraar(2018);
 		dao.setPernr(9);
-		dao.setBiltxt("T-shirt");
+		dao.setBiltxt("biltxt...");
 		dao.setKontov(3010);
-		dao.setKsted(3); //avd
+		dao.setKsted(0); //avd
 		dao.setNbelpo(new BigDecimal(23.055));
 		dao.setFakkre("F");
 
@@ -94,14 +94,14 @@ public class TestJJournalTransactionTransactionManager {
 		dao2.setFirma("SY");
 		dao2.setBilnr(111);
 		dao2.setPosnr(2);
-		dao2.setKrdaar(2018);
-		dao2.setKrdmnd(9);
-		dao2.setKrddag(5);
+		dao2.setBilaar(2018);
+		dao2.setBilmnd(9);
+		dao2.setBildag(5);
 		dao.setPeraar(2018);
 		dao.setPernr(9);		
-		dao2.setBiltxt("T-shirt");
+		dao2.setBiltxt("biltxt...");
 		dao2.setKontov(2010);
-		dao2.setKsted(3); //avd
+		dao2.setKsted(0); //avd
 		dao2.setNbelpo(new BigDecimal(23.055));
 		dao2.setFakkre("K");
 		

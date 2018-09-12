@@ -63,6 +63,8 @@
 			}, {
 				"mData" : "kontov"
 			}, {
+				"mData" : "ksted"
+			}, {
 				"mData" : "nbelpo"
 			}, {
 				"mData" : "fakkre"
@@ -166,6 +168,7 @@
 					<th>Feildato</th>
 					<th>Feil (på faktura hode)</th>
 					<th>Konto</th>
+					<th>Kost.sted</th>
 					<th>Beløp</th>
 					<th>Type</th>
 					<th>Valutakod</th>	

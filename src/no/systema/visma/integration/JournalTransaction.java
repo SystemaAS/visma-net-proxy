@@ -138,7 +138,7 @@ public class JournalTransaction extends Configuration {
 			Object object = journalTransactionApi.journalTransactionPost(updateDto);
 			logger.info("Object="+ReflectionToStringBuilder.toString(object));
 			if (firmvisDao.getVirelh() == 1) {
-				String invoiceNumber = getJournalTransactiontoRelease(updateDto.getBatchNumber().toString());
+				String invoiceNumber = getJournalTransactiontoRelease(updateDto.getBatchNumber().getValue());
 				releaseInvoice(invoiceNumber);
 			}
 
@@ -206,7 +206,7 @@ public class JournalTransaction extends Configuration {
 			} else { //FAKKRE = F
 				updateDto.setDebitAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
 			}			
-			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
+//			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -226,7 +226,7 @@ public class JournalTransaction extends Configuration {
 		
 		SegmentUpdateDto updateAvdDto = new SegmentUpdateDto();
 		updateAvdDto.setSegmentId(AVDELING);
-		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKsted()));
+		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKsted())); //Ksted: ref in Visma.net
 		dtoList.add(updateAvdDto);
 		
 		return dtoList;
@@ -334,11 +334,11 @@ public class JournalTransaction extends Configuration {
 	
 	//Sanity checks
 	private void mandatoryCheck(VistranshLineDto lineDto) {
-		if (lineDto.getPosnr() == 0) {
-			String errMsg = "POSNR can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
+//		if (lineDto.getPosnr() == 0) {
+//			String errMsg = "POSNR can not be 0";
+//			logger.error(errMsg);
+//			throw new RuntimeException(errMsg);
+//		}
 		if (lineDto.getNbelpo() == null || lineDto.getNbelpo().equals(BigDecimal.ZERO)) {
 			String errMsg = "NBELPO can not be 0";
 			logger.error(errMsg);
@@ -349,11 +349,12 @@ public class JournalTransaction extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}
-		if (lineDto.getKsted() == 0) {
-			String errMsg = "KSTED can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
+		//Kan vara 0
+//		if (lineDto.getKsted() == 0) {
+//			String errMsg = "KSTED can not be 0";
+//			logger.error(errMsg);
+//			throw new RuntimeException(errMsg);
+//		}
 		if (lineDto.getFakkre() == null || lineDto.getFakkre().isEmpty()) {
 			String errMsg = "FAKKRE can not be empty";
 			logger.error(errMsg);
