@@ -3,7 +3,9 @@ package no.systema.visma.integration;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -66,29 +68,89 @@ public class TestJJournalTransaction {
 	}	
 	
 
-	@Test(expected=RuntimeException.class )
-	public void testTransformerForTwoRowsGroupedInvalidLess() throws HttpClientErrorException, RestClientException, IOException {
-		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidListLess() );
+	@Test
+	public void testSummary() {
+		List<VistranshHeadDto> headDtolist = VistranshTransformer.transform( getCreateList() );
 
-	}	
-
-	@Test(expected=RuntimeException.class )
-	public void testTransformerForTwoRowsGroupedInvalidMore() throws HttpClientErrorException, RestClientException, IOException {
-		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidListMore() );
 		
-	}	
+		headDtolist.forEach((headDto) -> {
 	
+			DoubleSummaryStatistics F = headDto.getLines().stream()
+				.filter(dto -> dto.getFakkre() == "F")
+				.collect( Collectors.summarizingDouble( dto -> Double.valueOf(dto.getNbelpo().doubleValue())) );
+			
+			DoubleSummaryStatistics K = headDto.getLines().stream()
+					.filter(dto -> dto.getFakkre() == "K")
+					.collect( Collectors.summarizingDouble( dto -> Double.valueOf(dto.getNbelpo().doubleValue())) );	
+			
 	
-	@Test(expected=RuntimeException.class )
-	public void testTransformerForTwoRowsGroupedInvalidAmount() throws HttpClientErrorException, RestClientException, IOException {
-		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidAmountList() );
-
-		list.forEach(dto -> {
-			Assert.assertEquals("JournalTransaction expect one credit and one debit.",2,dto.getLines().size());
-			Assert.assertSame(dto.getLines().get(0).getNbelpo(), dto.getLines().get(1).getNbelpo()); 
+			logger.info("sumF="+F);
+			logger.info("sumK="+K);			
+			
+			
+			logger.info("On bilnr:"+headDto.getBilnr()+ "F sum:"+F.getSum()+" K sum "+ K.getSum());
+			logger.info("compare= "+Double.compare(F.getSum(), K.getSum()));			
+			
+			
+			Assert.assertEquals("Must balance to 0" ,F.getSum(), K.getSum(), 0); 
+		
 		});
 		
-	}	
+		
+	}
+	
+	
+	@Test
+	public void testSummaryInvalid() {
+		List<VistranshHeadDto> headDtolist = VistranshTransformer.transform( getCreateInvalidList() );
+
+		
+		headDtolist.forEach((headDto) -> {
+	
+			DoubleSummaryStatistics F = headDto.getLines().stream()
+				.filter(dto -> dto.getFakkre() == "F")
+				.collect( Collectors.summarizingDouble( dto -> Double.valueOf(dto.getNbelpo().doubleValue())) );
+			
+			DoubleSummaryStatistics K = headDto.getLines().stream()
+					.filter(dto -> dto.getFakkre() == "K")
+					.collect( Collectors.summarizingDouble( dto -> Double.valueOf(dto.getNbelpo().doubleValue())) );	
+			
+	
+			Assert.assertNotEquals("On bilnr:"+headDto.getBilnr(), F.getSum(), K.getSum(), 0); 
+		
+		});
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+//	@Test(expected=RuntimeException.class )
+//	public void testTransformerForTwoRowsGroupedInvalidLess() throws HttpClientErrorException, RestClientException, IOException {
+//		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidListLess() );
+//
+//	}	
+//
+//	@Test(expected=RuntimeException.class )
+//	public void testTransformerForTwoRowsGroupedInvalidMore() throws HttpClientErrorException, RestClientException, IOException {
+//		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidListMore() );
+//		
+//	}	
+//	
+//	
+//	@Test(expected=RuntimeException.class )
+//	public void testTransformerForTwoRowsGroupedInvalidAmount() throws HttpClientErrorException, RestClientException, IOException {
+//		List<VistranshHeadDto> list = VistranshTransformer.transform( getCreateInvalidAmountList() );
+//
+//		list.forEach(dto -> {
+//			Assert.assertEquals("JournalTransaction expect one credit and one debit.",2,dto.getLines().size());
+//			Assert.assertSame(dto.getLines().get(0).getNbelpo(), dto.getLines().get(1).getNbelpo()); 
+//		});
+//		
+//	}	
 	
 	@Test
 	public void testJournalTransaction() throws HttpClientErrorException, RestClientException, IOException {
@@ -108,11 +170,11 @@ public class TestJJournalTransaction {
 		
 	}	
 
-	private List<VistranshDao> getCreateInvalidListLess() {
+	private List<VistranshDao> getCreateInvalidList() {
 		List<VistranshDao> list = new ArrayList<VistranshDao>();
 		
 		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));
-		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K", new BigDecimal(15.0)));
+		list.add(getVistranshDao(303, 2, "Nice %&# åäö", "K", new BigDecimal(19.0)));
 		
 		list.add(getVistranshDao(404, 1, "Nice %&# åäö", "K", new BigDecimal(25.0)));
 		
@@ -120,7 +182,7 @@ public class TestJJournalTransaction {
 		
 	}	
 
-	private List<VistranshDao> getCreateInvalidListMore() {
+	private List<VistranshDao> getCreateInvalidList2() {
 		List<VistranshDao> list = new ArrayList<VistranshDao>();
 		
 		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));
@@ -135,7 +197,7 @@ public class TestJJournalTransaction {
 		
 	}	
 	
-	private List<VistranshDao> getCreateInvalidAmountList() {
+	private List<VistranshDao> getCreateInvalidList3() {
 		List<VistranshDao> list = new ArrayList<VistranshDao>();
 		
 		list.add(getVistranshDao(303, 1, "description", "F", new BigDecimal(15.0)));

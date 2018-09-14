@@ -85,7 +85,7 @@ public class TestJJournalTransactionTransactionManager {
 		dao.setBiltxt("biltxt...");
 		dao.setKontov(3010);
 		dao.setKsted(0); //avd
-		dao.setNbelpo(new BigDecimal(23.055));
+		dao.setNbelpo(new BigDecimal(99.055));
 		dao.setFakkre("F");
 
 		

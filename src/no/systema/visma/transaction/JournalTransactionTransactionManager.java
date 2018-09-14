@@ -3,7 +3,9 @@ package no.systema.visma.transaction;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +59,6 @@ public class JournalTransactionTransactionManager {
 		headDtolist.forEach((headDto) -> {
 			try {
 
-				sanityCheck(headDto);
-
 				syncronizeJournalTransaction(headDto);
 
 				deleteVistransh(headDto);
@@ -86,22 +86,6 @@ public class JournalTransactionTransactionManager {
 		
 	}
 	
-	private void sanityCheck(VistranshHeadDto headDto) {
-		if (headDto.getLines().size() != 2) {
-			String errMsg = String.format("BILNR: %s , JournalTransaction expect one creditline and one debitline, nr of rows %s ", headDto.getBilnr(), headDto.getLines().size());
-			throw new RuntimeException(errMsg);
-		}
-		if (headDto.getLines().get(0).getFakkre() == headDto.getLines().get(1).getFakkre()) {
-			String errMsg = String.format("BILNR: %s , JournalTransaction expect one creditline(K) and one debitline(F)", headDto.getBilnr());
-			throw new RuntimeException(errMsg);
-		}
-		if (!headDto.getLines().get(0).getNbelpo().equals(headDto.getLines().get(1).getNbelpo())) {
-			String errMsg = String.format("BILNR: %s , Creditamount is not the same as debitamount, values: %s, %s",  headDto.getBilnr(), headDto.getLines().get(0).getNbelpo(), headDto.getLines().get(1).getNbelpo());
-			throw new RuntimeException(errMsg);
-		}		
-		
-	}
-
 	private void createVistrlogh(VistranshHeadDto headDto) {
 		VistrloghDao vistrloghDao = getVistrloghDao(headDto, null);
 		vistrloghDaoService.create(vistrloghDao);

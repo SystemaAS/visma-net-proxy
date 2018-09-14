@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -85,15 +84,7 @@ public class JournalTransaction extends Configuration {
 		mandatoryCheck(vistranshHeadDto);		
 		
 		try {
-			// Sanity check 1
-			String batchNumber = String.valueOf(vistranshHeadDto.getBilnr());
-			JournalTransactionDto journalTransactionExistDto = getJournalTransactionByBatchnr(batchNumber);
-			if (journalTransactionExistDto != null) {
-				String errMsg = String.format("T:fakturanr: %s already exist, updates not allowed!", vistranshHeadDto.getBilnr());
-				logger.error(errMsg);
-    			throw new RuntimeException(errMsg);
-			} 
-			// Do the thing, if no exception from above
+
 			Resource attachment = null;
 			if (StringUtils.hasValue(vistranshHeadDto.getPath())) {
 				attachment = DtoValueHelper.getAttachment(vistranshHeadDto.getPath());
@@ -135,8 +126,7 @@ public class JournalTransaction extends Configuration {
 
 		try {
 
-			Object object = journalTransactionApi.journalTransactionPost(updateDto);
-			logger.info("Object="+ReflectionToStringBuilder.toString(object));
+			journalTransactionApi.journalTransactionPost(updateDto);
 			if (firmvisDao.getVirelh() == 1) {
 				String invoiceNumber = getJournalTransactiontoRelease(updateDto.getBatchNumber().getValue());
 				releaseInvoice(invoiceNumber);
@@ -160,7 +150,7 @@ public class JournalTransaction extends Configuration {
 		
 		// Head
 		JournalTransactionUpdateDto dto = new JournalTransactionUpdateDto();
-		/** NOTE: setBatchNumber is used solely for transfering BILNR to releaseInvoice() */
+		/** NOTE: setBatchNumber is used solely for transferring BILNR to releaseInvoice() */
 		dto.setBatchNumber(DtoValueHelper.toDtoString(vistranshHeadDto.getBilnr()));
 		dto.setDescription(DtoValueHelper.toDtoString("Bilagsnr:"+vistranshHeadDto.getBilnr()));
 		dto.setFinancialPeriod(getFinancialsPeriod(vistranshHeadDto));
@@ -206,7 +196,6 @@ public class JournalTransaction extends Configuration {
 			} else { //FAKKRE = F
 				updateDto.setDebitAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
 			}			
-//			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -278,24 +267,6 @@ public class JournalTransaction extends Configuration {
         return response;
 	}
 	
-	
-	
-	
-	private JournalTransactionDto getJournalTransactionByBatchnr(String batchnr) {
-		JournalTransactionDto journalTransactionExistDto;
-		try {
-
-			journalTransactionExistDto = journalTransactionApi.journalTransactionGetSpecificJournalTransactionsByjournalTransactionNumber(batchnr);
-
-		} catch (HttpClientErrorException e) {
-			logger.info("message:" + e.getMessage() + ", journalTransactionExistDto is null, continue...");
-			journalTransactionExistDto = null;
-			// continue
-		}
-
-		return journalTransactionExistDto;
-	}
-	
 	// Sanity checks
 	private void mandatoryCheck(VistranshHeadDto vistranshHeadDto) {
 		if (vistranshHeadDto.getBilnr() == 0) {
@@ -334,11 +305,6 @@ public class JournalTransaction extends Configuration {
 	
 	//Sanity checks
 	private void mandatoryCheck(VistranshLineDto lineDto) {
-//		if (lineDto.getPosnr() == 0) {
-//			String errMsg = "POSNR can not be 0";
-//			logger.error(errMsg);
-//			throw new RuntimeException(errMsg);
-//		}
 		if (lineDto.getNbelpo() == null || lineDto.getNbelpo().equals(BigDecimal.ZERO)) {
 			String errMsg = "NBELPO can not be 0";
 			logger.error(errMsg);
