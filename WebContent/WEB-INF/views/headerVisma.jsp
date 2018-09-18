@@ -98,7 +98,7 @@
 						 		</c:otherwise>
 					 		</c:choose>
 					 		<td class="text32Bold" width="100%" align="middle" valign="middle" style="color:#778899;" >
-					 			eSped<font style="color:#003300;">sg</font> - Visma Integrasjon
+					 			eSped<font style="color:#003300;">sg</font> - Visma.net Financials - Integrasjon
 					 			
 					 		</td>
 					 		 

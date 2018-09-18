@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
@@ -50,6 +51,9 @@ public class CustomerInvoiceTransactionManager {
 		logger.info("Syncronizing all records in VISTRANSK -> CustomerInvoice.");
 		List<PrettyPrintVistranskError> errorList = new ArrayList<PrettyPrintVistranskError>();
 
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
 		List<VistranskDao> vistranskDaoList = vistranskDaoService.findAll(null);
 		List<VistranskHeadDto> headDtolist = VistranskTransformer.transform( vistranskDaoList );
 		
@@ -80,6 +84,9 @@ public class CustomerInvoiceTransactionManager {
 
 		logger.info("Syncronized ("+vistranskDaoList.size()+") of grouped BILNR in VISTRANSK -> CustomerInvoice.");
 		logger.info("Error list size="+errorList.size());
+
+		stopWatch.stop();
+		logger.info(String.format("Stopwatch-time in millis %s on %s rows.", stopWatch.getTotalTimeMillis(), vistranskDaoList.size()));
 		
 		return errorList;
 		

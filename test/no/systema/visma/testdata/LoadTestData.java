@@ -16,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StopWatch;
 
 import lombok.SneakyThrows;
 import no.systema.jservices.common.dao.ViskundeDao;
@@ -50,6 +51,7 @@ import no.systema.visma.integration.SupplierInvoice;
  *
  */
 
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
 public class LoadTestData {
@@ -76,8 +78,9 @@ public class LoadTestData {
 	public void runAll() {
 //		loadCustomers();
 //		loadCustomerInvoices();
+		loadCustomerInvoicesAlot();
 //		loadSuppliers();
-		loadSupplierInvoices();
+//		loadSupplierInvoices();
 //		loadSupplierInvoicesAsJournalTransaction();
 	}
 	
@@ -227,6 +230,90 @@ public class LoadTestData {
 		logger.debug(count + " VISTRANSK posts created.");
 
 	}	
+
+	@SneakyThrows
+	private void loadCustomerInvoicesAlot() {
+		vistranskDaoService.deleteAll(null);
+		int count = 1;
+
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
+		
+		while (count <= 5) {
+
+			String aktkod = "A";
+			String firma = "SY";
+			String resnr = "111";
+			String bilnr = "999";
+			String posnr = String.valueOf(count);
+			String bilaar = "2018";
+			String bilmnd = "9";
+			String bildag = "17";
+			String peraar = "2018";
+			String pernr = "9";
+			String krdaar = "2018";
+			String krdmnd = "9";
+			String krddag = "17";
+			String ffdaar = "2018";
+			String ffdmnd = "10";
+			String ffddag = "05";	
+			String biltxt = "biltxt"+count;
+			String betbet = "14";
+			String kontov = "3010";
+			String ksted = "3";
+			String momsk = "0"; 		
+			String nbelpo = "25";
+			String valkox = null;
+			String valku1 = null;
+			String fakkre = "F";
+			
+			VistranskDao dao = new VistranskDao();
+			dao.setAktkod(aktkod);
+			dao.setFirma(firma);
+			dao.setResnr(Integer.parseInt(resnr));
+			dao.setBilnr(Integer.parseInt(bilnr));
+			dao.setPosnr(Integer.parseInt(posnr));
+			dao.setBilaar(Integer.parseInt(bilaar));
+			dao.setBilmnd(Integer.parseInt(bilmnd));
+			dao.setBildag(Integer.parseInt(bildag));
+			dao.setPeraar(Integer.parseInt(peraar));
+			dao.setPernr(Integer.parseInt(pernr));
+			dao.setKrdaar(Integer.parseInt(krdaar));
+			dao.setKrdmnd(Integer.parseInt(krdmnd));
+			dao.setKrddag(Integer.parseInt(krddag));
+			dao.setFfdaar(Integer.parseInt(ffdaar));
+			dao.setFfdmnd(Integer.parseInt(ffdmnd));
+			dao.setFfddag(Integer.parseInt(ffddag));	
+			dao.setBiltxt(biltxt);
+			dao.setBetbet(betbet);
+			dao.setKontov(Integer.parseInt(kontov));
+			dao.setKsted(Integer.parseInt(ksted));
+			dao.setMomsk(momsk);  
+			dao.setNbelpo(new BigDecimal(nbelpo));
+			dao.setFakkre(fakkre);
+			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
+			if (StringUtils.hasValue(valkox)) {
+				dao.setValkox(valkox);
+				dao.setValku1(new BigDecimal(valku1));
+			}
+			
+			vistranskDaoService.create(dao);
+
+			count++;
+
+		}
+
+		stopWatch.stop();
+		System.out.println(String.format("Stopwatch-time in millis %s on %s rows.", stopWatch.getTotalTimeMillis(), count));
+		System.out.println("stopWatch.prettyPrint="+stopWatch.prettyPrint()+ " on "+count+" rows.");
+		System.out.println("stopWatch.shortSummary()+="+stopWatch.shortSummary()+ " on "+count+" rows.");
+		System.out.println("stopWatch.toString="+stopWatch.toString()+ " on "+count+" rows.");
+		System.out.println("stopWatch="+stopWatch+ " on "+count+" rows.");
+		logger.debug(count + " VISTRANSK posts created.");
+
+	}	
+	
 	
 	@SneakyThrows
 	private void loadSuppliers() {

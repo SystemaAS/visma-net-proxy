@@ -52,6 +52,7 @@ import no.systema.visma.dto.PrettyPrintVisleveError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.dto.PrettyPrintVistranslError;
 import no.systema.visma.integration.LogHelper;
+import no.systema.visma.testdata.LoadTestData;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
 import no.systema.visma.transaction.JournalTransactionTransactionManager;
@@ -107,7 +108,10 @@ public class WebController {
 	VistranslDaoService vistranslDaoService;	
 
 	@Autowired
-	VistranshDaoService vistranshDaoService;		
+	VistranshDaoService vistranshDaoService;	
+	
+	@Autowired
+	InitTestData initTestData;
 	
 	
 	/**
@@ -571,6 +575,34 @@ public class WebController {
 	}
 	
 
+	/**
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/initTestData.do?user=SYSTEMA&rows=10
+	 */
+	//TODO: Important:: Remove when laodtest arer over!!
+	@RequestMapping(value="initTestData.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String initTestData(@RequestParam("user") String user, @RequestParam("rows") int rows, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("loadData.do...");
+
+		checkUser(user);
+		
+		initTestData.loadCustomerInvoicesAlot(rows);
+
+		sb.append("initTestData.loadCustomerInvoicesAlot() executed.");
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}		
+	
+	
+	
+	
+	
 	/**
 	 * 
 	 * @Example: http://gw.systema.no:8080/visma-net-proxy/showHistory.do?user=SYSTEMA&filename=log4j_visma-net-proxy-transaction.log
