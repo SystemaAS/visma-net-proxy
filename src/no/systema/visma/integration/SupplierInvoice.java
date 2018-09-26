@@ -412,11 +412,12 @@ public class SupplierInvoice extends Configuration {
 			logger.error(errMsg);
 			throw new RuntimeException(errMsg);
 		}		
-		if (lineDto.getKsted() == 0) {
-			String errMsg = "KSTED can not be 0";
-			logger.error(errMsg);
-			throw new RuntimeException(errMsg);
-		}
+		//Ksted kan vara 0, interimsföring
+//		if (lineDto.getKsted() == 0) {
+//			String errMsg = "KSTED can not be 0";
+//			logger.error(errMsg);
+//			throw new RuntimeException(errMsg);
+//		}
 		if (lineDto.getBiltxt() == null || lineDto.getBiltxt().isEmpty()) {
 			String errMsg = "BILTXT can not be empty";
 			logger.error(errMsg);
