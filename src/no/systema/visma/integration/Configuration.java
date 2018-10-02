@@ -2,6 +2,7 @@ package no.systema.visma.integration;
 
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -10,6 +11,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -50,19 +52,24 @@ public abstract class Configuration {
 	}	
 	
 	/**
-	 * Explicit settings of Jackson ObjectMapper to support Java 8 LocalDateTime.
+	 * Explicit settings of Jackson ObjectMapper.
+	 * <li> Support Java 8 LocalDateTime.</li>
+	 * <li> Indent output </li>
+	 * <li> Exlude properties with null vales</li>
 	 * 
 	 * @return ObjectMapper
 	 */
     @Bean
     @Primary
     public ObjectMapper objectMapper() {
-	    return Jackson2ObjectMapperBuilder.json()
+    	return Jackson2ObjectMapperBuilder.json()
 	            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
 	            .createXmlMapper(false)
+	            .featuresToEnable(SerializationFeature.INDENT_OUTPUT) //nicer output
+	            .serializationInclusion(Include.NON_NULL) //exclude null values
 	            .build();
-    }	
-	
+    }	  
+    
 	/**
 	 * Initialize  {@linkplain RestTemplate} with {@linkplain MappingJackson2HttpMessageConverter} and <br>
 	 * a Interceptor, {@linkplain VismaClientHttpRequestInterceptor}
@@ -71,11 +78,12 @@ public abstract class Configuration {
 	 */
     @Bean
 	public RestTemplate restTemplate(){
-		RestTemplate restTemplate = new RestTemplate(Arrays.asList(new MappingJackson2HttpMessageConverter(objectMapper())));
+    	RestTemplate restTemplate = new RestTemplate(Arrays.asList(new MappingJackson2HttpMessageConverter(objectMapper())));
 		restTemplate.setInterceptors(Arrays.asList(new VismaClientHttpRequestInterceptor()));
 		restTemplate.setErrorHandler(new VismaResponseErrorHandler());
-		
+
 		return restTemplate;  
+		
 	}
 
 	/**
@@ -86,7 +94,7 @@ public abstract class Configuration {
 	 */
     @Bean
 	public RestTemplate restTemplateDefault(){
-		RestTemplate restTemplate = new RestTemplate();
+    	RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setInterceptors(Arrays.asList(new VismaClientHttpRequestInterceptor()));
 		restTemplate.setErrorHandler(new VismaResponseErrorHandler());
 		

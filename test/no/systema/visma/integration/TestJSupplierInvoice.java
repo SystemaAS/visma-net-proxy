@@ -149,11 +149,11 @@ public class TestJSupplierInvoice {
 		dao.setBiltxt(biltxt);
 		dao.setAktkod("A");
 		dao.setKrdaar(2018);
-		dao.setKrdmnd(8);
-		dao.setKrddag(27);
+		dao.setKrdmnd(10);
+		dao.setKrddag(02);
 		dao.setFfdaar(2018);
-		dao.setFfdmnd(8);
-		dao.setFfddag(27);	
+		dao.setFfdmnd(10);
+		dao.setFfddag(02);	
 		dao.setMomsk("0");
 		dao.setKontov(3000);		
 		dao.setKsted(3); //avd 
@@ -163,8 +163,8 @@ public class TestJSupplierInvoice {
 		dao.setPernr(8);
 		dao.setLkid("123456789");
 		dao.setKrnr("987654321");
-		dao.setFakkre("F");
-		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+		dao.setFakkre("K");
+		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
 		dao.setValkox("SEK");
 		dao.setValku1(new BigDecimal(0.925));
 		
