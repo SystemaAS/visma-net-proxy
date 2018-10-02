@@ -26,6 +26,7 @@ import org.springframework.web.client.RestClientException;
 import no.systema.jservices.common.dao.VistranslDao;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslTransformer;
+import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes.ValueEnum;
 import no.systema.visma.v1client.model.SupplierInvoiceDto;
 
 @RunWith(SpringRunner.class)
@@ -54,16 +55,16 @@ public class TestJSupplierInvoice {
 
 	}	
 
-//	@Test
-//	public void testAttachCreditNote() throws IOException{
-//		
-////		Resource file = getTestFile();
-//		Resource file = getPdfFile();
-//		
-//		assertNotNull(file);
-//		supplierInvoice.attachInvoiceFile("31", file);
-//		
-//	}		
+	@Test
+	public void testAttachCreditNote() throws IOException{
+		
+//		Resource file = getTestFile();
+		Resource file = getPdfFile();
+		
+		assertNotNull(file);
+		supplierInvoice.attachInvoiceFile("303",ValueEnum.DEBITADJ, file);
+		
+	}		
 	
 	@Test
 	public void testReleaseInvoice() throws IOException{
@@ -82,7 +83,7 @@ public class TestJSupplierInvoice {
 	
     public static Resource getPdfFile() throws IOException {
    	 
-    	File file =new File("/Users/fredrikmoller/git/visma-net-proxy/test/CloudNativeLandscape_v0.9.4.pdf");
+    	File file =new File("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
 
     	logger.info("file.exists())= "+file.exists());
     	
@@ -124,8 +125,8 @@ public class TestJSupplierInvoice {
 	private List<VistranslDao> getCreateList() {
 		List<VistranslDao> list = new ArrayList<VistranslDao>();
 		
-		list.add(getVistranslDao(101, 303, 1, desc));
-		list.add(getVistranslDao(101, 303, 2, "Nice %&# åäö"));
+		list.add(getVistranslDao(101, 304, 1, desc));
+		list.add(getVistranslDao(101, 304, 2, "Nice %&# åäö"));
 		
 		return list;
 		

@@ -176,21 +176,13 @@ public class SupplierInvoice extends Configuration {
 		try {
 
 			supplierInvoiceApi.supplierInvoicePost(updateDto);
-//			2018-08-29: Bug in Visma.net
-//			In case of Supplier Invoice Attachment Process,
-//			There is a known issue which has been already taken into consideration and the remedial task is in progress.
-//			This fix has been planned to be released at 29.09.2018 into version 8.0			
-			if (updateDto.getDocumentType().equals(ValueEnum.INVOICE)) {
-				if (attachment != null) {
-					attachInvoiceFile(updateDto.getReferenceNumber().getValue(), attachment);
-				}
-			} else { //don't do attachment due to bug
-				logger.info("DokumentType is: "+updateDto.getDocumentType()+" , ignoring attachInvoiceFile due to bug in Visma.net.");
-			} 
+			if (attachment != null) {
+				attachInvoiceFile(updateDto.getReferenceNumber().getValue(), updateDto.getDocumentType().getValue(), attachment);
+			}
+			
 			if (firmvisDao.getVirelk() == 1) {
 				releaseInvoice(updateDto.getReferenceNumber().getValue());
 			}
-			
 
 		} catch (HttpClientErrorException e) {
 			logger.error("HttpClientErrorException::"+LogHelper.logPrefixSupplierInvoice(updateDto.getSupplierNumber().getValue(), updateDto.getReferenceNumber().getValue())); 
@@ -208,12 +200,11 @@ public class SupplierInvoice extends Configuration {
 
 	}	
 
-	private void attachInvoiceFile(String bilnr, Resource file) throws IOException {
+	void attachInvoiceFile(String bilnr, ValueEnum documentType, Resource file) throws IOException {
 		logger.info("attachInvoiceFile(bilnr="+bilnr+", filename="+file.getFilename()+", file.contentLength="+file.contentLength());
-		supplierInvoiceApi.supplierInvoiceCreateHeaderAttachmentByinvoiceNumber(bilnr, file);
+		supplierInvoiceApi.supplierInvoiceCreateHeaderAttachmentByinvoiceNumber_v8(bilnr, documentType,file);
 	}
   
-
 	ReleaseSupplierInvoiceActionResultDto releaseInvoice(String invoiceNumber) throws RestClientException {
 		logger.info("releaseInvoice("+invoiceNumber+")");
 		return supplierInvoiceApi.supplierInvoiceReleaseInvoiceByinvoiceNumber(invoiceNumber);
