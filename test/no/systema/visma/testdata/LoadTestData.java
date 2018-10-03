@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StopWatch;
@@ -54,6 +55,7 @@ import no.systema.visma.integration.SupplierInvoice;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
+@Service
 public class LoadTestData {
 	
 	private static Logger logger = Logger.getLogger(LoadTestData.class);	
@@ -76,12 +78,11 @@ public class LoadTestData {
 	
 	@Test
 	public void runAll() {
-//		loadCustomers();
-//		loadCustomerInvoices();
-		loadCustomerInvoicesAlot();
-//		loadSuppliers();
-//		loadSupplierInvoices();
-//		loadSupplierInvoicesAsJournalTransaction();
+		loadCustomers();
+		loadCustomerInvoices();
+		loadSuppliers();
+		loadSupplierInvoices();
+		loadSupplierInvoicesAsJournalTransaction();
 	}
 	
 	@SneakyThrows
@@ -148,7 +149,7 @@ public class LoadTestData {
 	}
 	
 	@SneakyThrows
-	private void loadCustomerInvoices() {
+	public void loadCustomerInvoices() {
 		vistranskDaoService.deleteAll(null);
 		Resource vistranskFile = new ClassPathResource("vistransk.csv");
 		Reader in = null;
@@ -377,7 +378,7 @@ public class LoadTestData {
 	}	
 
 	@SneakyThrows
-	private void loadSupplierInvoices() {
+	public  void loadSupplierInvoices() {
 		vistranslDaoService.deleteAll(null);
 		Resource vistranslFile = new ClassPathResource("vistransl.csv");
 		Reader in = null;
@@ -452,7 +453,7 @@ public class LoadTestData {
 			dao.setKrnr(krnr);
 			dao.setLkid(lkid);
 			dao.setFakkre(fakkre);
-//			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/headf.pdf");
+			dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
 			
 			vistranslDaoService.create(dao);
 
@@ -467,7 +468,7 @@ public class LoadTestData {
 	}		
 	
 	@SneakyThrows
-	private void loadSupplierInvoicesAsJournalTransaction() {
+	public void loadSupplierInvoicesAsJournalTransaction() {
 		vistranshDaoService.deleteAll(null);
 		Resource vistranslFile = new ClassPathResource("vistransh.csv");
 		Reader in = null;
