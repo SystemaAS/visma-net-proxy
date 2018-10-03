@@ -18,3 +18,8 @@ visma-net-proxy uses Eclipse-dependency to project:
 4. Remove dependency to [previous version](https://github.com/SystemaAS/visma-net-v1client)
 4. Add dependency to visma-net-vXXXclient to visma-net-proxy.
 5. Run appropriate tests.
+
+## Misc
+
+* For functionality start reading README in /felles/Visma.net
+* For running Test Suite see [TestJAll.java](https://github.com/SystemaAS/visma-net-proxy/blob/master/test/no/systema/visma/transaction/TestJAll.java) 
