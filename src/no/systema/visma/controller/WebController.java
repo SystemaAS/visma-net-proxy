@@ -52,7 +52,7 @@ import no.systema.visma.dto.PrettyPrintVisleveError;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.dto.PrettyPrintVistranslError;
 import no.systema.visma.integration.LogHelper;
-import no.systema.visma.testdata.LoadTestData;
+//import no.systema.visma.testdata.LoadTestData;
 import no.systema.visma.transaction.CustomerInvoiceTransactionManager;
 import no.systema.visma.transaction.CustomerTransactionManager;
 import no.systema.visma.transaction.JournalTransactionTransactionManager;
