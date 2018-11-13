@@ -345,9 +345,9 @@ public class Customer  extends Configuration{
 		addressdto.setAddressLine3(DtoValueHelper.toDtoString(viskunde.getAdr3()));
 		addressdto.countryId(DtoValueHelper.toDtoString(viskunde.getSyland()));
 		if (viskunde.getPostnr() > 0) {
-			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getPostnr()));
+			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getPostnr(), 4));
 		} else {
-			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getSypoge()));
+			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getSypoge(), 4));
 		}
 		addressdto.setCity(DtoValueHelper.toDtoString(viskunde.getAdr3()));
 		

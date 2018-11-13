@@ -319,9 +319,9 @@ public class Supplier extends Configuration {
 		addressdto.setAddressLine3(DtoValueHelper.toDtoString(visleve.getAdr3()));
 		addressdto.countryId(DtoValueHelper.toDtoString(visleve.getLand()));
 		if (visleve.getPostnr() > 0) {
-			addressdto.setPostalCode(DtoValueHelper.toDtoString(visleve.getPostnr()));
+			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(visleve.getPostnr(), 4));
 		} else {
-			addressdto.setPostalCode(DtoValueHelper.toDtoString(visleve.getPostnu()));
+			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(visleve.getPostnu(), 4));
 		}
 		addressdto.setCity(DtoValueHelper.toDtoString(visleve.getAdr3()));
 		

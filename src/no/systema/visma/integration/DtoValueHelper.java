@@ -9,14 +9,13 @@ import java.util.Objects;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import no.systema.visma.dto.VistranskHeadDto;
 import no.systema.visma.v1client.model.DtoValueDateTime;
 import no.systema.visma.v1client.model.DtoValueDecimal;
 import no.systema.visma.v1client.model.DtoValueInt32;
 import no.systema.visma.v1client.model.DtoValueNullableDecimal;
 import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes;
-import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.DtoValueNullableSupplierInvoiceTypes.ValueEnum;
+import no.systema.visma.v1client.model.DtoValueString;
 
 /**
  * This helper is transforming proprietary SYSPED types into Visma.net types.
@@ -38,6 +37,25 @@ public class DtoValueHelper {
 		}
 		
 		return new DtoValueString().value(o.toString());
+
+	}	
+
+	/**
+	 * Converts Object into DtoValueString with left padded 0 if o less than totalLength.
+	 * 
+	 * @param Object o
+	 * @param totalLength
+	 * @return DtoValueString
+	 */
+	public static DtoValueString toDtoStringLeftPaddingZeros(java.lang.Object o, int totalLength) {
+		if (o == null || o.toString().isEmpty()) {
+			return null;
+		}
+
+		StringBuilder format = new StringBuilder("%0").append(totalLength).append("d");
+		String leftPadded = String.format(format.toString(), o);
+		
+		return new DtoValueString().value(leftPadded);
 
 	}	
 	

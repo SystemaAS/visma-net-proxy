@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
-import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -17,6 +16,7 @@ import org.junit.Test;
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.visma.v1client.RFC3339DateFormat;
 import no.systema.visma.v1client.model.DtoValueDecimal;
+import no.systema.visma.v1client.model.DtoValueString;
 
 public class TestJHelper {
 
@@ -112,5 +112,25 @@ public class TestJHelper {
 
 		return dao;
 	}
+	
+	
+	@Test
+	public void testToDtoStringLeftPaddingZeros() {
+
+		int o = 118;
+		DtoValueString result = DtoValueHelper.toDtoStringLeftPaddingZeros(o, 4);
+		assertEquals("0"+String.valueOf(o), result.getValue());
+
+		o = 1118;
+		result = DtoValueHelper.toDtoStringLeftPaddingZeros(o, 4);
+		assertEquals(String.valueOf(o), result.getValue());
+		
+		o = 1110;
+		result = DtoValueHelper.toDtoStringLeftPaddingZeros(o, 1);
+		assertEquals(String.valueOf(o), result.getValue());
+		
+		
+	}
+	
 
 }
