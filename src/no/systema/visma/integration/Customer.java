@@ -347,7 +347,8 @@ public class Customer  extends Configuration{
 		if (viskunde.getPostnr() > 0) {
 			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getPostnr(), 4));
 		} else {
-			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getSypoge(), 4));
+//			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getSypoge(), 5));
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getSypoge()));
 		}
 		addressdto.setCity(DtoValueHelper.toDtoString(viskunde.getAdr3()));
 		

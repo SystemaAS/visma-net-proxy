@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -51,9 +52,22 @@ public class DtoValueHelper {
 		if (o == null || o.toString().isEmpty()) {
 			return null;
 		}
+		
+		String leftPadded = null;
 
-		StringBuilder format = new StringBuilder("%0").append(totalLength).append("d");
-		String leftPadded = String.format(format.toString(), o);
+		if (o instanceof String) {
+			String oo = o.toString();
+			if (oo.length() < totalLength) {
+				leftPadded = StringUtils.leftPad(oo, totalLength, '0');
+			} else {
+				leftPadded = oo;
+			}
+		} else if (o instanceof Integer) {
+			StringBuilder format = new StringBuilder("%0").append(totalLength).append("d");
+			leftPadded = String.format(format.toString(), o);
+		} else {
+			throw new IllegalArgumentException(o.getClass()+" Not supported");
+		}
 		
 		return new DtoValueString().value(leftPadded);
 

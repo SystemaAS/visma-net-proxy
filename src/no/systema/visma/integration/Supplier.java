@@ -321,7 +321,7 @@ public class Supplier extends Configuration {
 		if (visleve.getPostnr() > 0) {
 			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(visleve.getPostnr(), 4));
 		} else {
-			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(visleve.getPostnu(), 4));
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(visleve.getPostnu()));
 		}
 		addressdto.setCity(DtoValueHelper.toDtoString(visleve.getAdr3()));
 		

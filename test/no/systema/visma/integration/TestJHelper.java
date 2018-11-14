@@ -126,11 +126,37 @@ public class TestJHelper {
 		assertEquals(String.valueOf(o), result.getValue());
 		
 		o = 1110;
-		result = DtoValueHelper.toDtoStringLeftPaddingZeros(o, 1);
+		result = DtoValueHelper.toDtoStringLeftPaddingZeros(o, 4);
 		assertEquals(String.valueOf(o), result.getValue());
+
+		String oo = "2355";
+		result = DtoValueHelper.toDtoStringLeftPaddingZeros(oo, 5);
+		assertEquals("0"+oo, result.getValue());		
+		
+		oo = "22355";
+		result = DtoValueHelper.toDtoStringLeftPaddingZeros(oo, 5);
+		assertEquals(oo, result.getValue());		
+
+		oo = "55";
+		result = DtoValueHelper.toDtoStringLeftPaddingZeros(oo, 5);
+		assertEquals("000"+oo, result.getValue());				
 		
 		
 	}
+	
+	@Test
+	public void rawTests() {
+		
+		
+		String res = String.format("%05d", 2355); 
+		res = String.format("%02s", "93"); 	
+		System.out.println("res="+res);
+		
+		
+		
+	}
+	
+	
 	
 
 }
