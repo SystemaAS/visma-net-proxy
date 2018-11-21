@@ -346,9 +346,10 @@ public class Customer  extends Configuration{
 		addressdto.countryId(DtoValueHelper.toDtoString(viskunde.getSyland()));
 		if (viskunde.getPostnr() > 0) {
 			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getPostnr(), 4));
-		} else {
-//			addressdto.setPostalCode(DtoValueHelper.toDtoStringLeftPaddingZeros(viskunde.getSypoge(), 5));
+		} else if (StringUtils.hasValue(viskunde.getSypoge()) && viskunde.getSypoge().length() > 1) {
 			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getSypoge()));
+		} else {
+			addressdto.setPostalCode(DtoValueHelper.toDtoString(viskunde.getPnpbku()));
 		}
 		addressdto.setCity(DtoValueHelper.toDtoString(viskunde.getAdr3()));
 		
