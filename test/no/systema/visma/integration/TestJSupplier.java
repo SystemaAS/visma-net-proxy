@@ -38,7 +38,7 @@ public class TestJSupplier {
 	@Test
 	public void testGetSupplier() {
 		
-		logger.debug("dto="+supplier.getGetBysupplierCd("10"));
+		logger.debug("dto="+supplier.getGetBysupplierCd("600021"));
 
 	}	
 	

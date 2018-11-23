@@ -1,5 +1,6 @@
 package no.systema.visma.integration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,11 +18,13 @@ import no.systema.jservices.common.util.StringUtils;
 import no.systema.visma.v1client.api.SupplierApi;
 import no.systema.visma.v1client.model.AddressUpdateDto;
 import no.systema.visma.v1client.model.ContactInfoUpdateDto;
+import no.systema.visma.v1client.model.CustomerInvoiceLinesUpdateDto;
 import no.systema.visma.v1client.model.DtoValueAddressUpdateDto;
 import no.systema.visma.v1client.model.DtoValueContactInfoUpdateDto;
 import no.systema.visma.v1client.model.DtoValueString;
 import no.systema.visma.v1client.model.DtoValueSupplierStatus;
 import no.systema.visma.v1client.model.SupplierDto;
+import no.systema.visma.v1client.model.SupplierPaymentMethodDetailUpdateDto;
 import no.systema.visma.v1client.model.SupplierUpdateDto;
 
 /**
@@ -258,8 +261,25 @@ public class Supplier extends Configuration {
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(visleve.getBetbet())); 
 		dto.setCurrencyId(DtoValueHelper.toDtoString(visleve.getValkod()));
 		dto.setSupplierClassId(getSupplierClassId(visleve));
+		dto.setSupplierPaymentMethodDetails(getSupplierPaymentsMetodDetails(visleve));
+		
+		
 		
 		return dto;
+	}
+
+    /* Supporting only Norwegian - BANKKONTO*/
+    private List<SupplierPaymentMethodDetailUpdateDto> getSupplierPaymentsMetodDetails(VisleveDao visleve) {
+		List<SupplierPaymentMethodDetailUpdateDto> updateDtoList = new ArrayList<SupplierPaymentMethodDetailUpdateDto>();
+
+		SupplierPaymentMethodDetailUpdateDto updateDto = new SupplierPaymentMethodDetailUpdateDto();
+		updateDto.setPaymentMethodDetailDescription("BANKKONTO");
+		updateDto.setPaymentMethodDetailValue(DtoValueHelper.toDtoString(visleve.getBankg()));
+
+		updateDtoList.add(updateDto);
+
+		return updateDtoList;
+
 	}
 
 	private DtoValueString getSupplierClassId(VisleveDao visleve) {
