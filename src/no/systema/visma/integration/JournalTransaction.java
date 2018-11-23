@@ -215,7 +215,15 @@ public class JournalTransaction extends Configuration {
 		
 		SegmentUpdateDto updateAvdDto = new SegmentUpdateDto();
 		updateAvdDto.setSegmentId(AVDELING);
-		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKsted())); //Ksted: ref in Visma.net
+
+//		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKsted())); //Ksted: ref in Visma.net
+		
+		
+		String kstedString = String.valueOf(lineDto.getKsted());
+		String kstedLeftPadded = org.apache.commons.lang3.StringUtils.leftPad(kstedString, 4, '0');
+		updateAvdDto.setSegmentValue(kstedLeftPadded);
+
+		
 		dtoList.add(updateAvdDto);
 		
 		return dtoList;
