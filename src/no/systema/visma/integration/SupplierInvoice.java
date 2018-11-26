@@ -294,7 +294,11 @@ public class SupplierInvoice extends Configuration {
 		//Avdeling
 		SegmentUpdateDto updateAvdDto = new SegmentUpdateDto();
 		updateAvdDto.setSegmentId(AVDELING);
-		updateAvdDto.setSegmentValue(String.valueOf(lineDto.getKsted()));
+
+		String kstedString = String.valueOf(lineDto.getKsted());
+		String kstedLeftPadded = org.apache.commons.lang3.StringUtils.leftPad(kstedString, 4, '0');
+		updateAvdDto.setSegmentValue(kstedLeftPadded);
+
 		dtoList.add(updateAvdDto);
 		
 //		//Projekt

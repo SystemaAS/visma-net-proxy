@@ -261,9 +261,9 @@ public class Supplier extends Configuration {
 		dto.setCreditTermsId(DtoValueHelper.toDtoString(visleve.getBetbet())); 
 		dto.setCurrencyId(DtoValueHelper.toDtoString(visleve.getValkod()));
 		dto.setSupplierClassId(getSupplierClassId(visleve));
-		dto.setSupplierPaymentMethodDetails(getSupplierPaymentsMetodDetails(visleve));
-		
-		
+		if (!StringUtils.hasValue(visleve.getLand()) || "NO".equals(visleve.getLand())) {
+			dto.setSupplierPaymentMethodDetails(getSupplierPaymentsMetodDetails(visleve));
+		}
 		
 		return dto;
 	}
