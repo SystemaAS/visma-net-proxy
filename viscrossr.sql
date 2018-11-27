@@ -4,7 +4,7 @@
 select * from viscrossr
 delete from viscrossr
 
---MOMS_S for Salg
+--MOMS for Salg
 INSERT INTO VISCROSSR(svtype, svsysp,svvism)
 VALUES 
 ('MVA_S','3','3'),
@@ -12,8 +12,10 @@ VALUES
 ('MVA_S','0','7')
 
 
---MOMS_K for Kjop
+--MOMS for Kjop, NO og Ikke NO
 INSERT INTO VISCROSSR(svtype, svsysp,svvism)
 VALUES 
-('MVA_K','0','0'),
-('MVA_K','1','1')
+('MK_NO','0','0'),
+('MK_NO','1','1'),
+('MK','0','21'),
+('MK','1','86')

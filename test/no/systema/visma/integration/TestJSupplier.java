@@ -37,9 +37,20 @@ public class TestJSupplier {
 	
 	@Test
 	public void testGetSupplier() {
+	
+		SupplierDto dto = supplier.getGetBysupplierCd("600021");
 		
-		logger.debug("dto="+supplier.getGetBysupplierCd("600021"));
+		String country = dto.getMainAddress().getCountry().getId();
+		
+		logger.debug("country="+country);
+		
+//		logger.debug("dto="+dto);
+		
 
+		
+		
+		
+		
 	}	
 	
 	

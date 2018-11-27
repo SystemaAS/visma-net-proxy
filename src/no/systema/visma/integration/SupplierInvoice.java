@@ -85,13 +85,17 @@ public class SupplierInvoice extends Configuration {
 
 		mandatoryCheck(vistranslHeadDto);		
 		
+		String country;
+		
 		try {
 			// Sanity check 1
 			SupplierDto supplierExistDto = supplier.getGetBysupplierCd(String.valueOf(vistranslHeadDto.getResnr()));
 			if (supplierExistDto == null) {
 				logger.error("Could not find Supplier on number:" + vistranslHeadDto.getResnr());
 				throw new RuntimeException("Could not find Supplier on number:" + vistranslHeadDto.getResnr());
-			} 
+			} else { //set country
+				country = supplierExistDto.getMainAddress().getCountry().getId();
+			}
 			// Sanity check 2
 			String referenceNumber = String.valueOf(vistranslHeadDto.getBilnr());
 			SupplierInvoiceDto supplierInvoiceExistDto = getByinvoiceNumber(referenceNumber);
@@ -105,7 +109,7 @@ public class SupplierInvoice extends Configuration {
 			if (StringUtils.hasValue(vistranslHeadDto.getPath())) {
 				attachment = DtoValueHelper.getAttachment(vistranslHeadDto.getPath());
 			}
-			SupplierInvoiceUpdateDto updateDto = convertToSupplierInvoiceUpdateDto(vistranslHeadDto);
+			SupplierInvoiceUpdateDto updateDto = convertToSupplierInvoiceUpdateDto(vistranslHeadDto, country);
 			supplierInvoicePost(updateDto, attachment);
 			logger.info("INNG.FAKTURA:fakturanr:" + vistranslHeadDto.getBilnr() + " is inserted.");
 
@@ -210,8 +214,8 @@ public class SupplierInvoice extends Configuration {
 		return supplierInvoiceApi.supplierInvoiceReleaseInvoiceByinvoiceNumber(invoiceNumber);
 	}	
 	
-	private SupplierInvoiceUpdateDto convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto) {
-		logger.info("convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto)");
+	private SupplierInvoiceUpdateDto convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto, String country) {
+		logger.info("convertToSupplierInvoiceUpdateDto(VistranslHeadDto vistranslHeadDto, String country)");
 		
 		// Head
 		SupplierInvoiceUpdateDto dto = new SupplierInvoiceUpdateDto();
@@ -237,7 +241,7 @@ public class SupplierInvoice extends Configuration {
 		//End head
 		
 		// Invoice Lines  
-		dto.setInvoiceLines(getInvoiceLines(vistranslHeadDto.getLines()));
+		dto.setInvoiceLines(getInvoiceLines(vistranslHeadDto.getLines(), country));
 
 		return dto;
 
@@ -251,7 +255,7 @@ public class SupplierInvoice extends Configuration {
 
 	}	
 	
-	private List<SupplierInvoiceLineUpdateDto> getInvoiceLines(List<VistranslLineDto> lineDtoList) {
+	private List<SupplierInvoiceLineUpdateDto> getInvoiceLines(List<VistranslLineDto> lineDtoList, String country) {
 		List<SupplierInvoiceLineUpdateDto> updateDtoList = new ArrayList<SupplierInvoiceLineUpdateDto>();
 
 		lineDtoList.forEach(lineDto -> {
@@ -262,7 +266,7 @@ public class SupplierInvoice extends Configuration {
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoValueDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitCostInCurrency(DtoValueHelper.toDtoValueNullableDecimal(lineDto.getNbelpo()));
-			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
+			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk(), country));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -276,8 +280,14 @@ public class SupplierInvoice extends Configuration {
 		
 	}	
 	
-	private DtoValueString getVatCodeId(String momsk) {
-		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MVA_K);
+	private DtoValueString getVatCodeId(String momsk, String country) {
+		String vismaCodeId = null;
+		
+		if ("NO".equals(country)) {
+			vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MK_NO);
+		} else {
+			vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MK);
+		}
 		if (vismaCodeId == null) {
 			throw new RuntimeException("No Visma.net value found in VISCROSSR for SYSPED value:"+momsk);
 		}
