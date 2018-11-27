@@ -1,16 +1,18 @@
 --Insert mapping of SYSPED-kode->Visma.net kode
---2018-08: MOMSKODE, kan vara MVA_S for Salg and MVA_K for kjop. Se ViscrossrKoder.javva
+--Also see ViscrossrKoder.javva
 
 select * from viscrossr
 delete from viscrossr
 
---MOMS for Salg
+--MOMS for Salg, NO og Ikke NO
 INSERT INTO VISCROSSR(svtype, svsysp,svvism)
 VALUES 
-('MVA_S','3','3'),
-('MVA_S','4','5'),
-('MVA_S','0','7')
-
+('MS_NO','3','3'),
+('MS_NO','4','5'),
+('MS_NO','0','7'),
+('MS','3','3'),
+('MS','4','52'),
+('MS','0','7')
 
 --MOMS for Kjop, NO og Ikke NO
 INSERT INTO VISCROSSR(svtype, svsysp,svvism)

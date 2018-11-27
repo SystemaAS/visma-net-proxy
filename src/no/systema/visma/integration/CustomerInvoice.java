@@ -97,13 +97,17 @@ public class CustomerInvoice extends Configuration {
 
 		mandatoryCheck(vistranskHeadDto);
 		
+		String country;
+		
 		try {
 			// Sanity check 1
 			CustomerDto customerExistDto = customer.getGetBycustomerCd(String.valueOf(vistranskHeadDto.getResnr()));
 			if (customerExistDto == null) {
 				logger.error("Could not find Customer on number:" + vistranskHeadDto.getResnr());
 				throw new RuntimeException("Could not find Customer on number:" + vistranskHeadDto.getResnr());
-			} 
+			} else { //set country
+				country = customerExistDto.getMainAddress().getCountry().getId();
+			}
 			// Sanity check 2
 			String referenceNumber = String.valueOf(vistranskHeadDto.getBilnr());
 			CustomerInvoiceDto customerInvoiceExistDto = getByinvoiceNumber(referenceNumber);
@@ -122,11 +126,11 @@ public class CustomerInvoice extends Configuration {
 			// Do the thing, if no exception from above
 			Resource attachment = DtoValueHelper.getAttachment(vistranskHeadDto.getPath());
 			if (vistranskHeadDto.getFakkre().equals("K")) {
-				CustomerCreditNoteUpdateDto updateDto = convertToCustomerCreditNoteUpdateDto(vistranskHeadDto);
+				CustomerCreditNoteUpdateDto updateDto = convertToCustomerCreditNoteUpdateDto(vistranskHeadDto, country);
 				customerCreditNoteCreate(updateDto, attachment);
 				logger.info("UTG.KREDITNOTA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
 			} else { // FAKKRE=F
-				CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto);
+				CustomerInvoiceUpdateDto updateDto = convertToCustomerInvoiceUpdateDto(vistranskHeadDto, country);
 				customerInvoiceCreate(updateDto, attachment);
 				logger.info("UTG:FAKTURA:fakturanr:" + vistranskHeadDto.getBilnr() + " is inserted.");
 			}
@@ -240,8 +244,8 @@ public class CustomerInvoice extends Configuration {
     	customerCreditNoteApi.customerCreditNoteCreateHeaderAttachmentBycreditNoteNumber(bilnr, file);
     }    
  
-	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto) {
-		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto)");
+	private CustomerInvoiceUpdateDto convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto, String country) {
+		logger.info("convertToCustomerInvoiceUpdateDto(VistranskHeadDto vistranskHeadDto, String country)");
 		
 		// Head
 		CustomerInvoiceUpdateDto dto = new CustomerInvoiceUpdateDto();
@@ -260,14 +264,14 @@ public class CustomerInvoice extends Configuration {
 		//End head
 		
 		// Invoice Lines  
-		dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines()));
+		dto.setInvoiceLines(getInvoiceLines(vistranskHeadDto.getLines(), country));
 
 		return dto;
 
 	}
 
-	private CustomerCreditNoteUpdateDto convertToCustomerCreditNoteUpdateDto(VistranskHeadDto vistranskHeadDto) {
-		logger.info("convertToCustomerCreditNoteUpdateDto(VistranskHeadDto vistranskHeadDto)");
+	private CustomerCreditNoteUpdateDto convertToCustomerCreditNoteUpdateDto(VistranskHeadDto vistranskHeadDto, String country) {
+		logger.info("convertToCustomerCreditNoteUpdateDto(VistranskHeadDto vistranskHeadDto, String country)");
 		
 		// Head
 		CustomerCreditNoteUpdateDto dto = new CustomerCreditNoteUpdateDto();
@@ -283,7 +287,7 @@ public class CustomerInvoice extends Configuration {
 		//End head
 		
 		// Lines  
-		dto.setLines(getLines(vistranskHeadDto.getLines()));
+		dto.setLines(getLines(vistranskHeadDto.getLines(), country));
 
 		return dto;
 
@@ -382,7 +386,7 @@ public class CustomerInvoice extends Configuration {
 
 	}
 	
-	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList) {
+	private List<CustomerInvoiceLinesUpdateDto> getInvoiceLines(List<VistranskLineDto> lineDtoList, String country) {
 		List<CustomerInvoiceLinesUpdateDto> updateDtoList = new ArrayList<CustomerInvoiceLinesUpdateDto>();
 
 		lineDtoList.forEach(lineDto -> {
@@ -393,7 +397,7 @@ public class CustomerInvoice extends Configuration {
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoValueDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo())); 
-			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
+			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk(), country));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -407,7 +411,7 @@ public class CustomerInvoice extends Configuration {
 		
 	}
 
-	private List<CustomerCreditNoteLineUpdateDto> getLines(List<VistranskLineDto> lineDtoList) {
+	private List<CustomerCreditNoteLineUpdateDto> getLines(List<VistranskLineDto> lineDtoList, String country) {
 		List<CustomerCreditNoteLineUpdateDto> updateDtoList = new ArrayList<CustomerCreditNoteLineUpdateDto>();
 
 		lineDtoList.forEach(lineDto -> {
@@ -418,7 +422,7 @@ public class CustomerInvoice extends Configuration {
 			updateDto.setLineNumber(DtoValueHelper.toDtoValueInt32((lineDto.getPosnr())));
 			updateDto.setQuantity(DtoValueHelper.toDtoValueDecimal(1.0)); // Hardcode to 1
 			updateDto.setUnitPriceInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo())); 
-			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk()));  
+			updateDto.setVatCodeId(getVatCodeId(lineDto.getMomsk(), country));  
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
@@ -432,8 +436,14 @@ public class CustomerInvoice extends Configuration {
 		
 	}
 	
-	private DtoValueString getVatCodeId(String momsk) {
-		String vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MVA_S);
+	private DtoValueString getVatCodeId(String momsk, String country) {
+		String vismaCodeId = null;
+		if ("NO".equals(country)) {
+			vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MS_NO);
+		} else {
+			vismaCodeId = viscrossrDaoService.getVismaCodeId(momsk,ViscrossrKoder.MS);
+		}
+		
 		if (vismaCodeId == null) {
 			throw new RuntimeException("No Visma.net value found in VISCROSSR for SYSPED value:"+momsk);
 		}
