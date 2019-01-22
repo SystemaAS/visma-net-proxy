@@ -49,7 +49,7 @@ public class TestJSupplierInvoice {
 
 	@Test
 	public void testGetSupplierInvoice() {
-		SupplierInvoiceDto dto = supplierInvoice.getByinvoiceNumber("20");
+		SupplierInvoiceDto dto = supplierInvoice.getByinvoiceNumber("10225");
 		
 		logger.debug("dto="+dto);
 
@@ -125,8 +125,8 @@ public class TestJSupplierInvoice {
 	private List<VistranslDao> getCreateList() {
 		List<VistranslDao> list = new ArrayList<VistranslDao>();
 		
-		list.add(getVistranslDao(101, 304, 1, desc));
-		list.add(getVistranslDao(101, 304, 2, "Nice %&# åäö"));
+		list.add(getVistranslDao(600021, 10224, 1, desc));
+//		list.add(getVistranslDao(600021, 304, 2, "Nice %&# åäö"));
 		
 		return list;
 		
@@ -157,17 +157,17 @@ public class TestJSupplierInvoice {
 		dao.setFfddag(02);	
 		dao.setMomsk("0");
 		dao.setKontov(3000);		
-		dao.setKsted(3); //avd 
+		dao.setKsted(0); //avd 
 		dao.setBetbet("14");
 		dao.setNbelpo(new BigDecimal(15.0));
 		dao.setPeraar(2018);
 		dao.setPernr(8);
 		dao.setLkid("123456789");
 		dao.setKrnr("987654321");
-		dao.setFakkre("K");
+		dao.setFakkre("F");
 		dao.setPath("/Users/fredrikmoller/git/visma-net-proxy/test/mr_bean.pdf");
-		dao.setValkox("SEK");
-		dao.setValku1(new BigDecimal(0.925));
+//		dao.setValkox("SEK");
+//		dao.setValku1(new BigDecimal(0.925));
 		
 		return dao;
 	}	
