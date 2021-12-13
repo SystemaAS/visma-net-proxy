@@ -7,7 +7,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -30,7 +30,7 @@ public class JournalTransactionTransactionManager {
 	/**
 	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
-	private static Logger logger = Logger.getLogger(JournalTransactionTransactionManager.class);
+	private static Logger logger = LogManager.getLogger(JournalTransactionTransactionManager.class);
 	
 	@Autowired
 	JournalTransaction journalTransaction;

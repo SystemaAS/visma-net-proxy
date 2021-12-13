@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ import no.systema.visma.v1client.model.SupplierInvoiceDto;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJSupplierInvoice {
 
-	private static Logger logger = Logger.getLogger(TestJSupplierInvoice.class);	
+	private static Logger logger = LogManager.getLogger(TestJSupplierInvoice.class);	
 
 	String desc;
 	LocalDateTime now;

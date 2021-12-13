@@ -7,7 +7,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import no.systema.visma.v1client.model.JournalTransactionDto;
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJJournalTransaction {
-	static Logger logger = Logger.getLogger(TestJJournalTransaction.class);	
+	static Logger logger = LogManager.getLogger(TestJJournalTransaction.class);	
 	
 	@Autowired 
 	JournalTransaction journalTransaction;

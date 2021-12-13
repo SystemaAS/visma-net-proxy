@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +37,7 @@ import no.systema.visma.v1client.auth.HttpBasicAuth;
 
 @Service
 public class HttpBasicAuthApiClient {
-	private static Logger logger = Logger.getLogger(HttpBasicAuthApiClient.class);
+	private static Logger logger = LogManager.getLogger(HttpBasicAuthApiClient.class);
 	
 	public enum CollectionFormat {
         CSV(","), TSV("\t"), SSV(" "), PIPES("|"), MULTI(null);

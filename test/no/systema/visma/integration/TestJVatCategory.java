@@ -2,7 +2,7 @@ package no.systema.visma.integration;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import no.systema.visma.v1client.model.VatCategoryDto;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJVatCategory {
 
-	private static Logger logger = Logger.getLogger(TestJVatCategory.class);	
+	private static Logger logger = LogManager.getLogger(TestJVatCategory.class);	
 	
 	@Autowired 
 	VatCategory vatCategory;

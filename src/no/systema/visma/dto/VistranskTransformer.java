@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import no.systema.jservices.common.dao.VistranskDao;
 import no.systema.visma.v1client.api.CustomerInvoiceApi;
@@ -20,7 +20,7 @@ import no.systema.visma.v1client.api.CustomerInvoiceApi;
  */
 public class VistranskTransformer {
 
-	private static Logger logger = Logger.getLogger(VistranskTransformer.class);	
+	private static Logger logger = LogManager.getLogger(VistranskTransformer.class);	
 	
 	/**
 	 * Transform flat list of {@link VistranskDao} into composite list of {@link VistranskHeadDto}.

@@ -2,7 +2,7 @@ package no.systema.visma.transaction;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ import no.systema.visma.testdata.LoadTestData;
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJAll {
-	private static Logger logger = Logger.getLogger(TestJAll.class);	
+	private static Logger logger = LogManager.getLogger(TestJAll.class);	
 
 	@Autowired
 	LoadTestData loadTest;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDateTime;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import no.systema.visma.v1client.model.SupplierDto;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJSupplier {
 
-	static Logger logger = Logger.getLogger(TestJSupplier.class);	
+	static Logger logger = LogManager.getLogger(TestJSupplier.class);	
 	
 	LocalDateTime now;
 	

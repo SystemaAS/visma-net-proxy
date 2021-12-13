@@ -2,7 +2,7 @@ package no.systema.visma.authorization;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import no.systema.visma.integration.Configuration;
 
 @Service
 public class Authorization extends Configuration {
-	private static Logger logger = Logger.getLogger(Authorization.class);
+	private static Logger logger = LogManager.getLogger(Authorization.class);
 	
 	/** code */
 	public static String RESPONSE_TYPE = "code";

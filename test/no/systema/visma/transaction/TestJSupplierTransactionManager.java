@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import no.systema.visma.dto.PrettyPrintVisleveError;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJSupplierTransactionManager {
 
-	private static Logger logger = Logger.getLogger(CustomerTransactionManager.class);	
+	private static Logger logger = LogManager.getLogger(CustomerTransactionManager.class);	
 	
 	@Autowired
 	SupplierTransactionManager transactionManager;

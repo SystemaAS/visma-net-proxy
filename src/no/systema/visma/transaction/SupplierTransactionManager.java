@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,7 +24,7 @@ public class SupplierTransactionManager {
 	/**
 	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
-	private static Logger logger = Logger.getLogger(SupplierTransactionManager.class);
+	private static Logger logger = LogManager.getLogger(SupplierTransactionManager.class);
 	
 	@Autowired
 	Supplier supplier;

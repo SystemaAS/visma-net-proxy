@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
@@ -58,7 +58,7 @@ import no.systema.main.validator.UserValidator;
 @Controller
 @Scope("session")
 public class DashboardController {
-	private static final Logger logger = Logger.getLogger(DashboardController.class.getName());
+	private static final Logger logger = LogManager.getLogger(DashboardController.class.getName());
 	private final String COMPANY_CODE_REQUIRED_FLAG_VALUE = "1";
 	private AesEncryptionDecryptionManager aesManager = new AesEncryptionDecryptionManager();
 	private static final StringManager strMgr = new StringManager();

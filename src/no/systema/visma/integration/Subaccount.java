@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -27,7 +27,7 @@ import no.systema.visma.v1client.model.SubAccountUpdateDto;
  */
 @Service
 public class Subaccount extends Configuration{
-	private static Logger logger = Logger.getLogger(Subaccount.class);
+	private static Logger logger = LogManager.getLogger(Subaccount.class);
 	
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;	

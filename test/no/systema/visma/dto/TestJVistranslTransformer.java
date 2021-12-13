@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import no.systema.visma.integration.extended.CustomerInvoiceApiExtended;
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJVistranslTransformer {
-	private static Logger logger = Logger.getLogger(TestJVistranslTransformer.class);
+	private static Logger logger = LogManager.getLogger(TestJVistranslTransformer.class);
 
 	
 	@Autowired

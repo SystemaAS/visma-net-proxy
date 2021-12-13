@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -63,7 +63,7 @@ import no.systema.visma.transaction.SupplierTransactionManager;
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
 @Scope("session")
 public class WebController {
-	private static final Logger logger = Logger.getLogger(WebController.class.getName());
+	private static final Logger logger = LogManager.getLogger(WebController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private StringManager strMgr = new StringManager();
 	private LoginValidator loginValidator = new LoginValidator();

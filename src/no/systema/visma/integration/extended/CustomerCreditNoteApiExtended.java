@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
@@ -39,7 +39,7 @@ import no.systema.visma.v1client.api.CustomerCreditNoteApi;
 @Service
 public class CustomerCreditNoteApiExtended extends CustomerCreditNoteApi {
 
-	private static Logger logger = Logger.getLogger(CustomerCreditNoteApiExtended.class);
+	private static Logger logger = LogManager.getLogger(CustomerCreditNoteApiExtended.class);
 
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;

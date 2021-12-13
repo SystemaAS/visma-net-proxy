@@ -3,7 +3,7 @@ package no.systema.visma.integration;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
  *
  */
 public class VismaResponseErrorHandler implements ResponseErrorHandler {
-	private static Logger logger = Logger.getLogger(VismaResponseErrorHandler.class);
+	private static Logger logger = LogManager.getLogger(VismaResponseErrorHandler.class);
 	
 	
 	/**

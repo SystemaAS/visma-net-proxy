@@ -2,7 +2,7 @@ package no.systema.visma.controller;
 
 import java.math.BigDecimal;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -23,7 +23,7 @@ import no.systema.jservices.common.util.StringUtils;
 //TODO: Remove when loadtests are over!!
 @Service
 public class InitTestData {
-	private static Logger logger = Logger.getLogger(InitTestData.class.getName());	
+	private static Logger logger = LogManager.getLogger(InitTestData.class.getName());	
 
 	@Autowired
 	VistranskDaoService vistranskDaoService;	
