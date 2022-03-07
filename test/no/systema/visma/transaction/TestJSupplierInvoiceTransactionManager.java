@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import no.systema.visma.dto.PrettyPrintVistranslError;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJSupplierInvoiceTransactionManager {
 
-	private static Logger logger = LogManager.getLogger(CustomerTransactionManager.class);	
+	private static Logger logger = LoggerFactory.getLogger(CustomerTransactionManager.class);	
 	
 	@Autowired
 	SupplierInvoiceTransactionManager transactionManager;

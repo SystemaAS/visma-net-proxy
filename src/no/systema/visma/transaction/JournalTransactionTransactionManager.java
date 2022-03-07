@@ -7,7 +7,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -30,7 +30,7 @@ public class JournalTransactionTransactionManager {
 	/**
 	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
-	private static Logger logger = LogManager.getLogger(JournalTransactionTransactionManager.class);
+	private static Logger logger = LoggerFactory.getLogger(JournalTransactionTransactionManager.class);
 	
 	@Autowired
 	JournalTransaction journalTransaction;
@@ -64,13 +64,13 @@ public class JournalTransactionTransactionManager {
 				deleteVistransh(headDto);
 
 			} catch (HttpClientErrorException e) {
-				logger.error(e);
+				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
 				updateVistranshOnError(headDto, e.getStatusText());
 				createVistrlogh(headDto, e.getStatusText());
 				// continues with next dao in list
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
 				updateVistranshOnError(headDto, e.getMessage());
 				createVistrlogh(headDto, e.getMessage());

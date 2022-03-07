@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequest;
@@ -31,7 +31,7 @@ import no.systema.visma.v1client.ApiClient;
  *
  */
 public class VismaClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
-	private static Logger logger = LogManager.getLogger(VismaClientHttpRequestInterceptor.class);
+	private static Logger logger = LoggerFactory.getLogger(VismaClientHttpRequestInterceptor.class);
 	
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {

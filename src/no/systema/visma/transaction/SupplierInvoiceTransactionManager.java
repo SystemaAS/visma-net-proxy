@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -28,7 +28,7 @@ public class SupplierInvoiceTransactionManager {
 	/**
 	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
-	private static Logger logger = LogManager.getLogger(SupplierInvoiceTransactionManager.class);
+	private static Logger logger = LoggerFactory.getLogger(SupplierInvoiceTransactionManager.class);
 	
 	@Autowired
 	SupplierInvoice supplierInvoice;
@@ -63,14 +63,14 @@ public class SupplierInvoiceTransactionManager {
 
 			} 
 			catch (HttpClientErrorException e) {
-				logger.error(e);
+				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
 				updateVistranslOnError(headDto, e.getStatusText());
 				createVistrlogl(headDto, e.getStatusText());
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
-				logger.error(e);
+				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
 				updateVistranslOnError(headDto, e.getMessage());
 				createVistrlogl(headDto, e.getMessage());

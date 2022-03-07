@@ -2,7 +2,7 @@ package no.systema.visma.integration;
 
 import java.util.List;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import no.systema.visma.v1client.model.DtoSegment;
 @ContextConfiguration("classpath:test-configuration.xml")
 public class TestJDimension {
 
-	private static Logger logger = LogManager.getLogger(TestJDimension.class);	
+	private static Logger logger = LoggerFactory.getLogger(TestJDimension.class);	
 	
 	@Autowired 
 	Dimension dimension;

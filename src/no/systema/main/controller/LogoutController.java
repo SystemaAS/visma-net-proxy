@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +18,7 @@ import no.systema.main.util.AppConstants;
 
 @Controller
 public class LogoutController {
-	private static final Logger logger = LogManager.getLogger(LogoutController.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(LogoutController.class.getName());
 	
 	
 	/**

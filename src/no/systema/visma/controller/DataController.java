@@ -3,7 +3,7 @@ package no.systema.visma.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +40,7 @@ import no.systema.visma.dto.VistranslDto;
 
 @RestController
 public class DataController {
-	private static Logger logger = LogManager.getLogger(DataController.class.getName());	
+	private static Logger logger = LoggerFactory.getLogger(DataController.class.getName());	
 
 	@Autowired
 	ViskulogDaoService viskulogDaoService;

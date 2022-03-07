@@ -9,7 +9,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ import no.systema.visma.v1client.model.DtoValueString;
 
 public class TestJHelper {
 
-	private static Logger logger = LogManager.getLogger(TestJHelper.class);
+	private static Logger logger = LoggerFactory.getLogger(TestJHelper.class);
 
 	@Before
 	public void setUp() throws Exception {

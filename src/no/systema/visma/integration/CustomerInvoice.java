@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ import no.systema.visma.v1client.model.SegmentUpdateDto;
  */
 @Service
 public class CustomerInvoice extends Configuration {
-	private static Logger logger = LogManager.getLogger(CustomerInvoice.class);
+	private static Logger logger = LoggerFactory.getLogger(CustomerInvoice.class);
 
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;

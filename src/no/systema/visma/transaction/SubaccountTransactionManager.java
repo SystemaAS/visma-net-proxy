@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,7 +26,7 @@ public class SubaccountTransactionManager {
 	/**
 	 * Separate log: ${catalina.home}/logs/log4j_visma-net-proxy-transaction.log
 	 */
-	private static Logger logger = LogManager.getLogger(SubaccountTransactionManager.class);
+	private static Logger logger = LoggerFactory.getLogger(SubaccountTransactionManager.class);
 	
 	@Autowired
 	Subaccount subaccount;
@@ -67,7 +67,7 @@ public class SubaccountTransactionManager {
 
 			} 
 			catch (HttpClientErrorException e) {
-				logger.error(e);
+				logger.error(e.toString());
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getStatusText()));
 				setError(dao, e.getStatusText());
 //				viskundeDaoService.updateOnError(dao);
@@ -75,7 +75,7 @@ public class SubaccountTransactionManager {
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
-				logger.error(e);
+				logger.error(e.toString());
 				errorList.add(new PrettyPrintViskundeError(dao.getKundnr(), LocalDateTime.now(), e.getMessage()));
 				setError(dao, e.getMessage());
 //				viskundeDaoService.updateOnError(dao);		

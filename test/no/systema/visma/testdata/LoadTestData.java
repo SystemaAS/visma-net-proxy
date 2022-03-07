@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ import no.systema.visma.integration.SupplierInvoice;
 @Service
 public class LoadTestData {
 	
-	private static Logger logger = LogManager.getLogger(LoadTestData.class);	
+	private static Logger logger = LoggerFactory.getLogger(LoadTestData.class);	
 	
 	@Autowired
 	ViskundeDaoService viskundeDaoService;
