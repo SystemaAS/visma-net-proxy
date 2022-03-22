@@ -1,6 +1,6 @@
 <configuration scan="true" debug="false">
   <property name="LOG_DIR" value="${catalina.home}/logs" />
-  <property name="LOG_FILE" value="${LOG_DIR}/logsg_visma-net-proxy.log" />
+  <property name="LOG_FILE" value="${LOG_DIR}/logsg_visma-net-proxy-transaction.log" />
   <property name="OWN_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] %c:%L - %m%n" />
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>

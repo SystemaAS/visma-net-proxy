@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ import no.systema.visma.v1client.model.SegmentUpdateDto;
  */
 @Service
 public class JournalTransaction extends Configuration {
-	private static Logger logger = LogManager.getLogger(JournalTransaction.class);
+	private static Logger logger = LoggerFactory.getLogger(JournalTransaction.class);
 	
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;	
@@ -165,7 +165,7 @@ public class JournalTransaction extends Configuration {
 		
 		// Invoice Lines  
 		dto.setJournalTransactionLines(getLines(vistranshHeadDto.getLines()));
-
+		
 		return dto;
 
 	}	
@@ -184,6 +184,9 @@ public class JournalTransaction extends Configuration {
 	}	
 	
 	private List<JournalTransactionLineUpdateDto> getLines(List<VistranshLineDto> lineDtoList) {
+		int SYSPED_KSTED_NETHERLANDS_ROTTERDAM = 2;
+		int VISMA_NETHERLANDS_ROTTERDAM = 10;
+		
 		List<JournalTransactionLineUpdateDto> updateDtoList = new ArrayList<JournalTransactionLineUpdateDto>();
 
 		lineDtoList.forEach(lineDto -> {
@@ -195,7 +198,11 @@ public class JournalTransaction extends Configuration {
 				updateDto.setCreditAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
 			} else { //FAKKRE = F
 				updateDto.setDebitAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
-			}			
+			}
+			if (lineDto.getKsted() == SYSPED_KSTED_NETHERLANDS_ROTTERDAM) {
+				//Inactivated 21.March.2022 - Sveins email. WML is not prepare. Remove this commented line when GO
+				//updateDto.setBranch(DtoValueHelper.toDtoString(VISMA_NETHERLANDS_ROTTERDAM));
+			}
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));

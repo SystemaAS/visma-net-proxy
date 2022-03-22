@@ -3,11 +3,12 @@ package no.systema.visma.integration;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ import no.systema.visma.v1client.model.SupplierInvoiceUpdateDto;
  */
 @Service
 public class SupplierInvoice extends Configuration {
-	private static Logger logger = LogManager.getLogger(SupplierInvoice.class);
+	private static Logger logger = LoggerFactory.getLogger(SupplierInvoice.class);
 
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;
@@ -237,7 +238,17 @@ public class SupplierInvoice extends Configuration {
 			dto.setExchangeRate(DtoValueHelper.toDtoValueDecimal(vistranslHeadDto.getValku1()));
 		} else {
 			dto.setCurrencyId(DtoValueHelper.toDtoString("NOK"));
-		}	
+		}
+		
+		/* email: WML 24.jan.2022 via Svein UC-2
+		2. When Country of supplier in Systema = 'NL' then supplier tax zone on Purchase invoice should be set to '21' ( NL Domestic)
+		   When Country = an EU country (using Systema table), but not NL then tax zone should be set to '22' (NL EU)
+		   When Country = other then tax zone should be set to '23' (NL IMP)
+		*/
+		if(StringUtils.hasValue(country)) {
+			//Inactivated 21.March.2022 - Sveins email. WML is not prepare. Remove this commented line when GO
+			//dto.setSupplierTaxZone(DtoValueHelper.toDtoString(this.getSupplierTaxZone(country)));
+		}
 		//End head
 		
 		// Invoice Lines  
@@ -245,8 +256,63 @@ public class SupplierInvoice extends Configuration {
 
 		return dto;
 
-	}	
+	}
 
+
+	/** SYSPED-KODTS2 -dbtable where KS2PRE = 'B' (EU LAND)
+	 S2      AT    ØSTERRIKE                                                          B          
+	 S2      BE    BELGIA                                                     FR      B          
+	 S2      BG    BULGARIA                                                           B          
+	 S2      CY    KYPROS                                                             B          
+	 S2      CZ    TSJEKKIA                                                   CS      B          
+	 S2      DE    TYSKLAND                                                   DE      B          
+	 S2      DK    DANMARK                                                    DA      B          
+	 S2      EE    ESTLAND                                                    ET      B          
+	 S2      ES    SPANIA                                                     ES      B          
+	 S2      FI    FINLAND                                                    FI      B          
+	 S2      FL    FREISTADT LIECHTENSTEIN                                            B          
+	 S2      FR    FRANKRIKE                                                  FR      B          
+	 S2      GR    HELLAS                                                     EL      B          
+	 S2      HU    UNGARN                                                     HU      B          
+	 S2      IE    IRLAND                                                     EN      B          
+	 S2      IT    ITALIA                                                     IT      B          
+	 S2      LI    LIECHTENSTEIN                                              FR      B          
+	 S2      LT    LITAUEN                                                    LT      B          
+	 S2      LU    LUXEMBOURG                                                 FR      B   
+	 S2      LV    LATVIA                                                     LA      B          
+	S2      MT    MALTA                                                              B          
+	S2      NL    NEDERLAND                                                  NL      B          
+	S2      PL    POLEN                                                      PL      B          
+	S2      PT    PORTUGAL                                                   PT      B          
+	S2      RO    ROMANIA                                                    RO      B          
+	S2      SE    SVERIGE                                                    SV      B          
+	S2      SI    SLOVENIA                                                   SL      B          
+	S2      SK    SLOVAKIA                                                   SK      B                 
+	 
+	 */
+	private String getSupplierTaxZone(String country) {
+		String retval = "";
+		//should be fetched from SYSPED- KODTS2 as above...one rainy day ...
+		String[] euCountries = {"AT","BE","BG","CY","CZ","DE","DK","EE","ES","FI","FL","FR","GR","HU","IE","IT","LI","LT","LU","LV","MT","NL","PL","PT", "RO",
+								"SE","SI","SK"};
+		
+		if (StringUtils.hasValue(country)){
+			if("NL".equals(country)) {
+				retval = "21";
+			
+			}else if(!"NL".equals(country)) {
+				if(Arrays.asList(euCountries).contains(country)){
+					retval = "22";
+				}else {
+					retval = "23";
+				}
+			
+			}
+		}
+		return retval;
+	}
+	
+	
 	private DtoValueString getFinancialsPeriod(VistranslHeadDto vistranslHeadDto) {
 		String year = String.valueOf(vistranslHeadDto.getPeraar());
 		String month = String.format("%02d", vistranslHeadDto.getPernr()); // pad up to 2 char, ex. 1 -> 01
@@ -257,7 +323,9 @@ public class SupplierInvoice extends Configuration {
 	
 	private List<SupplierInvoiceLineUpdateDto> getInvoiceLines(List<VistranslLineDto> lineDtoList, String country) {
 		List<SupplierInvoiceLineUpdateDto> updateDtoList = new ArrayList<SupplierInvoiceLineUpdateDto>();
-
+		int DEPARTMENT_ROTTERDAM = 2;
+		int VISMA_BRANCH_ROTTERDAM = 10;
+		
 		lineDtoList.forEach(lineDto -> {
 
 			mandatoryCheck(lineDto);
@@ -272,6 +340,13 @@ public class SupplierInvoice extends Configuration {
 			updateDto.setTransactionDescription(DtoValueHelper.toDtoString(lineDto.getBiltxt()));
 			updateDto.setOperation(OperationEnum.INSERT);
 			
+			//When department = '2' (Rotterdam) then the booking needs to change:
+			//(a)the Branchcode '10' needs to be filled, next to the costcentre that is already set in the current integration
+			if(lineDto.getKsted() == DEPARTMENT_ROTTERDAM) {
+			  //Inactivated 21.March.2022 - Sveins email. WML is not prepare. Remove this commented line when GO	
+			  //updateDto.setBranch(DtoValueHelper.toDtoString(VISMA_BRANCH_ROTTERDAM));
+			  //updateDto.setBranchNumber(DtoValueHelper.toDtoString(VISMA_BRANCH_ROTTERDAM));
+			}
 			updateDtoList.add(updateDto);
 			
 		});
