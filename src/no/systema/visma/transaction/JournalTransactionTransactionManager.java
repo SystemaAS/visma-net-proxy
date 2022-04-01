@@ -13,16 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
+import no.systema.jservices.common.dao.Vistransh2Dao;
 import no.systema.jservices.common.dao.VistranshDao;
 import no.systema.jservices.common.dao.VistrloghDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
+import no.systema.jservices.common.dao.services.Vistransh2DaoService;
 import no.systema.jservices.common.dao.services.VistranshDaoService;
 import no.systema.jservices.common.dao.services.VistrloghDaoService;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.dto.PrettyPrintVistranslError;
+import no.systema.visma.dto.Vistransh2Transformer;
 import no.systema.visma.dto.VistranshHeadDto;
 import no.systema.visma.dto.VistranshTransformer;
 import no.systema.visma.integration.JournalTransaction;
+import no.systema.visma.integration.JournalTransaction2;
 import no.systema.visma.integration.LogHelper;
 
 @Service
@@ -36,7 +40,14 @@ public class JournalTransactionTransactionManager {
 	JournalTransaction journalTransaction;
 	
 	@Autowired
+	JournalTransaction2 journalTransaction2;
+	
+	
+	@Autowired
 	VistranshDaoService vistranshDaoService;
+
+	@Autowired
+	Vistransh2DaoService vistransh2DaoService;
 
 	@Autowired
 	FirmDaoService firmDaoService;
@@ -85,6 +96,47 @@ public class JournalTransactionTransactionManager {
 		return errorList;
 		
 	}
+	/**
+	 * TEST DB in visma A38
+	 * 
+	 * @return
+	 */
+	public List<PrettyPrintVistranslError> syncronizeJournalTransactionTEST() {
+		logger.info("Syncronizing all records in VISTRANSH2 -> JournalTransaction.");
+		List<PrettyPrintVistranslError> errorList = new ArrayList<PrettyPrintVistranslError>();
+
+		List<Vistransh2Dao> vistranshDaoList = vistransh2DaoService.findAll(null);
+		List<VistranshHeadDto> headDtolist = Vistransh2Transformer.transform(vistranshDaoList);
+
+		headDtolist.forEach((headDto) -> {
+			try {
+
+				syncronizeJournalTransaction2(headDto);
+
+				deleteVistransh(headDto);
+
+			} catch (HttpClientErrorException e) {
+				logger.error(e.toString());
+				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
+				updateVistranshOnError(headDto, e.getStatusText());
+				createVistrlogh(headDto, e.getStatusText());
+				// continues with next dao in list
+			} catch (Exception e) {
+				logger.error(e.toString());
+				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
+				updateVistranshOnError(headDto, e.getMessage());
+				createVistrlogh(headDto, e.getMessage());
+				// continues with next dao in list
+			}
+
+		});
+
+		logger.info("Syncronized (" + vistranshDaoList.size() + ") of grouped BILNR in VISTRANSH -> JournalTransaction.");
+		logger.info("Error list size=" + errorList.size());
+
+		return errorList;
+		
+	}
 	
 	private void createVistrlogh(VistranshHeadDto headDto) {
 		VistrloghDao vistrloghDao = getVistrloghDao(headDto, null);
@@ -106,6 +158,39 @@ public class JournalTransactionTransactionManager {
 		try {
 			
 			journalTransaction.syncronize(vistranshHeadDto);
+			logger.info(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()) + " syncronized.");
+
+		} 
+		catch (HttpClientErrorException e) {
+			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransh, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
+			throw e;
+		} 
+		catch (RestClientException | IndexOutOfBoundsException e) {
+			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransh="+vistranshHeadDto, e);
+			throw e;
+		}
+		catch (IOException e) {
+			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransh="+vistranshHeadDto, e);
+			throw new RuntimeException("Could not find file", e.getCause());
+		}		
+		catch (Exception e) {
+			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransh="+vistranshHeadDto, e);
+			throw e;
+			
+		}
+		
+	}
+	
+	private void syncronizeJournalTransaction2(VistranshHeadDto vistranshHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
+		logger.info("syncronizeJournalTransaction:"+LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
+
+		try {
+			
+			journalTransaction2.syncronize(vistranshHeadDto);
 			logger.info(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()) + " syncronized.");
 
 		} 

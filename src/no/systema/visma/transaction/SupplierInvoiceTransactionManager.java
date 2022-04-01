@@ -11,17 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
+import no.systema.jservices.common.dao.Vistransl2Dao;
 import no.systema.jservices.common.dao.VistranslDao;
 import no.systema.jservices.common.dao.VistrloglDao;
 import no.systema.jservices.common.dao.services.FirmDaoService;
+import no.systema.jservices.common.dao.services.Vistransl2DaoService;
 import no.systema.jservices.common.dao.services.VistranslDaoService;
 import no.systema.jservices.common.dao.services.VistrloglDaoService;
 import no.systema.visma.dto.PrettyPrintVistranskError;
 import no.systema.visma.dto.PrettyPrintVistranslError;
+import no.systema.visma.dto.Vistransl2Transformer;
 import no.systema.visma.dto.VistranslHeadDto;
 import no.systema.visma.dto.VistranslTransformer;
 import no.systema.visma.integration.LogHelper;
 import no.systema.visma.integration.SupplierInvoice;
+import no.systema.visma.integration.SupplierInvoice2;
 
 @Service
 public class SupplierInvoiceTransactionManager {
@@ -34,7 +38,12 @@ public class SupplierInvoiceTransactionManager {
 	SupplierInvoice supplierInvoice;
 	
 	@Autowired
+	SupplierInvoice2 supplierInvoice2;
+	
+	@Autowired
 	VistranslDaoService vistranslDaoService;
+	@Autowired
+	Vistransl2DaoService vistransl2DaoService;
 
 	@Autowired
 	FirmDaoService firmDaoService;
@@ -86,6 +95,50 @@ public class SupplierInvoiceTransactionManager {
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<PrettyPrintVistranslError> syncronizeSupplierInvoicesTEST() {
+		logger.info("Syncronizing all records in VISTRANSL2 -> SupplierInvoice.");
+		List<PrettyPrintVistranslError> errorList = new ArrayList<PrettyPrintVistranslError>();
+
+		List<Vistransl2Dao> vistranslDaoList = vistransl2DaoService.findAll(null);
+		List<VistranslHeadDto> headDtolist = Vistransl2Transformer.transform( vistranslDaoList );
+		
+		headDtolist.forEach((headDto) -> {
+			try {
+
+				syncronizeSupplierInvoice2(headDto);
+				
+				deleteVistransl(headDto);
+
+			} 
+			catch (HttpClientErrorException e) {
+				logger.error(e.toString());
+				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
+				updateVistranslOnError(headDto, e.getStatusText());
+				createVistrlogl(headDto, e.getStatusText());
+				//continues with next dao in list
+			}		
+			catch (Exception e) {
+				logger.error(e.toString());
+				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
+				updateVistranslOnError(headDto, e.getMessage());
+				createVistrlogl(headDto, e.getMessage());
+				//continues with next dao in list
+			}
+
+		});
+
+		logger.info("Syncronized ("+vistranslDaoList.size()+") of grouped BILNR in VISTRANSL2 -> SupplierInvoice.");
+		logger.info("Error list size="+errorList.size());
+		
+		return errorList;
+		
+	}
+	
+	
 	private void createVistrlogl(VistranslHeadDto headDto) {
 		VistrloglDao vistrloglDao = getVistrloglDao(headDto, null);
 		vistrloglDaoService.create(vistrloglDao);
@@ -106,6 +159,38 @@ public class SupplierInvoiceTransactionManager {
 		try {
 			
 			supplierInvoice.syncronize(vistranslHeadDto);
+			logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()) + " syncronized.");
+
+		} 
+		catch (HttpClientErrorException e) {
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransl, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
+			throw e;
+		} 
+		catch (RestClientException | IndexOutOfBoundsException e) {
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			throw e;
+		}
+		catch (IOException e) {
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			throw new RuntimeException("Could not find file", e.getCause());
+		}		
+		catch (Exception e) {
+			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			throw e;
+			
+		}
+		
+	}
+	private void syncronizeSupplierInvoice2(VistranslHeadDto vistranslHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
+		logger.info("syncronizeSupplierInvoice"+LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+
+		try {
+			
+			supplierInvoice2.syncronize(vistranslHeadDto);
 			logger.info(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()) + " syncronized.");
 
 		} 

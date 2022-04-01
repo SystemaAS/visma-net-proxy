@@ -35,11 +35,16 @@ import no.systema.visma.v1client.model.SegmentUpdateDto;
  * 
  * Also see https://integration.visma.net/API-index/#!/JournalTransaction
  * 
- * @author fredrikmoller
+ * @author oscar
+ * @date 2022.Apr
+ * 
+ * for TEST DB with CompanyId = 2106195 (see below hard coded)
+ * 
  */
+ 
 @Service
-public class JournalTransaction extends Configuration {
-	private static Logger logger = LoggerFactory.getLogger(JournalTransaction.class);
+public class JournalTransaction2 extends Configuration {
+	private static Logger logger = LoggerFactory.getLogger(JournalTransaction2.class);
 	
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;	
@@ -61,7 +66,7 @@ public class JournalTransaction extends Configuration {
 
 		journalTransactionApi.getApiClient().setBasePath(firmvisDao.getVibapa().trim());
 		journalTransactionApi.getApiClient().addDefaultHeader("ipp-application-type", firmvisDao.getViapty().trim());
-		journalTransactionApi.getApiClient().addDefaultHeader("ipp-company-id", firmvisDao.getVicoid().trim());
+		journalTransactionApi.getApiClient().addDefaultHeader("ipp-company-id", "2106195");
 		journalTransactionApi.getApiClient().setAccessToken(firmvisDao.getViacto().trim());			
 		
 		//journalTransactionApi.getApiClient().setDebugging(true);	//Warning...set debugging in VismaClientHttpRequestInterceptor	
@@ -200,8 +205,8 @@ public class JournalTransaction extends Configuration {
 				updateDto.setDebitAmountInCurrency(DtoValueHelper.toDtoValueDecimal(lineDto.getNbelpo()));
 			}
 			if (lineDto.getKsted() == SYSPED_KSTED_NETHERLANDS_ROTTERDAM) {
-				// Inactivated 21.March.2022 - Sveins email. WML is not prepare. Remove this commented line when GO
-				//updateDto.setBranch(DtoValueHelper.toDtoString(VISMA_NETHERLANDS_ROTTERDAM));
+				//Add
+				updateDto.setBranch(DtoValueHelper.toDtoString(VISMA_NETHERLANDS_ROTTERDAM));
 			}
 			updateDto.setAccountNumber(DtoValueHelper.toDtoString(lineDto.getKontov()));
 			updateDto.setSubaccount(getSubaccount(lineDto));

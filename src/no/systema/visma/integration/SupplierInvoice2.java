@@ -40,11 +40,15 @@ import no.systema.visma.v1client.model.SupplierInvoiceUpdateDto;
  * 
  * Also see https://integration.visma.net/API-index/#!/SupplierInvoice
  * 
- * @author fredrikmoller
+ * @author oscar
+ * @date 2022.Apr
+ * 
+ * for TEST DB with CompanyId = 2106195 (see below hard coded)
+ * 
  */
 @Service
-public class SupplierInvoice extends Configuration {
-	private static Logger logger = LoggerFactory.getLogger(SupplierInvoice.class);
+public class SupplierInvoice2 extends Configuration {
+	private static Logger logger = LoggerFactory.getLogger(SupplierInvoice2.class);
 
 	@Autowired
 	public FirmvisDaoService firmvisDaoService;
@@ -66,10 +70,10 @@ public class SupplierInvoice extends Configuration {
 
 		supplierInvoiceApi.getApiClient().setBasePath(firmvisDao.getVibapa().trim());
 		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-application-type", firmvisDao.getViapty().trim());
-		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", firmvisDao.getVicoid().trim());
+		supplierInvoiceApi.getApiClient().addDefaultHeader("ipp-company-id", "2106195");
 		supplierInvoiceApi.getApiClient().setAccessToken(firmvisDao.getViacto().trim());
 
-//		supplierInvoiceApi.getApiClient().setDebugging(true); //Warning...debugging in VismaClientHttpRequestInceptor
+		//supplierInvoiceApi.getApiClient().setDebugging(true); //Warning...debugging in VismaClientHttpRequestInceptor
 
 	}	
 
@@ -247,8 +251,8 @@ public class SupplierInvoice extends Configuration {
 		   When Country = other then tax zone should be set to '23' (NL IMP)
 		*/
 		if(StringUtils.hasValue(country)) {
-			//Inactivated 21.March.2022 - Sveins email. WML is not prepare. Remove this commented line when GO
-			//dto.setSupplierTaxZone(DtoValueHelper.toDtoString(this.getSupplierTaxZone(country)));
+			//Add
+			dto.setSupplierTaxZone(DtoValueHelper.toDtoString(this.getSupplierTaxZone(country)));
 		}
 		//End head
 		
@@ -260,50 +264,9 @@ public class SupplierInvoice extends Configuration {
 	}
 
 
-	/** SYSPED-KODTS2 -dbtable where KS2PRE = 'B' (EU LAND)
-	  KS2STA  KS2UNI  KS2LK  KS2FTX                                                   KS2NAS  KS2
-          S2      AD    ANDORRA                                                    ES      B
-          S2      AT    ØSTERRIKE                                                          B
-          S2      BE    BELGIA                                                     FR      B
-          S2      CY    KYPROS                                                             B
-          S2      CZ    TSJEKKIA                                                   CS      B
-          S2      DE    TYSKLAND                                                   DE      B
-          S2      DK    DANMARK                                                    DA      B
-          S2      EE    ESTLAND                                                    ET      B
-          S2      ES    SPANIA                                                     ES      B
-          S2      FI    FINLAND                                                    FI      B
-          S2      FR    FRANKRIKE                                                  FR      B
-          S2      GR    HELLAS                                                     EL      B
-          S2      HU    UNGARN                                                     HU      B
-          S2      IE    IRLAND                                                     EN      B
-          S2      IT    ITALIA                                                             B
-          S2      LT    LITAUEN                                                    LT      B
-          S2      LU    LUXEMBOURG                                                 FR      B
-          S2      LV    LATVIA                                                     LA      B
-          S2      MC    MONACO                                                     FR      B
-         S2      MT    MALTA                                                              B 
-         S2      PL    POLEN                                                      PL      B 
-         S2      PT    PORTUGAL                                                   PT      B 
-         S2      SI    SLOVENIA                                                   SL      B 
-         S2      SK    SLOVAKIA                                                   SK      B 
-         S2      XC    CEUTA OG MELILLA                                                   B 
-         
-        EU Wiki
-        
-        Andorra (AD)
-        Belgien	(BE)		Grekland	(EL)	Malta	(MT)			Slovenien	(SI)
-		Bulgarien	(BG)	Irland	(IE)		Nederländerna	(NL)	Spanien	(ES)
-		Cypern	(CY)		Italien	(IT)		Österrike	(AT)		Danmark	(DK)
-		Kroatien	(HR)	Polen	(PL)		Sverige	(SE)			Estland	(EE)
-		Lettland	(LV)	Portugal	(PT)	Tjeckien	(CZ)		Finland	(FI)
-		Litauen	(LT)		Rumänien	(RO)	Tyskland	(DE)		Frankrike	(FR)
-		Luxemburg	(LU)	Slovakien	(SK)	Ungern	(HU)
-	 
-	 */
+	/// SYSPED-KODTS2 -dbtable where KS2PRE = 'B' (EU LAND) is not reliable therefore we use our own enum with EU-countries
 	private String getSupplierTaxZone(String country) {
 		String retval = "";
-		
-		
 		if (StringUtils.hasValue(country)){
 			if("NL".equals(country)) {
 				retval = "21";
@@ -350,9 +313,9 @@ public class SupplierInvoice extends Configuration {
 			//When department = '2' (Rotterdam) then the booking needs to change:
 			//(a)the Branchcode '10' needs to be filled, next to the costcentre that is already set in the current integration
 			if(lineDto.getKsted() == DEPARTMENT_ROTTERDAM) {
-			  // Inactivated 21.March.2022 - Sveins email. WML is not prepare. Remove this commented line when GO	
-			  //updateDto.setBranch(DtoValueHelper.toDtoString(VISMA_BRANCH_ROTTERDAM));
-			  //updateDto.setBranchNumber(DtoValueHelper.toDtoString(VISMA_BRANCH_ROTTERDAM));
+			  //Add
+			  updateDto.setBranch(DtoValueHelper.toDtoString(VISMA_BRANCH_ROTTERDAM));
+			  updateDto.setBranchNumber(DtoValueHelper.toDtoString(VISMA_BRANCH_ROTTERDAM));
 			}
 			updateDtoList.add(updateDto);
 			

@@ -229,6 +229,37 @@ public class WebController {
 		return sb.toString();
 
 	}	
+	
+	/**
+	 * This service is used towards TEST Database instance in Visma (WML A38)
+	 * 
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeSupplierInvoices2.do?user=SYSTEMA
+	 */
+	@RequestMapping(value="syncronizeSupplierInvoices2.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String syncSupplierInvoices2(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("syncronizeSupplierInvoices2.do...[TEST DB]");
+
+		checkUser(user);
+
+		List<PrettyPrintVistranslError> errorList = supplierInvoiceTransactionManager.syncronizeSupplierInvoicesTEST();
+
+		if (errorList.isEmpty()) {
+			sb.append("syncronizeCustomerInvoices2 executed without errors. \n \n");
+		} else {
+			sb.append("syncronizeCustomerInvoices2 executed WITH errors.  \n \n");
+		}
+
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}	
 
 	/**
 	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeJournalTransactions.do?user=SYSTEMA
@@ -242,6 +273,40 @@ public class WebController {
 		checkUser(user);
 
 		List<PrettyPrintVistranslError> errorList = journalTransactionTransactionManager.syncronizeJournalTransaction();
+
+		if (errorList.isEmpty()) {
+			sb.append("syncronizeJournalTransactions executed without errors. \n \n");
+		} else {
+			sb.append("syncronizeJournalTransactions executed WITH errors.  \n \n");
+		}
+
+		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));
+
+		if (request.getMethod().equals(RequestMethod.GET.toString())) {
+			session.invalidate();
+		}
+
+		return sb.toString();
+
+	}	
+	
+	
+	/**
+	 *
+	 * This service is used towards TEST Database instance in Visma (WML A38)
+	 * 
+	 * Example: https://gw.systema.no:8443/visma-net-proxy/syncronizeJournalTransactions.do?user=SYSTEMA
+	 * 
+	 */
+	@RequestMapping(value="syncronizeJournalTransactions2.do", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String syncJournalTransactions2(@RequestParam("user") String user, HttpSession session, HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		logger.info("syncronizeJournalTransactions2.do... [TEST DB]");
+
+		checkUser(user);
+
+		List<PrettyPrintVistranslError> errorList = journalTransactionTransactionManager.syncronizeJournalTransactionTEST();
 
 		if (errorList.isEmpty()) {
 			sb.append("syncronizeJournalTransactions executed without errors. \n \n");
