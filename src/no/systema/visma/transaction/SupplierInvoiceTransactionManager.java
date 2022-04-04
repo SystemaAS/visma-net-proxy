@@ -111,20 +111,20 @@ public class SupplierInvoiceTransactionManager {
 
 				syncronizeSupplierInvoice2(headDto);
 				
-				deleteVistransl(headDto);
+				deleteVistransl2(headDto);
 
 			} 
 			catch (HttpClientErrorException e) {
 				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
-				updateVistranslOnError(headDto, e.getStatusText());
+				updateVistransl2OnError(headDto, e.getStatusText());
 				createVistrlogl(headDto, e.getStatusText());
 				//continues with next dao in list
 			}		
 			catch (Exception e) {
 				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
-				updateVistranslOnError(headDto, e.getMessage());
+				updateVistransl2OnError(headDto, e.getMessage());
 				createVistrlogl(headDto, e.getMessage());
 				//continues with next dao in list
 			}
@@ -138,13 +138,13 @@ public class SupplierInvoiceTransactionManager {
 		
 	}
 	
-	
+	/*
 	private void createVistrlogl(VistranslHeadDto headDto) {
 		VistrloglDao vistrloglDao = getVistrloglDao(headDto, null);
 		vistrloglDaoService.create(vistrloglDao);
 		logger.debug("VISTRLOGL created, dao="+vistrloglDao);	
 		
-	}
+	}*/
 
 	private void createVistrlogl(VistranslHeadDto headDto, String errorText) {
 		VistrloglDao vistrloglDao = getVistrloglDao(headDto, errorText);
@@ -186,7 +186,7 @@ public class SupplierInvoiceTransactionManager {
 		
 	}
 	private void syncronizeSupplierInvoice2(VistranslHeadDto vistranslHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
-		logger.info("syncronizeSupplierInvoice"+LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
+		logger.info("syncronizeSupplierInvoice2"+LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
 
 		try {
 			
@@ -196,22 +196,22 @@ public class SupplierInvoiceTransactionManager {
 		} 
 		catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransl, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
+			logger.error("Could not syncronize vistransl2, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			logger.error("Could not syncronize vistransl2="+vistranslHeadDto, e);
 			throw e;
 		}
 		catch (IOException e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			logger.error("Could not syncronize vistransl2="+vistranslHeadDto, e);
 			throw new RuntimeException("Could not find file", e.getCause());
 		}		
 		catch (Exception e) {
 			logger.error(LogHelper.logPrefixSupplierInvoice(vistranslHeadDto.getResnr(), vistranslHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransl="+vistranslHeadDto, e);
+			logger.error("Could not syncronize vistransl2="+vistranslHeadDto, e);
 			throw e;
 			
 		}
@@ -221,6 +221,16 @@ public class SupplierInvoiceTransactionManager {
 	private void deleteVistransl(VistranslHeadDto vistranslHeadDto) {
 		vistranslDaoService.deleteAll(vistranslHeadDto.getFirma(), vistranslHeadDto.getBilnr());
 		logger.info("VISTRANSL rows deleted for headDto="+vistranslHeadDto);
+
+	}
+	
+	/**
+	 * TEST DB A38
+	 * @param vistranslHeadDto
+	 */
+	private void deleteVistransl2(VistranslHeadDto vistranslHeadDto) {
+		vistransl2DaoService.deleteAll(vistranslHeadDto.getFirma(), vistranslHeadDto.getBilnr());
+		logger.info("VISTRANSL2 rows deleted for headDto="+vistranslHeadDto);
 
 	}
 
@@ -235,6 +245,24 @@ public class SupplierInvoiceTransactionManager {
 		dao.setSyerro(errorText);		
 		
 		vistranslDaoService.updateOnError(dao);
+		
+	}	
+	/**
+	 * TEST DB A38
+	 * @param vistranslHeadDto
+	 * @param errorText
+	 */
+	private void updateVistransl2OnError(VistranslHeadDto vistranslHeadDto, String errorText) {
+		Vistransl2Dao dao = new Vistransl2Dao();
+		dao.setFirma(vistranslHeadDto.getFirma());
+		dao.setResnr(vistranslHeadDto.getResnr());
+		dao.setBilnr(vistranslHeadDto.getBilnr());
+
+		int[] dato = LogHelper.getNowDato();			
+		dao.setSyncda(dato[0]);
+		dao.setSyerro(errorText);		
+		
+		vistransl2DaoService.updateOnError(dao);
 		
 	}	
 

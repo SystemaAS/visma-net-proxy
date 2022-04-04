@@ -309,9 +309,9 @@ public class WebController {
 		List<PrettyPrintVistranslError> errorList = journalTransactionTransactionManager.syncronizeJournalTransactionTEST();
 
 		if (errorList.isEmpty()) {
-			sb.append("syncronizeJournalTransactions executed without errors. \n \n");
+			sb.append("syncronizeJournalTransactions2 executed without errors. \n \n");
 		} else {
-			sb.append("syncronizeJournalTransactions executed WITH errors.  \n \n");
+			sb.append("syncronizeJournalTransactions2 executed WITH errors.  \n \n");
 		}
 
 		sb.append(FlipTableConverters.fromIterable(errorList, PrettyPrintVistranslError.class));

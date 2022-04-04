@@ -113,18 +113,18 @@ public class JournalTransactionTransactionManager {
 
 				syncronizeJournalTransaction2(headDto);
 
-				deleteVistransh(headDto);
+				deleteVistransh2(headDto);
 
 			} catch (HttpClientErrorException e) {
 				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getStatusText()));
-				updateVistranshOnError(headDto, e.getStatusText());
+				updateVistransh2OnError(headDto, e.getStatusText());
 				createVistrlogh(headDto, e.getStatusText());
 				// continues with next dao in list
 			} catch (Exception e) {
 				logger.error(e.toString());
 				errorList.add(new PrettyPrintVistranslError(headDto.getResnr(), headDto.getBilnr(), LocalDateTime.now(), e.getMessage()));
-				updateVistranshOnError(headDto, e.getMessage());
+				updateVistransh2OnError(headDto, e.getMessage());
 				createVistrlogh(headDto, e.getMessage());
 				// continues with next dao in list
 			}
@@ -186,7 +186,7 @@ public class JournalTransactionTransactionManager {
 	}
 	
 	private void syncronizeJournalTransaction2(VistranshHeadDto vistranshHeadDto) throws RestClientException,  IndexOutOfBoundsException { 
-		logger.info("syncronizeJournalTransaction:"+LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
+		logger.info("syncronizeJournalTransaction2:"+LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
 
 		try {
 			
@@ -196,22 +196,22 @@ public class JournalTransactionTransactionManager {
 		} 
 		catch (HttpClientErrorException e) {
 			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransh, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
+			logger.error("Could not syncronize vistransh2, due to Visma.net error="+e.getStatusText());  //Status text holds Response body from Visma.net
 			throw e;
 		} 
 		catch (RestClientException | IndexOutOfBoundsException e) {
 			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransh="+vistranshHeadDto, e);
+			logger.error("Could not syncronize vistransh2="+vistranshHeadDto, e);
 			throw e;
 		}
 		catch (IOException e) {
 			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransh="+vistranshHeadDto, e);
+			logger.error("Could not syncronize vistransh2="+vistranshHeadDto, e);
 			throw new RuntimeException("Could not find file", e.getCause());
 		}		
 		catch (Exception e) {
 			logger.error(LogHelper.logPrefixJournalTransaction(vistranshHeadDto.getBilnr()));
-			logger.error("Could not syncronize vistransh="+vistranshHeadDto, e);
+			logger.error("Could not syncronize vistransh2="+vistranshHeadDto, e);
 			throw e;
 			
 		}
@@ -221,6 +221,15 @@ public class JournalTransactionTransactionManager {
 	private void deleteVistransh(VistranshHeadDto vistranshHeadDto) {
 		vistranshDaoService.deleteAll(vistranshHeadDto.getFirma(), vistranshHeadDto.getBilnr());
 		logger.info("VISTRANSH rows deleted for headDto="+vistranshHeadDto);
+
+	}
+	/**
+	 * TEST DB A38
+	 * @param vistranshHeadDto
+	 */
+	private void deleteVistransh2(VistranshHeadDto vistranshHeadDto) {
+		vistransh2DaoService.deleteAll(vistranshHeadDto.getFirma(), vistranshHeadDto.getBilnr());
+		logger.info("VISTRANSH2 rows deleted for headDto="+vistranshHeadDto);
 
 	}
 
@@ -234,6 +243,24 @@ public class JournalTransactionTransactionManager {
 		dao.setSyerro(errorText);		
 		
 		vistranshDaoService.updateOnError(dao);
+		
+	}
+	/**
+	 * TEST DB A38
+	 * @param vistranshHeadDto
+	 * @param errorText
+	 */
+	
+	private void updateVistransh2OnError(VistranshHeadDto vistranshHeadDto, String errorText) {
+		Vistransh2Dao dao = new Vistransh2Dao();
+		dao.setFirma(vistranshHeadDto.getFirma());
+		dao.setBilnr(vistranshHeadDto.getBilnr());
+
+		int[] dato = LogHelper.getNowDato();			
+		dao.setSyncda(dato[0]);
+		dao.setSyerro(errorText);		
+		
+		vistransh2DaoService.updateOnError(dao);
 		
 	}	
 
